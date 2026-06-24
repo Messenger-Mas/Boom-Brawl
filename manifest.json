@@ -1,7 +1,7 @@
 {
   "name": "Boom Brawl",
   "short_name": "Boom Brawl",
-  "description": "Новости про Бравл",
+  "description": "Новости Brawl Stars",
   "start_url": "/Boom-Brawl/",
   "display": "standalone",
   "background_color": "#1a2744",
