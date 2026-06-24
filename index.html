@@ -1,0 +1,3333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
+    <meta name="theme-color" content="#f0851e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Boom Brawl">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="manifest" href="/manifest.json">
+    <title>Boom Brawl</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #2b3b6b 0%, #1a2744 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .install-button {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .install-button.show {
+            display: block;
+            animation: glowPulseInstall 2s infinite;
+        }
+
+        .install-button:hover {
+            background: #45a049;
+            transform: scale(1.02);
+        }
+
+        .install-button:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes glowPulseInstall {
+            0% { box-shadow: 0 4px 10px rgba(76,175,80,0.4); }
+            50% { box-shadow: 0 6px 25px rgba(76,175,80,0.7); }
+            100% { box-shadow: 0 4px 10px rgba(76,175,80,0.4); }
+        }
+
+        .offline-badge {
+            display: none;
+            background: #ff9800;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .offline-badge.show {
+            display: block;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(18, 25, 45, 0.85);
+            backdrop-filter: blur(12px);
+            border-right: 2px solid rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .site-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .site-title:hover {
+            color: #f0851e;
+            transform: scale(1.05);
+            text-shadow: 0 0 15px rgba(240, 133, 30, 0.5);
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .nav-btn {
+            padding: 16px 18px;
+            background: #f0851e;
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            width: 100%;
+        }
+
+        .nav-btn.game-nav-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+            animation: glowPulseNav 2s infinite;
+        }
+
+        .nav-btn.game-nav-btn:hover {
+            background: linear-gradient(135deg, #5bb8ff 0%, #33f5ff 100%);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
+            color: white;
+        }
+
+        @keyframes glowPulseNav {
+            0% { box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(79, 172, 254, 0.7); }
+            100% { box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); }
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .nav-btn:hover {
+            transform: translateX(6px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: #faa42e;
+        }
+
+        .nav-btn.game-nav-btn:hover {
+            background: linear-gradient(135deg, #5bb8ff 0%, #33f5ff 100%);
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.96);
+        }
+
+        .admin-btn {
+            margin-top: 20px;
+            padding: 14px;
+            background: #445599;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .admin-btn:hover {
+            background: #5a6ec7;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .logout-btn {
+            margin-top: 10px;
+            padding: 12px;
+            background: #d64545;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            display: none;
+        }
+
+        .logout-btn.visible {
+            display: block;
+        }
+
+        .logout-btn:hover {
+            background: #e05555;
+            transform: scale(1.03);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ddd;
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 35px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .welcome-message {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 45px;
+            border-radius: 24px;
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            align-self: center;
+        }
+
+        .welcome-message h2 {
+            font-size: 34px;
+            margin-bottom: 18px;
+        }
+
+        .welcome-message p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .section-content {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-content.active {
+            display: flex;
+        }
+
+        .section-title {
+            color: white;
+            margin-bottom: 25px;
+            font-size: 30px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .game-btn {
+            padding: 14px 25px;
+            background: #f0851e;
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px;
+            transition: 0.25s;
+            min-width: 160px;
+            display: block;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .game-btn:hover {
+            background: #faa42e;
+            transform: scale(1.02);
+        }
+
+        .play-game-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            font-size: 20px;
+            padding: 18px 30px;
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+            animation: glowPulse 2s infinite;
+        }
+
+        .play-game-btn:hover {
+            background: linear-gradient(135deg, #5bb8ff 0%, #33f5ff 100%);
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(79, 172, 254, 0.6);
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4); }
+            50% { box-shadow: 0 8px 40px rgba(79, 172, 254, 0.7); }
+            100% { box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4); }
+        }
+
+        .mode-btn,
+        .diff-btn {
+            background: #5b8ec9;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .mode-btn:hover,
+        .diff-btn:hover {
+            background: #7aade0;
+        }
+
+        .game-back-btn {
+            background: #555;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .game-back-btn:hover {
+            background: #777;
+        }
+
+        .game-title {
+            font-size: 26px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .game-subtitle {
+            font-size: 18px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .post-card {
+            background: #5b8ec9;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            width: 100%;
+        }
+
+        .timer-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff5722;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .timer-badge.expired {
+            background: #f44336;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .post-title {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            word-break: break-word;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .post-content {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .post-text {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-top: 20px;
+            padding-left: 15px;
+            color: #f0f4ff;
+        }
+
+        .post-images-slider {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .slider-img-container {
+            width: 100%;
+        }
+
+        .slider-img-container img,
+        .slider-img-container video {
+            width: 100%;
+            height: auto;
+            max-height: 55vh;
+            object-fit: contain;
+            border-radius: 15px;
+            display: block;
+        }
+
+        .slider-img-container img {
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .slider-img-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .slider-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .slider-counter {
+            font-weight: bold;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .post-image-slider-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            color: #222;
+            font-size: 22px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-image-slider-btn:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .post-image-slider-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.1);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .post-edit-btn,
+        .post-delete-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            color: white;
+            font-size: 14px;
+        }
+
+        .post-edit-btn {
+            background: #4facfe;
+            color: #0a0a2e;
+        }
+
+        .post-delete-btn {
+            background: #f44336;
+        }
+
+        .post-edit-btn:hover,
+        .post-delete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .post-form {
+            background: #5b8ec9;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 0;
+            width: 100%;
+        }
+
+        .post-form input[type="text"].post-title-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 26px;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            color: #1a3b1a;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .post-form textarea.post-textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            min-height: 180px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            color: #1a3b1a;
+            resize: vertical;
+            margin-bottom: 15px;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .images-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .image-thumb {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .image-thumb img,
+        .image-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-thumb .remove-img-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .image-thumb .remove-img-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .form-actions button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        .save-btn {
+            background: #2d5a27;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #f5576c;
+            color: white;
+        }
+
+        .save-btn:hover,
+        .cancel-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #ff5722;
+        }
+
+        .checkbox-container label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .timer-settings {
+            display: none;
+            margin: 10px 0;
+            padding: 15px;
+            background: rgba(255, 87, 34, 0.15);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 87, 34, 0.3);
+        }
+
+        .timer-settings.active {
+            display: block;
+        }
+
+        .timer-settings label {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .timer-settings input[type="number"],
+        .timer-settings input[type="text"] {
+            width: 60px;
+            padding: 8px;
+            margin: 0 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .timer-settings .timer-type-select {
+            margin: 5px 0;
+        }
+
+        .timer-settings select {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .timer-settings .date-input {
+            width: 100px;
+        }
+
+        .add-post-btn {
+            padding: 18px 35px;
+            background: #f0851e;
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            display: none;
+            margin: 15px auto 0;
+            width: fit-content;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .add-post-btn.visible {
+            display: block;
+        }
+
+        .add-post-btn:hover {
+            transform: scale(1.05);
+            background: #faa42e;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-buttons button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ok {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #f44336;
+            color: white;
+        }
+
+        .video-preview-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .video-preview-container video {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .brawl-talk-title {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+        }
+
+        .brawlers-description-container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        .brawlers-description-display {
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.2;
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .brawlers-description-edit {
+            margin-top: 10px;
+        }
+
+        .brawlers-description-edit textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .brawlers-save-desc-btn {
+            padding: 10px 25px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .brawlers-save-desc-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .delete-slide-btn,
+        .add-image-btn,
+        .delete-image-btn,
+        .admin-action-btn {
+            padding: 12px 25px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .delete-slide-btn.visible,
+        .add-image-btn.visible,
+        .delete-image-btn.visible,
+        .admin-action-btn.visible {
+            display: inline-block;
+        }
+
+        .add-image-btn {
+            background: #f5576c;
+        }
+
+        .image-container {
+            margin: 20px 0;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 60vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .image-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .image-overlay.active {
+            display: flex;
+        }
+
+        .image-overlay img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 15px;
+            cursor: default;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            background: white;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 250px;
+            z-index: 50;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .suggestions-dropdown div {
+            padding: 10px;
+            cursor: pointer;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+
+        .suggestions-dropdown div:hover {
+            background: #e0e0e0;
+        }
+
+        .trait-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+        .trait-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .trait-btn.selected {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+            box-shadow: 0 0 10px rgba(76,175,80,0.5);
+        }
+
+        .guess-history {
+            width: 100%;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+        }
+
+        .guess-history-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .guess-history-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .trait-tag {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .trait-tag.correct {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .trait-tag.incorrect {
+            background: #f44336;
+            color: white;
+        }
+
+        .brawlers-slider-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #667eea;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            font-size: 32px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .brawlers-slider-nav-btn:hover {
+            background: #7a8ce0;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .brawlers-slider-nav-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .brawlers-slider-nav-btn.prev-btn {
+            left: -80px;
+        }
+
+        .brawlers-slider-nav-btn.next-btn {
+            right: -80px;
+        }
+
+        .brawlers-add-slide-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .brawlers-add-slide-btn {
+            padding: 20px 40px;
+            background: #667eea;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .brawlers-add-slide-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+            background: #7a8ce0;
+        }
+
+        .add-slide-form {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .add-slide-form input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            color: #1a3b1a;
+            outline: none;
+        }
+
+        .add-slide-form textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            min-height: 120px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            color: #1a3b1a;
+            resize: vertical;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .add-slide-form .slide-form-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .add-slide-form .slide-form-buttons button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        .contacts-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contacts-modal.active {
+            display: flex;
+        }
+
+        .contacts-content {
+            background: linear-gradient(145deg, #2b3b6b, #1a2744);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            max-width: 450px;
+            width: 90%;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .contacts-content h3 {
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #f0851e;
+        }
+
+        .contact-item {
+            margin: 15px 0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .contact-item strong {
+            color: #faa42e;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .contacts-close-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: #f0851e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .contacts-close-btn:hover {
+            background: #faa42e;
+            transform: scale(1.05);
+        }
+
+        .game-input {
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 10px;
+            border: none;
+            width: 250px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .game-result {
+            font-size: 20px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .game-brawler-image {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin: 20px auto;
+            display: block;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .game-admin-panel {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .game-admin-panel label {
+            color: white;
+            font-weight: bold;
+            display: block;
+            margin: 8px 0 4px;
+        }
+
+        .game-admin-panel input,
+        .game-admin-panel select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 10px;
+                gap: 10px;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            .nav-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .nav-btn {
+                font-size: 14px;
+                padding: 10px;
+                width: auto;
+            }
+            .brawlers-slider-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+            }
+            .brawlers-slider-nav-btn.prev-btn {
+                left: -20px;
+            }
+            .brawlers-slider-nav-btn.next-btn {
+                right: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1 class="site-title" onclick="showContacts()">Boom Brawl</h1>
+        
+        <!-- Кнопка установки -->
+        <button class="install-button" id="installButton" onclick="installApp()">
+            📱 Установить как приложение
+        </button>
+        
+        <!-- Индикатор оффлайн -->
+        <div class="offline-badge" id="offlineBadge">
+            📡 Оффлайн режим
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn" onclick="showSection('news')">Новости</button>
+            <button class="nav-btn" onclick="showSection('brawltalk')">Бравл толк</button>
+            <button class="nav-btn" onclick="showSection('balance')">Изменения в балансе</button>
+            <button class="nav-btn" onclick="showSection('shop')">Акции в магазине</button>
+            <button class="nav-btn" onclick="showSection('bugs')">Баги и изменения</button>
+            <button class="nav-btn" onclick="showSection('brawlers')">Про бравлеров</button>
+            <button class="nav-btn game-nav-btn" onclick="showSection('game')">Игра - Угадай бравлера</button>
+        </div>
+        <button class="admin-btn" id="adminLoginBtn" onclick="showAdminLogin()">Войти как администратор</button>
+        <button class="logout-btn" id="logoutBtn" onclick="logout()">Выйти из админа</button>
+        <div class="sidebar-footer">2026 Boom Brawl</div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="welcome-message" id="welcomeMessage">
+            <h2>Добро пожаловать!</h2>
+            <p>Выберите раздел в боковом меню</p>
+        </div>
+
+        <div class="section-content" id="newsSection">
+            <h2 class="section-title">Новости</h2>
+            <div class="posts-feed" id="newsPostsContainer"></div>
+            <div id="newsAddPostFormContainer" style="width:100%;"></div>
+            <button class="add-post-btn" id="newsAddPostBtn" onclick="startAddNewsPost()">Добавить раздел</button>
+            <input type="file" id="newsPostImageInput" class="file-input" accept="image/*,video/*" multiple onchange="handleNewsPostImagesSelected(event)">
+        </div>
+
+        <div class="section-content" id="brawlersSection">
+            <h2 class="section-title" id="brawlersSectionTitle">Тир лист бравлеров</h2>
+            <div class="brawlers-description-container" id="brawlersDescriptionContainer">
+                <div class="brawlers-description-display" id="brawlersDescriptionDisplay"></div>
+                <div class="brawlers-description-edit" id="brawlersDescriptionEdit" style="display:none;">
+                    <textarea id="brawlersDescriptionTextarea" placeholder="Введите описание..."></textarea>
+                    <button class="brawlers-save-desc-btn" onclick="saveBrawlersDescription()">Сохранить описание</button>
+                </div>
+            </div>
+            <div style="position:relative; display:flex; align-items:center; justify-content:center; width:100%;" id="brawlersSliderArea">
+                <button class="brawlers-slider-nav-btn prev-btn" id="brawlersPrevBtn" onclick="changeBrawlersSection(-1)">&#9664;</button>
+                <div class="image-container" id="brawlersImageContainer" style="display: none;">
+                    <img id="brawlersImage" src="" alt="Изображение" onclick="event.stopPropagation(); enlargeImage(this.src)">
+                </div>
+                <div class="brawlers-add-slide-section" id="addSlideSection" style="display:none;">
+                    <div class="brawlers-add-slide-btn" onclick="startAddBrawlersSlide()">+ Добавить слайд</div>
+                </div>
+                <div class="add-slide-form" id="addSlideForm" style="display:none;"></div>
+                <button class="brawlers-slider-nav-btn next-btn" id="brawlersNextBtn" onclick="changeBrawlersSection(1)">&#9654;</button>
+            </div>
+            <button class="add-image-btn" id="brawlersAddBtn" onclick="document.getElementById('brawlersFileInput').click()">Добавить изображение</button>
+            <button class="delete-image-btn" id="brawlersDeleteBtn" onclick="deleteBrawlersImage()">Удалить изображение</button>
+            <button class="delete-slide-btn" id="brawlersDeleteSlideBtn" onclick="deleteCurrentSlide()">Удалить слайд</button>
+            <input type="file" id="brawlersFileInput" class="file-input" accept="image/*" multiple onchange="handleBrawlersImageUpload(event)">
+        </div>
+
+        <div class="section-content" id="balanceSection">
+            <h2 class="section-title">Изменения в балансе</h2>
+            <div class="posts-feed" id="balancePostsContainer"></div>
+            <div id="balanceAddPostFormContainer" style="width:100%;"></div>
+            <button class="add-post-btn" id="balanceAddPostBtn" onclick="startAddBalancePost()">Добавить раздел</button>
+            <input type="file" id="balancePostImageInput" class="file-input" accept="image/*" multiple onchange="handleBalancePostImagesSelected(event)">
+        </div>
+
+        <div class="section-content" id="shopSection">
+            <h2 class="section-title">Акции в магазине</h2>
+            <div class="posts-feed" id="postsContainer"></div>
+            <div id="addPostFormContainer" style="width:100%;"></div>
+            <button class="add-post-btn" id="addPostBtn" onclick="startAddPost()">Добавить раздел</button>
+            <input type="file" id="postImageInput" class="file-input" accept="image/*" multiple onchange="handlePostImagesSelected(event)">
+        </div>
+
+        <div class="section-content" id="bugsSection">
+            <h2 class="section-title">Баги и изменения</h2>
+            <div class="posts-feed" id="bugsPostsContainer"></div>
+            <div id="bugsAddPostFormContainer" style="width:100%;"></div>
+            <button class="add-post-btn" id="bugsAddPostBtn" onclick="startAddBugsPost()">Добавить раздел</button>
+            <input type="file" id="bugsPostImageInput" class="file-input" accept="image/*,video/*" multiple onchange="handleBugsPostImagesSelected(event)">
+        </div>
+
+        <div class="section-content" id="brawlTalkSection">
+            <div class="brawl-talk-title">Бравл толк</div>
+            <div id="brawlTalkVideoSection" style="width: 100%;"></div>
+            <div class="posts-feed" id="brawlTalkPostsContainer"></div>
+            <div id="brawlTalkAddPostFormContainer" style="width:100%;"></div>
+            <button class="add-post-btn" id="brawlTalkAddPostBtn" onclick="startAddBrawlTalkPost()">Добавить раздел</button>
+            <input type="file" id="brawlTalkPostImageInput" class="file-input" accept="image/*,video/*" multiple onchange="handleBrawlTalkPostImagesSelected(event)">
+        </div>
+
+        <div class="section-content" id="gameSection">
+            <h2 class="section-title">Игра - Угадай бравлера</h2>
+            <div class="game-container" id="gameContainer"></div>
+        </div>
+    </div>
+
+    <div class="image-overlay" id="imageOverlay" onclick="closeEnlargedImage()">
+        <img id="enlargedImage" src="" alt="Увеличенное изображение" onclick="event.stopPropagation()">
+    </div>
+
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <h3>Вход администратора</h3>
+            <input type="password" id="passwordInput" placeholder="Введите пароль">
+            <div class="modal-buttons">
+                <button class="btn-ok" onclick="checkPassword()">OK</button>
+                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="contacts-modal" id="contactsModal">
+        <div class="contacts-content">
+            <h3>Контакты</h3>
+            <p style="margin-bottom:15px; font-size:14px; opacity:0.8;">При ошибках приложения обращайтесь:</p>
+            <div class="contact-item">
+                <strong>Почта:</strong>
+                <span>andreymomot007@gmail.com</span>
+            </div>
+            <div class="contact-item">
+                <strong>Телефон:</strong>
+                <span>+7 (926)-238-02-00</span>
+            </div>
+            <div class="contact-item">
+                <strong>Канал в максе:</strong>
+                <span>Boom Brawl</span>
+            </div>
+            <button class="contacts-close-btn" onclick="closeContacts()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== КОНФИГУРАЦИЯ FIREBASE ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgx-V8GP_cgCZLGws2e1pHZ5OnMy20nxk",
+            authDomain: "clash-of-mas.firebaseapp.com",
+            databaseURL: "https://clash-of-mas-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "clash-of-mas",
+            storageBucket: "clash-of-mas.firebasestorage.app",
+            messagingSenderId: "403759349179",
+            appId: "1:403759349179:web:62c2c68604b1c0334a589e",
+            measurementId: "G-E29KKDYG4E"
+        };
+
+        // Инициализация Firebase
+        let database;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            console.log('Firebase подключен');
+        } catch (error) {
+            console.error('Ошибка Firebase:', error);
+            database = null;
+        }
+
+        // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+        let isAdmin = false;
+        let firebaseAvailable = database !== null;
+        
+        let newsPosts = [];
+        let shopPosts = [];
+        let balancePosts = [];
+        let bugsPosts = [];
+        let brawlTalkPosts = [];
+        let brawlTalkVideoData = null;
+        let brawlTalkVideoTimer = null;
+        let brawlersSections = [];
+        let allBrawlers = [];
+        let currentBrawlersSection = 0;
+        let gameState = { mode: null, difficulty: null, currentItem: null, attempts: 0, maxAttempts: 0, guessedNames: [] };
+        
+        let currentNewsFormImages = [];
+        let editingNewsPostId = null;
+        let currentFormImages = [];
+        let editingPostId = null;
+        let currentBalanceFormImages = [];
+        let editingBalancePostId = null;
+        let currentBugsFormImages = [];
+        let editingBugsPostId = null;
+        let currentBrawlTalkFormImages = [];
+        let editingBrawlTalkPostId = null;
+
+        const RARITY_OPTIONS = ['Редкий', 'Сверхредкий', 'Эпический', 'Мифический', 'Легендарный'];
+        const TYPE_OPTIONS = ['Человек', 'Робот', 'Животное', 'Другое'];
+        const GENDER_OPTIONS = ['Муж', 'Жен'];
+        const CLASS_OPTIONS = ['Танк', 'Поддержка', 'Убийца', 'Контроль', 'Урон', 'Стрелок', 'Артиллерия'];
+        const AGE_OPTIONS = ['Ребёнок', 'Подросток', 'Средний возраст', 'Старческий возраст'];
+        const TRAIT_LABELS = {
+            rarity: 'Редкость',
+            type: 'Вид',
+            gender: 'Пол',
+            class: 'Класс',
+            age: 'Возраст'
+        };
+
+        // ==================== ЗАГРУЗКА ДАННЫХ ИЗ FIREBASE ====================
+        function loadDataFromFirebase() {
+            if (!firebaseAvailable) {
+                loadLocalData();
+                return;
+            }
+
+            database.ref('newsPosts').on('value', (snapshot) => {
+                newsPosts = snapshot.val() || [];
+                if (!Array.isArray(newsPosts)) newsPosts = [];
+                renderAllNewsPosts();
+            });
+
+            database.ref('shopPosts').on('value', (snapshot) => {
+                shopPosts = snapshot.val() || [];
+                if (!Array.isArray(shopPosts)) shopPosts = [];
+                shopPosts = cleanExpiredPosts(shopPosts);
+                renderAllShopPosts();
+            });
+
+            database.ref('balancePosts').on('value', (snapshot) => {
+                balancePosts = snapshot.val() || [];
+                if (!Array.isArray(balancePosts)) balancePosts = [];
+                renderAllBalancePosts();
+            });
+
+            database.ref('bugsPosts').on('value', (snapshot) => {
+                bugsPosts = snapshot.val() || [];
+                if (!Array.isArray(bugsPosts)) bugsPosts = [];
+                renderAllBugsPosts();
+            });
+
+            database.ref('brawlTalkPosts').on('value', (snapshot) => {
+                brawlTalkPosts = snapshot.val() || [];
+                if (!Array.isArray(brawlTalkPosts)) brawlTalkPosts = [];
+                brawlTalkPosts = cleanExpiredPosts(brawlTalkPosts);
+                renderAllBrawlTalkPosts();
+            });
+
+            database.ref('brawlTalkVideo').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    brawlTalkVideoData = data.videoData || null;
+                    brawlTalkVideoTimer = data.timer || null;
+                    if (brawlTalkVideoTimer?.timerEnabled) {
+                        const expiry = calculateExpiry(brawlTalkVideoTimer);
+                        if (expiry && Date.now() >= expiry) {
+                            brawlTalkVideoData = null;
+                            brawlTalkVideoTimer = null;
+                            database.ref('brawlTalkVideo').set(null);
+                        }
+                    }
+                }
+                renderBrawlTalkVideo();
+            });
+
+            database.ref('brawlersSections').on('value', (snapshot) => {
+                brawlersSections = snapshot.val() || [];
+                if (!Array.isArray(brawlersSections)) brawlersSections = [];
+                if (brawlersSections.length === 0) {
+                    brawlersSections = [
+                        { id: 'tierlist', title: 'Тир лист бравлеров', description: '', images: [], currentIndex: 0 },
+                        { id: 'trios', title: 'Трио бравлеров', description: '', images: [], currentIndex: 0 },
+                        { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
+                    ];
+                }
+                updateBrawlersDisplay();
+            });
+
+            database.ref('allBrawlers').on('value', (snapshot) => {
+                allBrawlers = snapshot.val() || [];
+                if (!Array.isArray(allBrawlers)) allBrawlers = [];
+            });
+        }
+
+        function saveToFirebase(path, data) {
+            if (!firebaseAvailable) {
+                saveLocalData(path, data);
+                return;
+            }
+            database.ref(path).set(data);
+        }
+
+        function saveLocalData(path, data) {
+            const key = path;
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function loadLocalData() {
+            const savedNews = localStorage.getItem('newsPosts');
+            if (savedNews) { newsPosts = JSON.parse(savedNews); renderAllNewsPosts(); }
+            
+            const savedShop = localStorage.getItem('shopPosts');
+            if (savedShop) { 
+                shopPosts = cleanExpiredPosts(JSON.parse(savedShop)); 
+                renderAllShopPosts(); 
+            }
+            
+            const savedBalance = localStorage.getItem('balancePosts');
+            if (savedBalance) { balancePosts = JSON.parse(savedBalance); renderAllBalancePosts(); }
+            
+            const savedBugs = localStorage.getItem('bugsPosts');
+            if (savedBugs) { bugsPosts = JSON.parse(savedBugs); renderAllBugsPosts(); }
+            
+            const savedBrawlTalk = localStorage.getItem('brawlTalkPosts');
+            if (savedBrawlTalk) { 
+                brawlTalkPosts = cleanExpiredPosts(JSON.parse(savedBrawlTalk)); 
+                renderAllBrawlTalkPosts(); 
+            }
+            
+            const savedBrawlTalkVideo = localStorage.getItem('brawlTalkVideo');
+            if (savedBrawlTalkVideo) {
+                const data = JSON.parse(savedBrawlTalkVideo);
+                brawlTalkVideoData = data.videoData;
+                brawlTalkVideoTimer = data.timer;
+                renderBrawlTalkVideo();
+            }
+            
+            const savedBrawlersSections = localStorage.getItem('brawlersSections');
+            if (savedBrawlersSections) {
+                brawlersSections = JSON.parse(savedBrawlersSections);
+            } else {
+                brawlersSections = [
+                    { id: 'tierlist', title: 'Тир лист бравлеров', description: '', images: [], currentIndex: 0 },
+                    { id: 'trios', title: 'Трио бравлеров', description: '', images: [], currentIndex: 0 },
+                    { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
+                ];
+            }
+            updateBrawlersDisplay();
+            
+            const savedBrawlers = localStorage.getItem('allBrawlers');
+            if (savedBrawlers) allBrawlers = JSON.parse(savedBrawlers);
+        }
+
+        // ==================== PWA УСТАНОВКА ====================
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.classList.add('show');
+        });
+        
+        function installApp() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('Пользователь установил приложение');
+                    installButton.classList.remove('show');
+                }
+                deferredPrompt = null;
+            });
+        }
+        
+        window.addEventListener('appinstalled', () => {
+            installButton.classList.remove('show');
+            deferredPrompt = null;
+        });
+        
+        function updateOnlineStatus() {
+            const offlineBadge = document.getElementById('offlineBadge');
+            if (navigator.onLine) {
+                offlineBadge.classList.remove('show');
+            } else {
+                offlineBadge.classList.add('show');
+            }
+        }
+        
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker зарегистрирован:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Ошибка регистрации Service Worker:', error);
+                    });
+            });
+        }
+        
+        function isPWA() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true;
+        }
+        
+        if (isPWA()) {
+            installButton.classList.remove('show');
+        }
+                // ==================== КОНТАКТЫ ====================
+        function showContacts() {
+            document.getElementById('contactsModal').classList.add('active');
+        }
+        function closeContacts() {
+            document.getElementById('contactsModal').classList.remove('active');
+        }
+
+        // ==================== ФУНКЦИИ ТАЙМЕРА ====================
+        function isVideoData(data) {
+            return data && (data.startsWith('data:video/') || data.startsWith('video:'));
+        }
+
+        function calculateExpiry(post) {
+            if (!post || !post.timerEnabled) return null;
+            if (post.timerType === 'countdown') {
+                let ms = (post.timerDays || 0) * 86400000 + (post.timerHours || 0) * 3600000 + (post.timerMinutes || 0) * 60000;
+                return (post.createdAt || Date.now()) + ms;
+            } else if (post.timerType === 'deadline') {
+                if (!post.deadlineDate) return null;
+                const parts = post.deadlineDate.split('.');
+                if (parts.length !== 3) return null;
+                const year = parseInt(parts[0]), month = parseInt(parts[1]) - 1, day = parseInt(parts[2]);
+                return new Date(year, month, day, post.deadlineHour || 0).getTime();
+            }
+            return null;
+        }
+
+        function getTimerRemaining(expiresAt) {
+            const remaining = expiresAt - Date.now();
+            if (remaining <= 0) return null;
+            const days = Math.floor(remaining / 86400000);
+            const hours = Math.floor((remaining % 86400000) / 3600000);
+            const minutes = Math.floor((remaining % 3600000) / 60000);
+            if (days > 0) return `${days}д ${hours}ч`;
+            if (hours > 0) return `${hours}ч ${minutes}м`;
+            return `${minutes}м`;
+        }
+
+        function cleanExpiredPosts(posts) {
+            return posts.filter(post => {
+                if (!post.timerEnabled) return true;
+                const expiry = post.expiresAt || calculateExpiry(post);
+                return !expiry || Date.now() < expiry;
+            });
+        }
+
+        function createTimerSettingsHTML(prefix, postData) {
+            const container = document.createElement('div');
+            container.className = 'checkbox-container';
+            container.style.display = 'block';
+            container.style.width = '100%';
+            container.style.marginBottom = '10px';
+
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.style.display = 'flex';
+            checkboxDiv.style.alignItems = 'center';
+            checkboxDiv.style.gap = '10px';
+
+            const timerCheckbox = document.createElement('input');
+            timerCheckbox.type = 'checkbox';
+            timerCheckbox.id = prefix + 'TimerCheckbox';
+            timerCheckbox.checked = postData?.timerEnabled || false;
+
+            const timerLabel = document.createElement('label');
+            timerLabel.htmlFor = prefix + 'TimerCheckbox';
+            timerLabel.textContent = 'Таймер / Дата исчезновения';
+            timerLabel.style.color = '#ffffff';
+
+            checkboxDiv.appendChild(timerCheckbox);
+            checkboxDiv.appendChild(timerLabel);
+            container.appendChild(checkboxDiv);
+
+            const settingsDiv = document.createElement('div');
+            settingsDiv.className = 'timer-settings';
+            settingsDiv.id = prefix + 'TimerSettings';
+            if (postData?.timerEnabled) settingsDiv.classList.add('active');
+
+            const typeDiv = document.createElement('div');
+            typeDiv.className = 'timer-type-select';
+            typeDiv.style.marginBottom = '10px';
+
+            const typeSelect = document.createElement('select');
+            typeSelect.id = prefix + 'TimerType';
+            typeSelect.style.padding = '8px';
+            typeSelect.style.borderRadius = '8px';
+            typeSelect.style.border = '1px solid #ccc';
+
+            const opt1 = document.createElement('option');
+            opt1.value = 'countdown';
+            opt1.textContent = 'Обратный отсчёт';
+            const opt2 = document.createElement('option');
+            opt2.value = 'deadline';
+            opt2.textContent = 'Конкретная дата';
+            if (postData?.timerType === 'deadline') opt2.selected = true;
+
+            typeSelect.appendChild(opt1);
+            typeSelect.appendChild(opt2);
+            typeDiv.appendChild(typeSelect);
+            settingsDiv.appendChild(typeDiv);
+
+            const countdownDiv = document.createElement('div');
+            countdownDiv.id = prefix + 'CountdownSettings';
+            countdownDiv.style.display = postData?.timerType === 'deadline' ? 'none' : 'block';
+            countdownDiv.innerHTML = `<label style="color:#ffffff;font-weight:bold;font-size:14px;">Дней: <input type="number" id="${prefix}TimerDays" value="${postData?.timerDays || 0}" min="0" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label><label style="color:#ffffff;font-weight:bold;font-size:14px;">Часов: <input type="number" id="${prefix}TimerHours" value="${postData?.timerHours || 0}" min="0" max="23" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label><label style="color:#ffffff;font-weight:bold;font-size:14px;">Минут: <input type="number" id="${prefix}TimerMinutes" value="${postData?.timerMinutes || 0}" min="0" max="59" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>`;
+            settingsDiv.appendChild(countdownDiv);
+
+            const deadlineDiv = document.createElement('div');
+            deadlineDiv.id = prefix + 'DeadlineSettings';
+            deadlineDiv.style.display = postData?.timerType === 'deadline' ? 'block' : 'none';
+            deadlineDiv.innerHTML = `<label style="color:#ffffff;font-weight:bold;font-size:14px;">Час (0-23): <input type="number" id="${prefix}DeadlineHour" value="${postData?.deadlineHour || 0}" min="0" max="23" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label><label style="color:#ffffff;font-weight:bold;font-size:14px;">Дата (ГГГГ.ММ.ДД): <input type="text" id="${prefix}DeadlineDate" value="${postData?.deadlineDate || ''}" placeholder="2026.12.31" class="date-input" style="width:100px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>`;
+            settingsDiv.appendChild(deadlineDiv);
+
+            container.appendChild(settingsDiv);
+
+            timerCheckbox.onchange = function() {
+                if (this.checked) settingsDiv.classList.add('active');
+                else settingsDiv.classList.remove('active');
+            };
+            typeSelect.onchange = function() {
+                document.getElementById(prefix + 'CountdownSettings').style.display = this.value === 'countdown' ? 'block' : 'none';
+                document.getElementById(prefix + 'DeadlineSettings').style.display = this.value === 'deadline' ? 'block' : 'none';
+            };
+            return container;
+        }
+
+        function getTimerDataFromForm(prefix) {
+            const timerCheckbox = document.getElementById(prefix + 'TimerCheckbox');
+            const timerEnabled = timerCheckbox ? timerCheckbox.checked : false;
+            if (!timerEnabled) return { timerEnabled: false };
+            const timerTypeEl = document.getElementById(prefix + 'TimerType');
+            const timerType = timerTypeEl ? timerTypeEl.value : 'countdown';
+            const data = { timerEnabled: true, timerType, createdAt: Date.now() };
+            if (timerType === 'countdown') {
+                data.timerDays = parseInt(document.getElementById(prefix + 'TimerDays')?.value) || 0;
+                data.timerHours = parseInt(document.getElementById(prefix + 'TimerHours')?.value) || 0;
+                data.timerMinutes = parseInt(document.getElementById(prefix + 'TimerMinutes')?.value) || 0;
+            } else {
+                data.deadlineHour = parseInt(document.getElementById(prefix + 'DeadlineHour')?.value) || 0;
+                data.deadlineDate = document.getElementById(prefix + 'DeadlineDate')?.value || '';
+            }
+            data.expiresAt = calculateExpiry(data);
+            return data;
+        }
+
+        function updateAllTimers() {
+            document.querySelectorAll('.timer-badge').forEach(badge => {
+                const expiresAt = parseInt(badge.dataset.expires);
+                if (expiresAt) {
+                    const remaining = getTimerRemaining(expiresAt);
+                    if (remaining) {
+                        badge.textContent = remaining;
+                        badge.classList.remove('expired');
+                    } else {
+                        badge.textContent = 'Истекло';
+                        badge.classList.add('expired');
+                    }
+                }
+            });
+        }
+
+        // ==================== ФУНКЦИИ СОХРАНЕНИЯ ====================
+        function saveNewsPosts() { saveToFirebase('newsPosts', newsPosts); }
+        function saveShopPosts() { saveToFirebase('shopPosts', shopPosts); }
+        function saveBalancePosts() { saveToFirebase('balancePosts', balancePosts); }
+        function saveBugsPosts() { saveToFirebase('bugsPosts', bugsPosts); }
+        function saveBrawlTalkPosts() { saveToFirebase('brawlTalkPosts', brawlTalkPosts); }
+        function saveBrawlTalkVideo() { saveToFirebase('brawlTalkVideo', { videoData: brawlTalkVideoData, timer: brawlTalkVideoTimer }); }
+        function saveBrawlersSections() { saveToFirebase('brawlersSections', brawlersSections); }
+        function saveAllBrawlers() { saveToFirebase('allBrawlers', allBrawlers); }
+
+        function updateAllAdminButtons() {
+            document.getElementById('addPostBtn').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('balanceAddPostBtn').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('bugsAddPostBtn').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('brawlTalkAddPostBtn').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('newsAddPostBtn').style.display = isAdmin ? 'block' : 'none';
+            
+            const currentSection = brawlersSections.length > 0 && currentBrawlersSection < brawlersSections.length ? brawlersSections[currentBrawlersSection] : null;
+            document.getElementById('brawlersAddBtn').classList.toggle('visible', isAdmin && brawlersSections.length > 0 && currentBrawlersSection < brawlersSections.length);
+            document.getElementById('brawlersDeleteBtn').classList.toggle('visible', isAdmin && currentSection && currentSection.images.length > 0);
+            document.getElementById('brawlersDeleteSlideBtn').classList.toggle('visible', isAdmin && brawlersSections.length > 0 && currentBrawlersSection < brawlersSections.length);
+        }
+
+        // ==================== НАВИГАЦИЯ ====================
+        function showSection(section) {
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            switch (section) {
+                case 'news': document.getElementById('newsSection').classList.add('active'); renderAllNewsPosts(); break;
+                case 'brawlers': document.getElementById('brawlersSection').classList.add('active'); updateBrawlersDisplay(); break;
+                case 'balance': document.getElementById('balanceSection').classList.add('active'); renderAllBalancePosts(); break;
+                case 'shop': document.getElementById('shopSection').classList.add('active'); renderAllShopPosts(); break;
+                case 'bugs': document.getElementById('bugsSection').classList.add('active'); renderAllBugsPosts(); break;
+                case 'brawltalk': document.getElementById('brawlTalkSection').classList.add('active'); renderAllBrawlTalkPosts(); renderBrawlTalkVideo(); break;
+                case 'game': document.getElementById('gameSection').classList.add('active'); renderGameStart(); break;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateAllAdminButtons();
+        }
+
+        // ==================== АДМИН ====================
+        function showAdminLogin() { 
+            document.getElementById('adminModal').classList.add('active'); 
+            document.getElementById('passwordInput').value = ''; 
+            document.getElementById('passwordInput').focus(); 
+        }
+        function closeModal() { document.getElementById('adminModal').classList.remove('active'); }
+        function checkPassword() {
+            if (document.getElementById('passwordInput').value === 'MAS007') {
+                isAdmin = true;
+                localStorage.setItem('isAdmin', 'true');
+                document.getElementById('adminLoginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').classList.add('visible');
+                updateAllAdminButtons();
+                closeModal();
+                if (brawlersSections.length > 0 && currentBrawlersSection < brawlersSections.length) {
+                    document.getElementById('brawlersDescriptionEdit').style.display = 'block';
+                    document.getElementById('brawlersDescriptionTextarea').value = brawlersSections[currentBrawlersSection].description;
+                }
+                updateBrawlersDisplay();
+                renderAllNewsPosts(); renderAllShopPosts(); renderAllBalancePosts(); renderAllBugsPosts(); renderAllBrawlTalkPosts();
+                alert('Успешный вход!');
+            } else { 
+                alert('Неверный пароль!'); 
+                document.getElementById('passwordInput').value = ''; 
+            }
+        }
+        function logout() {
+            isAdmin = false;
+            localStorage.setItem('isAdmin', 'false');
+            document.getElementById('adminLoginBtn').style.display = 'block';
+            document.getElementById('logoutBtn').classList.remove('visible');
+            document.getElementById('brawlersDescriptionEdit').style.display = 'none';
+            if (currentBrawlersSection >= brawlersSections.length) currentBrawlersSection = 0;
+            updateAllAdminButtons();
+            cancelAllForms();
+            renderAllNewsPosts(); renderAllShopPosts(); renderAllBalancePosts(); renderAllBugsPosts(); renderAllBrawlTalkPosts();
+            updateBrawlersDisplay();
+            alert('Вы вышли из режима администратора');
+        }
+        function cancelAllForms() { 
+            cancelNewsPostForm(); cancelShopPostForm(); cancelBalancePostForm(); cancelBugsPostForm(); cancelBrawlTalkPostForm(); 
+        }
+
+        // ==================== УВЕЛИЧЕНИЕ КАРТИНКИ ====================
+        function enlargeImage(src) { 
+            document.getElementById('enlargedImage').src = src; 
+            document.getElementById('imageOverlay').classList.add('active'); 
+        }
+        function closeEnlargedImage() { 
+            document.getElementById('imageOverlay').classList.remove('active'); 
+        }
+
+        // ==================== МЕДИА СЛАЙДЕР ====================
+        function createMediaSlider(mediaArray, section, postIndex) {
+            const sliderContainer = document.createElement('div');
+            sliderContainer.className = 'post-images-slider';
+            const mediaContainer = document.createElement('div');
+            mediaContainer.className = 'slider-img-container';
+            mediaContainer.id = section + '-slider-' + postIndex;
+            renderMediaItem(mediaContainer, mediaArray[0], 0);
+            sliderContainer.appendChild(mediaContainer);
+            if (mediaArray.length > 1) {
+                const nav = document.createElement('div');
+                nav.className = 'slider-nav';
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'post-image-slider-btn';
+                prevBtn.innerHTML = '&#9664;';
+                prevBtn.disabled = true;
+                const counter = document.createElement('span');
+                counter.className = 'slider-counter';
+                counter.textContent = `1 / ${mediaArray.length}`;
+                counter.id = section + '-counter-' + postIndex;
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'post-image-slider-btn';
+                nextBtn.innerHTML = '&#9654;';
+                let currentMediaIndex = 0;
+                prevBtn.onclick = () => { 
+                    if (currentMediaIndex > 0) { 
+                        currentMediaIndex--; 
+                        updateSliderMedia(section, postIndex, currentMediaIndex, mediaArray, prevBtn, nextBtn, counter); 
+                    } 
+                };
+                nextBtn.onclick = () => { 
+                    if (currentMediaIndex < mediaArray.length - 1) { 
+                        currentMediaIndex++; 
+                        updateSliderMedia(section, postIndex, currentMediaIndex, mediaArray, prevBtn, nextBtn, counter); 
+                    } 
+                };
+                nav.appendChild(prevBtn); nav.appendChild(counter); nav.appendChild(nextBtn);
+                sliderContainer.appendChild(nav);
+            }
+            return sliderContainer;
+        }
+
+        function renderMediaItem(container, mediaData, index) {
+            container.innerHTML = '';
+            if (isVideoData(mediaData)) {
+                const video = document.createElement('video');
+                video.controls = true; 
+                video.src = mediaData; 
+                video.style.width = '100%'; 
+                video.style.maxHeight = '55vh'; 
+                video.style.objectFit = 'contain'; 
+                video.style.borderRadius = '15px'; 
+                video.dataset.mediaIndex = index; 
+                video.muted = true;
+                setTimeout(() => video.play().catch(() => {}), 500);
+                container.appendChild(video);
+            } else {
+                const img = document.createElement('img');
+                img.src = mediaData; 
+                img.alt = 'Медиа'; 
+                img.dataset.mediaIndex = index; 
+                img.onclick = () => enlargeImage(img.src);
+                container.appendChild(img);
+            }
+        }
+
+        function updateSliderMedia(section, postIndex, mediaIndex, mediaArray, prevBtn, nextBtn, counter) {
+            const container = document.getElementById(section + '-slider-' + postIndex);
+            if (!container) return;
+            renderMediaItem(container, mediaArray[mediaIndex], mediaIndex);
+            counter.textContent = `${mediaIndex + 1} / ${mediaArray.length}`;
+            prevBtn.disabled = mediaIndex === 0;
+            nextBtn.disabled = mediaIndex === mediaArray.length - 1;
+        }
+
+        // ==================== НОВОСТИ ====================
+        function renderAllNewsPosts() {
+            const container = document.getElementById('newsPostsContainer');
+            container.innerHTML = '';
+            newsPosts.forEach((post, index) => {
+                if (editingNewsPostId === index) {
+                    const placeholder = document.createElement('div'); 
+                    placeholder.className = 'post-card'; 
+                    placeholder.dataset.postId = index; 
+                    placeholder.id = 'editing-news-' + index; 
+                    container.appendChild(placeholder);
+                } else { 
+                    container.appendChild(createNewsPostElement(post, index)); 
+                }
+            });
+            if (isAdmin) document.getElementById('newsAddPostBtn').style.display = editingNewsPostId === null ? 'block' : 'none';
+        }
+
+        function createNewsPostElement(post, index) {
+            const card = document.createElement('div'); 
+            card.className = 'post-card'; 
+            card.dataset.postId = index;
+            const titleEl = document.createElement('div'); 
+            titleEl.className = 'post-title'; 
+            titleEl.textContent = post.title; 
+            card.appendChild(titleEl);
+            const contentDiv = document.createElement('div'); 
+            contentDiv.className = 'post-content';
+            if (post.media && post.media.length > 0) contentDiv.appendChild(createMediaSlider(post.media, 'news', index));
+            if (post.text) { 
+                const textEl = document.createElement('div'); 
+                textEl.className = 'post-text'; 
+                textEl.textContent = post.text; 
+                contentDiv.appendChild(textEl); 
+            }
+            card.appendChild(contentDiv);
+            if (isAdmin) {
+                const actions = document.createElement('div'); 
+                actions.className = 'post-actions';
+                const editBtn = document.createElement('button'); 
+                editBtn.className = 'post-edit-btn'; 
+                editBtn.textContent = 'Изменить'; 
+                editBtn.onclick = () => startEditNewsPost(index);
+                const delBtn = document.createElement('button'); 
+                delBtn.className = 'post-delete-btn'; 
+                delBtn.textContent = 'Удалить'; 
+                delBtn.onclick = () => deleteNewsPost(index);
+                actions.appendChild(editBtn); 
+                actions.appendChild(delBtn); 
+                card.appendChild(actions);
+            }
+            return card;
+        }
+
+        function deleteNewsPost(index) { 
+            if (!confirm('Удалить этот раздел?')) return; 
+            newsPosts.splice(index, 1); 
+            saveNewsPosts(); 
+            if (editingNewsPostId === index) cancelNewsPostForm(); 
+            renderAllNewsPosts(); 
+        }
+
+        function startAddNewsPost() { 
+            cancelNewsPostForm(); 
+            editingNewsPostId = null; 
+            currentNewsFormImages = []; 
+            document.getElementById('newsAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('newsAddPostFormContainer').appendChild(buildNewsPostForm(null)); 
+            document.getElementById('newsAddPostBtn').style.display = 'none'; 
+        }
+
+        function startEditNewsPost(index) { 
+            cancelNewsPostForm(); 
+            editingNewsPostId = index; 
+            const post = newsPosts[index]; 
+            currentNewsFormImages = [...(post.media || [])]; 
+            const card = document.querySelector('#newsPostsContainer .post-card[data-post-id="' + index + '"]'); 
+            if (card) { 
+                card.innerHTML = ''; 
+                card.appendChild(buildNewsPostForm(post)); 
+            } 
+            document.getElementById('newsAddPostBtn').style.display = 'none'; 
+        }
+
+        function buildNewsPostForm(postData) {
+            const form = document.createElement('div'); 
+            form.className = 'post-form';
+            const titleInput = document.createElement('input'); 
+            titleInput.type = 'text'; 
+            titleInput.className = 'post-title-input'; 
+            titleInput.placeholder = 'Введите заголовок'; 
+            titleInput.value = postData ? postData.title : ''; 
+            form.appendChild(titleInput);
+            const addMediaBtn = document.createElement('button'); 
+            addMediaBtn.type = 'button'; 
+            addMediaBtn.className = 'admin-action-btn visible'; 
+            addMediaBtn.style.display = 'inline-block'; 
+            addMediaBtn.textContent = 'Добавить фото/видео'; 
+            addMediaBtn.onclick = () => document.getElementById('newsPostImageInput').click(); 
+            form.appendChild(addMediaBtn);
+            const previewDiv = document.createElement('div'); 
+            previewDiv.className = 'images-preview'; 
+            form.appendChild(previewDiv);
+            
+            function refreshPreview() { 
+                previewDiv.innerHTML = ''; 
+                currentNewsFormImages.forEach((mediaData, idx) => { 
+                    const thumb = document.createElement('div'); 
+                    thumb.className = 'image-thumb'; 
+                    if (isVideoData(mediaData)) { 
+                        const video = document.createElement('video'); 
+                        video.src = mediaData; 
+                        video.muted = true; 
+                        thumb.appendChild(video); 
+                    } else { 
+                        const img = document.createElement('img'); 
+                        img.src = mediaData; 
+                        thumb.appendChild(img); 
+                    } 
+                    const removeBtn = document.createElement('button'); 
+                    removeBtn.className = 'remove-img-btn'; 
+                    removeBtn.innerHTML = '&#10005;'; 
+                    removeBtn.title = 'Удалить'; 
+                    removeBtn.onclick = function(e) { 
+                        e.stopPropagation(); 
+                        currentNewsFormImages.splice(idx, 1); 
+                        refreshPreview(); 
+                    }; 
+                    thumb.appendChild(removeBtn); 
+                    previewDiv.appendChild(thumb); 
+                }); 
+            }
+            refreshPreview();
+            
+            const textarea = document.createElement('textarea'); 
+            textarea.className = 'post-textarea'; 
+            textarea.placeholder = 'Введите текст новости...'; 
+            textarea.value = postData ? postData.text : ''; 
+            form.appendChild(textarea);
+            const actionsDiv = document.createElement('div'); 
+            actionsDiv.className = 'form-actions';
+            const saveBtn = document.createElement('button'); 
+            saveBtn.className = 'save-btn'; 
+            saveBtn.textContent = 'Сохранить'; 
+            saveBtn.onclick = () => saveNewsPostFromForm(titleInput.value, textarea.value);
+            const cancelBtn = document.createElement('button'); 
+            cancelBtn.className = 'cancel-btn'; 
+            cancelBtn.textContent = 'Отменить'; 
+            cancelBtn.onclick = () => cancelNewsPostForm();
+            actionsDiv.appendChild(saveBtn); 
+            actionsDiv.appendChild(cancelBtn); 
+            form.appendChild(actionsDiv);
+            return form;
+        }
+
+        function saveNewsPostFromForm(title, text) { 
+            if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
+            const postData = { title: title.trim(), text: text, media: [...currentNewsFormImages] }; 
+            if (editingNewsPostId !== null) newsPosts[editingNewsPostId] = postData; 
+            else newsPosts.push(postData); 
+            saveNewsPosts(); 
+            cancelNewsPostForm(); 
+            renderAllNewsPosts(); 
+            updateAllAdminButtons(); 
+        }
+
+        function cancelNewsPostForm() { 
+            var wasEditing = editingNewsPostId !== null; 
+            editingNewsPostId = null; 
+            currentNewsFormImages = []; 
+            document.getElementById('newsAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('newsAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
+            if (wasEditing) renderAllNewsPosts(); 
+        }
+
+        function handleNewsPostImagesSelected(event) {
+            const files = event.target.files; 
+            if (!files.length) return;
+            const promises = []; 
+            for (let i = 0; i < files.length; i++) { 
+                promises.push(new Promise(resolve => { 
+                    const reader = new FileReader(); 
+                    reader.onload = e => resolve(e.target.result); 
+                    reader.readAsDataURL(files[i]); 
+                })); 
+            }
+            Promise.all(promises).then(results => {
+                currentNewsFormImages.push(...results);
+                let form = editingNewsPostId !== null ? 
+                    document.querySelector('#newsPostsContainer .post-card[data-post-id="' + editingNewsPostId + '"] .post-form') : 
+                    document.querySelector('#newsAddPostFormContainer .post-form');
+                if (form) { 
+                    const previewDiv = form.querySelector('.images-preview'); 
+                    if (previewDiv) { 
+                        previewDiv.innerHTML = ''; 
+                        currentNewsFormImages.forEach((mediaData, idx) => { 
+                            const thumb = document.createElement('div'); 
+                            thumb.className = 'image-thumb'; 
+                            if (isVideoData(mediaData)) { 
+                                const video = document.createElement('video'); 
+                                video.src = mediaData; 
+                                video.muted = true; 
+                                thumb.appendChild(video); 
+                            } else { 
+                                const img = document.createElement('img'); 
+                                img.src = mediaData; 
+                                thumb.appendChild(img); 
+                            } 
+                            const removeBtn = document.createElement('button'); 
+                            removeBtn.className = 'remove-img-btn'; 
+                            removeBtn.innerHTML = '&#10005;'; 
+                            removeBtn.onclick = function(e) { 
+                                e.stopPropagation(); 
+                                currentNewsFormImages.splice(idx, 1); 
+                                handleNewsPostImagesSelected({ target: { files: [] } }); 
+                            }; 
+                            thumb.appendChild(removeBtn); 
+                            previewDiv.appendChild(thumb); 
+                        }); 
+                    } 
+                }
+            });
+            event.target.value = '';
+        }
+
+        // ==================== АКЦИИ В МАГАЗИНЕ ====================
+        function renderAllShopPosts() { 
+            shopPosts = cleanExpiredPosts(shopPosts); 
+            saveShopPosts(); 
+            const container = document.getElementById('postsContainer'); 
+            container.innerHTML = ''; 
+            shopPosts.forEach((post, index) => { 
+                if (editingPostId === index) { 
+                    const placeholder = document.createElement('div'); 
+                    placeholder.className = 'post-card'; 
+                    placeholder.dataset.postId = index; 
+                    placeholder.id = 'editing-shop-' + index; 
+                    container.appendChild(placeholder); 
+                } else { 
+                    container.appendChild(createShopPostElement(post, index)); 
+                } 
+            }); 
+            if (isAdmin) document.getElementById('addPostBtn').style.display = editingPostId === null ? 'block' : 'none';
+        }
+
+        function createShopPostElement(post, index) {
+            const card = document.createElement('div'); 
+            card.className = 'post-card'; 
+            card.dataset.postId = index;
+            if (post.timerEnabled) { 
+                const expiry = post.expiresAt || calculateExpiry(post); 
+                if (expiry) { 
+                    const remaining = getTimerRemaining(expiry); 
+                    if (remaining) { 
+                        const timerBadge = document.createElement('div'); 
+                        timerBadge.className = 'timer-badge'; 
+                        timerBadge.textContent = remaining; 
+                        timerBadge.dataset.expires = expiry; 
+                        card.appendChild(timerBadge); 
+                    } 
+                } 
+            }
+            const titleEl = document.createElement('div'); 
+            titleEl.className = 'post-title'; 
+            titleEl.textContent = post.title; 
+            card.appendChild(titleEl);
+            const contentDiv = document.createElement('div'); 
+            contentDiv.className = 'post-content';
+            if (post.images && post.images.length > 0) {
+                const sliderContainer = document.createElement('div'); 
+                sliderContainer.className = 'post-images-slider';
+                const imgContainer = document.createElement('div'); 
+                imgContainer.className = 'slider-img-container';
+                const img = document.createElement('img'); 
+                img.src = post.images[0]; 
+                img.alt = 'Акция'; 
+                img.dataset.imgIndex = '0'; 
+                img.onclick = () => enlargeImage(img.src); 
+                imgContainer.appendChild(img);
+                sliderContainer.appendChild(imgContainer);
+                if (post.images.length > 1) {
+                    const nav = document.createElement('div'); 
+                    nav.className = 'slider-nav';
+                    const prevBtn = document.createElement('button'); 
+                    prevBtn.className = 'post-image-slider-btn'; 
+                    prevBtn.innerHTML = '&#9664;'; 
+                    prevBtn.disabled = true;
+                    const counter = document.createElement('span'); 
+                    counter.className = 'slider-counter'; 
+                    counter.textContent = '1 / ' + post.images.length;
+                    const nextBtn = document.createElement('button'); 
+                    nextBtn.className = 'post-image-slider-btn'; 
+                    nextBtn.innerHTML = '&#9654;';
+                    prevBtn.onclick = () => { 
+                        let cur = parseInt(img.dataset.imgIndex); 
+                        if (cur > 0) { 
+                            cur--; 
+                            img.src = post.images[cur]; 
+                            img.dataset.imgIndex = cur; 
+                            counter.textContent = (cur+1)+' / '+post.images.length; 
+                            prevBtn.disabled=cur===0; 
+                            nextBtn.disabled=cur===post.images.length-1; 
+                        } 
+                    };
+                    nextBtn.onclick = () => { 
+                        let cur = parseInt(img.dataset.imgIndex); 
+                        if (cur < post.images.length-1) { 
+                            cur++; 
+                            img.src = post.images[cur]; 
+                            img.dataset.imgIndex = cur; 
+                            counter.textContent = (cur+1)+' / '+post.images.length; 
+                            prevBtn.disabled=cur===0; 
+                            nextBtn.disabled=cur===post.images.length-1; 
+                        } 
+                    };
+                    nav.appendChild(prevBtn); 
+                    nav.appendChild(counter); 
+                    nav.appendChild(nextBtn); 
+                    sliderContainer.appendChild(nav);
+                }
+                contentDiv.appendChild(sliderContainer);
+            }
+            if (post.text) { 
+                const textEl = document.createElement('div'); 
+                textEl.className = 'post-text'; 
+                textEl.textContent = post.text; 
+                contentDiv.appendChild(textEl); 
+            }
+            card.appendChild(contentDiv);
+            if (isAdmin) { 
+                const actions = document.createElement('div'); 
+                actions.className = 'post-actions'; 
+                const editBtn = document.createElement('button'); 
+                editBtn.className = 'post-edit-btn'; 
+                editBtn.textContent = 'Изменить'; 
+                editBtn.onclick = () => startEditShopPost(index); 
+                const delBtn = document.createElement('button'); 
+                delBtn.className = 'post-delete-btn'; 
+                delBtn.textContent = 'Удалить'; 
+                delBtn.onclick = () => deleteShopPost(index); 
+                actions.appendChild(editBtn); 
+                actions.appendChild(delBtn); 
+                card.appendChild(actions); 
+            }
+            return card;
+        }
+
+        function deleteShopPost(index) { 
+            if (!confirm('Удалить этот раздел?')) return; 
+            shopPosts.splice(index, 1); 
+            saveShopPosts(); 
+            if (editingPostId === index) cancelShopPostForm(); 
+            renderAllShopPosts(); 
+        }
+
+        function startAddPost() { 
+            cancelShopPostForm(); 
+            editingPostId = null; 
+            currentFormImages = []; 
+            document.getElementById('addPostFormContainer').innerHTML = ''; 
+            document.getElementById('addPostFormContainer').appendChild(buildShopPostForm(null)); 
+            document.getElementById('addPostBtn').style.display = 'none'; 
+        }
+
+        function startEditShopPost(index) { 
+            cancelShopPostForm(); 
+            editingPostId = index; 
+            const post = shopPosts[index]; 
+            currentFormImages = [...post.images]; 
+            const card = document.querySelector('#postsContainer .post-card[data-post-id="' + index + '"]'); 
+            if (card) { 
+                card.innerHTML = ''; 
+                card.appendChild(buildShopPostForm(post)); 
+            } 
+        }
+
+        function buildShopPostForm(postData) {
+            const form = document.createElement('div'); 
+            form.className = 'post-form';
+            const titleInput = document.createElement('input'); 
+            titleInput.type = 'text'; 
+            titleInput.className = 'post-title-input'; 
+            titleInput.placeholder = 'Введите заголовок'; 
+            titleInput.value = postData ? postData.title : ''; 
+            form.appendChild(titleInput);
+            const addImgBtn = document.createElement('button'); 
+            addImgBtn.type = 'button'; 
+            addImgBtn.className = 'admin-action-btn visible'; 
+            addImgBtn.style.display = 'inline-block'; 
+            addImgBtn.textContent = 'Добавить изображения'; 
+            addImgBtn.onclick = () => document.getElementById('postImageInput').click(); 
+            form.appendChild(addImgBtn);
+            const previewDiv = document.createElement('div'); 
+            previewDiv.className = 'images-preview'; 
+            form.appendChild(previewDiv);
+            
+            function refreshPreview() { 
+                previewDiv.innerHTML = ''; 
+                currentFormImages.forEach((imgData, idx) => { 
+                    const thumb = document.createElement('div'); 
+                    thumb.className = 'image-thumb'; 
+                    const img = document.createElement('img'); 
+                    img.src = imgData; 
+                    thumb.appendChild(img); 
+                    const removeBtn = document.createElement('button'); 
+                    removeBtn.className = 'remove-img-btn'; 
+                    removeBtn.innerHTML = '&#10005;'; 
+                    removeBtn.title = 'Удалить'; 
+                    removeBtn.onclick = function(e) { 
+                        e.stopPropagation(); 
+                        currentFormImages.splice(idx, 1); 
+                        refreshPreview(); 
+                    }; 
+                    thumb.appendChild(removeBtn); 
+                    previewDiv.appendChild(thumb); 
+                }); 
+            }
+            refreshPreview();
+            
+            const textarea = document.createElement('textarea'); 
+            textarea.className = 'post-textarea'; 
+            textarea.placeholder = 'Введите текст акции...'; 
+            textarea.value = postData ? postData.text : ''; 
+            form.appendChild(textarea);
+            const timerContainer = createTimerSettingsHTML('shop', postData); 
+            form.appendChild(timerContainer);
+            const actionsDiv = document.createElement('div'); 
+            actionsDiv.className = 'form-actions';
+            const saveBtn = document.createElement('button'); 
+            saveBtn.className = 'save-btn'; 
+            saveBtn.textContent = 'Сохранить'; 
+            saveBtn.onclick = () => saveShopPostFromForm(titleInput.value, textarea.value);
+            const cancelBtn = document.createElement('button'); 
+            cancelBtn.className = 'cancel-btn'; 
+            cancelBtn.textContent = 'Отменить'; 
+            cancelBtn.onclick = () => cancelShopPostForm();
+            actionsDiv.appendChild(saveBtn); 
+            actionsDiv.appendChild(cancelBtn); 
+            form.appendChild(actionsDiv);
+            return form;
+        }
+
+        function saveShopPostFromForm(title, text) { 
+            if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
+            const timerData = getTimerDataFromForm('shop'); 
+            const postData = { 
+                title: title.trim(), text: text, images: [...currentFormImages], 
+                timerEnabled: timerData.timerEnabled, timerType: timerData.timerType, 
+                timerDays: timerData.timerDays || 0, timerHours: timerData.timerHours || 0, 
+                timerMinutes: timerData.timerMinutes || 0, deadlineHour: timerData.deadlineHour || 0, 
+                deadlineDate: timerData.deadlineDate || '', createdAt: timerData.createdAt || Date.now(), 
+                expiresAt: timerData.expiresAt || null 
+            }; 
+            if (editingPostId !== null) shopPosts[editingPostId] = postData; 
+            else shopPosts.push(postData); 
+            saveShopPosts(); 
+            cancelShopPostForm(); 
+            renderAllShopPosts(); 
+            updateAllAdminButtons(); 
+        }
+
+        function cancelShopPostForm() { 
+            var wasEditing = editingPostId !== null; 
+            editingPostId = null; 
+            currentFormImages = []; 
+            document.getElementById('addPostFormContainer').innerHTML = ''; 
+            document.getElementById('addPostBtn').style.display = isAdmin ? 'block' : 'none'; 
+            if (wasEditing) renderAllShopPosts(); 
+        }
+
+        function handlePostImagesSelected(event) { 
+            const files = event.target.files; 
+            if (!files.length) return; 
+            const promises = []; 
+            for (let i = 0; i < files.length; i++) { 
+                promises.push(new Promise(resolve => { 
+                    const reader = new FileReader(); 
+                    reader.onload = e => resolve(e.target.result); 
+                    reader.readAsDataURL(files[i]); 
+                })); 
+            } 
+            Promise.all(promises).then(results => { 
+                currentFormImages.push(...results); 
+                let form = editingPostId !== null ? 
+                    document.querySelector('#postsContainer .post-card[data-post-id="' + editingPostId + '"] .post-form') : 
+                    document.querySelector('#addPostFormContainer .post-form'); 
+                if (form) { 
+                    const previewDiv = form.querySelector('.images-preview'); 
+                    if (previewDiv) { 
+                        previewDiv.innerHTML = ''; 
+                        currentFormImages.forEach((imgData, idx) => { 
+                            const thumb = document.createElement('div'); 
+                            thumb.className = 'image-thumb'; 
+                            const img = document.createElement('img'); 
+                            img.src = imgData; 
+                            thumb.appendChild(img); 
+                            const removeBtn = document.createElement('button'); 
+                            removeBtn.className = 'remove-img-btn'; 
+                            removeBtn.innerHTML = '&#10005;'; 
+                            removeBtn.onclick = function(e) { 
+                                e.stopPropagation(); 
+                                currentFormImages.splice(idx, 1); 
+                                handlePostImagesSelected({ target: { files: [] } }); 
+                            }; 
+                            thumb.appendChild(removeBtn); 
+                            previewDiv.appendChild(thumb); 
+                        }); 
+                    } 
+                } 
+            }); 
+            event.target.value = ''; 
+        }
+
+        // ==================== БАЛАНС ====================
+        function renderAllBalancePosts() { 
+            const container = document.getElementById('balancePostsContainer'); 
+            container.innerHTML = ''; 
+            balancePosts.forEach((post, index) => { 
+                if (editingBalancePostId === index) { 
+                    const placeholder = document.createElement('div'); 
+                    placeholder.className = 'post-card'; 
+                    placeholder.dataset.postId = index; 
+                    placeholder.id = 'editing-balance-' + index; 
+                    container.appendChild(placeholder); 
+                } else { 
+                    container.appendChild(createBalancePostElement(post, index)); 
+                } 
+            }); 
+            if (isAdmin) document.getElementById('balanceAddPostBtn').style.display = editingBalancePostId === null ? 'block' : 'none';
+        }
+
+        function createBalancePostElement(post, index) { 
+            const card = document.createElement('div'); 
+            card.className = 'post-card'; 
+            card.dataset.postId = index; 
+            const titleEl = document.createElement('div'); 
+            titleEl.className = 'post-title'; 
+            titleEl.textContent = post.title; 
+            card.appendChild(titleEl); 
+            const contentDiv = document.createElement('div'); 
+            contentDiv.className = 'post-content'; 
+            if (post.images && post.images.length > 0) { 
+                const sliderContainer = document.createElement('div'); 
+                sliderContainer.className = 'post-images-slider'; 
+                const imgContainer = document.createElement('div'); 
+                imgContainer.className = 'slider-img-container'; 
+                const img = document.createElement('img'); 
+                img.src = post.images[0]; 
+                img.alt = 'Баланс'; 
+                img.dataset.imgIndex = '0'; 
+                img.onclick = () => enlargeImage(img.src); 
+                imgContainer.appendChild(img); 
+                sliderContainer.appendChild(imgContainer); 
+                if (post.images.length > 1) { 
+                    const nav = document.createElement('div'); 
+                    nav.className = 'slider-nav'; 
+                    const prevBtn = document.createElement('button'); 
+                    prevBtn.className = 'post-image-slider-btn'; 
+                    prevBtn.innerHTML = '&#9664;'; 
+                    prevBtn.disabled = true; 
+                    const counter = document.createElement('span'); 
+                    counter.className = 'slider-counter'; 
+                    counter.textContent = '1 / ' + post.images.length; 
+                    const nextBtn = document.createElement('button'); 
+                    nextBtn.className = 'post-image-slider-btn'; 
+                    nextBtn.innerHTML = '&#9654;'; 
+                    prevBtn.onclick = () => { 
+                        let cur = parseInt(img.dataset.imgIndex); 
+                        if (cur > 0) { cur--; img.src = post.images[cur]; img.dataset.imgIndex = cur; counter.textContent = (cur+1)+' / '+post.images.length; prevBtn.disabled=cur===0; nextBtn.disabled=cur===post.images.length-1; } 
+                    }; 
+                    nextBtn.onclick = () => { 
+                        let cur = parseInt(img.dataset.imgIndex); 
+                        if (cur < post.images.length-1) { cur++; img.src = post.images[cur]; img.dataset.imgIndex = cur; counter.textContent = (cur+1)+' / '+post.images.length; prevBtn.disabled=cur===0; nextBtn.disabled=cur===post.images.length-1; } 
+                    }; 
+                    nav.appendChild(prevBtn); nav.appendChild(counter); nav.appendChild(nextBtn); 
+                    sliderContainer.appendChild(nav); 
+                } 
+                contentDiv.appendChild(sliderContainer); 
+            } 
+            if (post.text) { const textEl = document.createElement('div'); textEl.className = 'post-text'; textEl.textContent = post.text; contentDiv.appendChild(textEl); } 
+            card.appendChild(contentDiv); 
+            if (isAdmin) { 
+                const actions = document.createElement('div'); actions.className = 'post-actions'; 
+                const editBtn = document.createElement('button'); editBtn.className = 'post-edit-btn'; editBtn.textContent = 'Изменить'; editBtn.onclick = () => startEditBalancePost(index); 
+                const delBtn = document.createElement('button'); delBtn.className = 'post-delete-btn'; delBtn.textContent = 'Удалить'; delBtn.onclick = () => deleteBalancePost(index); 
+                actions.appendChild(editBtn); actions.appendChild(delBtn); card.appendChild(actions); 
+            } 
+            return card; 
+        }
+
+        function deleteBalancePost(index) { 
+            if (!confirm('Удалить этот раздел?')) return; 
+            balancePosts.splice(index, 1); 
+            saveBalancePosts(); 
+            if (editingBalancePostId === index) cancelBalancePostForm(); 
+            renderAllBalancePosts(); 
+        }
+
+        function startAddBalancePost() { 
+            cancelBalancePostForm(); 
+            editingBalancePostId = null; 
+            currentBalanceFormImages = []; 
+            document.getElementById('balanceAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('balanceAddPostFormContainer').appendChild(buildBalancePostForm(null)); 
+            document.getElementById('balanceAddPostBtn').style.display = 'none'; 
+        }
+
+        function startEditBalancePost(index) { 
+            cancelBalancePostForm(); 
+            editingBalancePostId = index; 
+            const post = balancePosts[index]; 
+            currentBalanceFormImages = [...post.images]; 
+            const card = document.querySelector('#balancePostsContainer .post-card[data-post-id="' + index + '"]'); 
+            if (card) { card.innerHTML = ''; card.appendChild(buildBalancePostForm(post)); } 
+        }
+
+        function buildBalancePostForm(postData) { 
+            const form = document.createElement('div'); form.className = 'post-form'; 
+            const titleInput = document.createElement('input'); titleInput.type = 'text'; titleInput.className = 'post-title-input'; titleInput.placeholder = 'Введите заголовок'; titleInput.value = postData ? postData.title : ''; form.appendChild(titleInput); 
+            const addImgBtn = document.createElement('button'); addImgBtn.type = 'button'; addImgBtn.className = 'admin-action-btn visible'; addImgBtn.style.display = 'inline-block'; addImgBtn.textContent = 'Добавить изображения'; addImgBtn.onclick = () => document.getElementById('balancePostImageInput').click(); form.appendChild(addImgBtn); 
+            const previewDiv = document.createElement('div'); previewDiv.className = 'images-preview'; form.appendChild(previewDiv); 
+            function refreshPreview() { 
+                previewDiv.innerHTML = ''; 
+                currentBalanceFormImages.forEach((imgData, idx) => { 
+                    const thumb = document.createElement('div'); thumb.className = 'image-thumb'; 
+                    const img = document.createElement('img'); img.src = imgData; thumb.appendChild(img); 
+                    const removeBtn = document.createElement('button'); removeBtn.className = 'remove-img-btn'; removeBtn.innerHTML = '&#10005;'; removeBtn.title = 'Удалить'; 
+                    removeBtn.onclick = function(e) { e.stopPropagation(); currentBalanceFormImages.splice(idx, 1); refreshPreview(); }; 
+                    thumb.appendChild(removeBtn); previewDiv.appendChild(thumb); 
+                }); 
+            } 
+            refreshPreview(); 
+            const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст изменений...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea); 
+            const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
+            const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; saveBtn.onclick = () => saveBalancePostFromForm(titleInput.value, textarea.value); 
+            const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => cancelBalancePostForm(); 
+            actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); form.appendChild(actionsDiv); 
+            return form; 
+        }
+
+        function saveBalancePostFromForm(title, text) { 
+            if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
+            const postData = { title: title.trim(), text: text, images: [...currentBalanceFormImages] }; 
+            if (editingBalancePostId !== null) balancePosts[editingBalancePostId] = postData; 
+            else balancePosts.push(postData); 
+            saveBalancePosts(); cancelBalancePostForm(); renderAllBalancePosts(); updateAllAdminButtons(); 
+        }
+
+        function cancelBalancePostForm() { 
+            var wasEditing = editingBalancePostId !== null; 
+            editingBalancePostId = null; currentBalanceFormImages = []; 
+            document.getElementById('balanceAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('balanceAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
+            if (wasEditing) renderAllBalancePosts(); 
+        }
+
+        function handleBalancePostImagesSelected(event) { 
+            const files = event.target.files; if (!files.length) return; 
+            const promises = []; 
+            for (let i = 0; i < files.length; i++) { promises.push(new Promise(resolve => { const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.readAsDataURL(files[i]); })); } 
+            Promise.all(promises).then(results => { 
+                currentBalanceFormImages.push(...results); 
+                let form = editingBalancePostId !== null ? document.querySelector('#balancePostsContainer .post-card[data-post-id="' + editingBalancePostId + '"] .post-form') : document.querySelector('#balanceAddPostFormContainer .post-form'); 
+                if (form) { 
+                    const previewDiv = form.querySelector('.images-preview'); 
+                    if (previewDiv) { 
+                        previewDiv.innerHTML = ''; 
+                        currentBalanceFormImages.forEach((imgData, idx) => { 
+                            const thumb = document.createElement('div'); thumb.className = 'image-thumb'; 
+                            const img = document.createElement('img'); img.src = imgData; thumb.appendChild(img); 
+                            const removeBtn = document.createElement('button'); removeBtn.className = 'remove-img-btn'; removeBtn.innerHTML = '&#10005;'; 
+                            removeBtn.onclick = function(e) { e.stopPropagation(); currentBalanceFormImages.splice(idx, 1); handleBalancePostImagesSelected({ target: { files: [] } }); }; 
+                            thumb.appendChild(removeBtn); previewDiv.appendChild(thumb); 
+                        }); 
+                    } 
+                } 
+            }); 
+            event.target.value = ''; 
+        }
+
+        // ==================== БАГИ И ИЗМЕНЕНИЯ ====================
+        function renderAllBugsPosts() { 
+            const container = document.getElementById('bugsPostsContainer'); 
+            container.innerHTML = ''; 
+            bugsPosts.forEach((post, index) => { 
+                if (editingBugsPostId === index) { 
+                    const placeholder = document.createElement('div'); placeholder.className = 'post-card'; placeholder.dataset.postId = index; placeholder.id = 'editing-bugs-' + index; container.appendChild(placeholder); 
+                } else { container.appendChild(createBugsPostElement(post, index)); } 
+            }); 
+            if (isAdmin) document.getElementById('bugsAddPostBtn').style.display = editingBugsPostId === null ? 'block' : 'none';
+        }
+
+        function createBugsPostElement(post, index) { 
+            const card = document.createElement('div'); card.className = 'post-card'; card.dataset.postId = index; 
+            const titleEl = document.createElement('div'); titleEl.className = 'post-title'; titleEl.textContent = post.title; card.appendChild(titleEl); 
+            const contentDiv = document.createElement('div'); contentDiv.className = 'post-content'; 
+            if (post.media && post.media.length > 0) contentDiv.appendChild(createMediaSlider(post.media, 'bugs', index)); 
+            if (post.text) { const textEl = document.createElement('div'); textEl.className = 'post-text'; textEl.textContent = post.text; contentDiv.appendChild(textEl); } 
+            card.appendChild(contentDiv); 
+            if (isAdmin) { 
+                const actions = document.createElement('div'); actions.className = 'post-actions'; 
+                const editBtn = document.createElement('button'); editBtn.className = 'post-edit-btn'; editBtn.textContent = 'Изменить'; editBtn.onclick = () => startEditBugsPost(index); 
+                const delBtn = document.createElement('button'); delBtn.className = 'post-delete-btn'; delBtn.textContent = 'Удалить'; delBtn.onclick = () => deleteBugsPost(index); 
+                actions.appendChild(editBtn); actions.appendChild(delBtn); card.appendChild(actions); 
+            } 
+            return card; 
+        }
+
+        function deleteBugsPost(index) { 
+            if (!confirm('Удалить этот раздел?')) return; 
+            bugsPosts.splice(index, 1); saveBugsPosts(); 
+            if (editingBugsPostId === index) cancelBugsPostForm(); 
+            renderAllBugsPosts(); 
+        }
+
+        function startAddBugsPost() { 
+            cancelBugsPostForm(); editingBugsPostId = null; currentBugsFormImages = []; 
+            document.getElementById('bugsAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('bugsAddPostFormContainer').appendChild(buildBugsPostForm(null)); 
+            document.getElementById('bugsAddPostBtn').style.display = 'none'; 
+        }
+
+        function startEditBugsPost(index) { 
+            cancelBugsPostForm(); editingBugsPostId = index; 
+            const post = bugsPosts[index]; currentBugsFormImages = [...(post.media || [])]; 
+            const card = document.querySelector('#bugsPostsContainer .post-card[data-post-id="' + index + '"]'); 
+            if (card) { card.innerHTML = ''; card.appendChild(buildBugsPostForm(post)); } 
+            document.getElementById('bugsAddPostBtn').style.display = 'none'; 
+        }
+
+        function buildBugsPostForm(postData) { 
+            const form = document.createElement('div'); form.className = 'post-form'; 
+            const titleInput = document.createElement('input'); titleInput.type = 'text'; titleInput.className = 'post-title-input'; titleInput.placeholder = 'Введите заголовок'; titleInput.value = postData ? postData.title : ''; form.appendChild(titleInput); 
+            const addMediaBtn = document.createElement('button'); addMediaBtn.type = 'button'; addMediaBtn.className = 'admin-action-btn visible'; addMediaBtn.style.display = 'inline-block'; addMediaBtn.textContent = 'Добавить фото/видео'; addMediaBtn.onclick = () => document.getElementById('bugsPostImageInput').click(); form.appendChild(addMediaBtn); 
+            const previewDiv = document.createElement('div'); previewDiv.className = 'images-preview'; form.appendChild(previewDiv); 
+            function refreshPreview() { 
+                previewDiv.innerHTML = ''; 
+                currentBugsFormImages.forEach((mediaData, idx) => { 
+                    const thumb = document.createElement('div'); thumb.className = 'image-thumb'; 
+                    if (isVideoData(mediaData)) { const video = document.createElement('video'); video.src = mediaData; video.muted = true; thumb.appendChild(video); } 
+                    else { const img = document.createElement('img'); img.src = mediaData; thumb.appendChild(img); } 
+                    const removeBtn = document.createElement('button'); removeBtn.className = 'remove-img-btn'; removeBtn.innerHTML = '&#10005;'; removeBtn.title = 'Удалить'; 
+                    removeBtn.onclick = function(e) { e.stopPropagation(); currentBugsFormImages.splice(idx, 1); refreshPreview(); }; 
+                    thumb.appendChild(removeBtn); previewDiv.appendChild(thumb); 
+                }); 
+            } 
+            refreshPreview(); 
+            const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea); 
+            const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
+            const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; saveBtn.onclick = () => saveBugsPostFromForm(titleInput.value, textarea.value); 
+            const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => cancelBugsPostForm(); 
+            actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); form.appendChild(actionsDiv); 
+            return form; 
+        }
+
+        function saveBugsPostFromForm(title, text) { 
+            if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
+            const postData = { title: title.trim(), text: text, media: [...currentBugsFormImages] }; 
+            if (editingBugsPostId !== null) bugsPosts[editingBugsPostId] = postData; 
+            else bugsPosts.push(postData); 
+            saveBugsPosts(); cancelBugsPostForm(); renderAllBugsPosts(); updateAllAdminButtons(); 
+        }
+
+        function cancelBugsPostForm() { 
+            var wasEditing = editingBugsPostId !== null; 
+            editingBugsPostId = null; currentBugsFormImages = []; 
+            document.getElementById('bugsAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('bugsAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
+            if (wasEditing) renderAllBugsPosts(); 
+        }
+
+        function handleBugsPostImagesSelected(event) { 
+            const files = event.target.files; if (!files.length) return; 
+            const promises = []; 
+            for (let i = 0; i < files.length; i++) { promises.push(new Promise(resolve => { const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.readAsDataURL(files[i]); })); } 
+            Promise.all(promises).then(results => { 
+                currentBugsFormImages.push(...results); 
+                let form = editingBugsPostId !== null ? document.querySelector('#bugsPostsContainer .post-card[data-post-id="' + editingBugsPostId + '"] .post-form') : document.querySelector('#bugsAddPostFormContainer .post-form'); 
+                if (form) { 
+                    const previewDiv = form.querySelector('.images-preview'); 
+                    if (previewDiv) { 
+                        previewDiv.innerHTML = ''; 
+                        currentBugsFormImages.forEach((mediaData, idx) => { 
+                            const thumb = document.createElement('div'); thumb.className = 'image-thumb'; 
+                            if (isVideoData(mediaData)) { const video = document.createElement('video'); video.src = mediaData; video.muted = true; thumb.appendChild(video); } 
+                            else { const img = document.createElement('img'); img.src = mediaData; thumb.appendChild(img); } 
+                            const removeBtn = document.createElement('button'); removeBtn.className = 'remove-img-btn'; removeBtn.innerHTML = '&#10005;'; 
+                            removeBtn.onclick = function(e) { e.stopPropagation(); currentBugsFormImages.splice(idx, 1); handleBugsPostImagesSelected({ target: { files: [] } }); }; 
+                            thumb.appendChild(removeBtn); previewDiv.appendChild(thumb); 
+                        }); 
+                    } 
+                } 
+            }); 
+            event.target.value = ''; 
+        }
+
+        // ==================== БРАВЛ ТОЛК ====================
+        function renderBrawlTalkVideo() { 
+            const videoSection = document.getElementById('brawlTalkVideoSection'); 
+            videoSection.innerHTML = ''; 
+            if (!brawlTalkVideoData) return; 
+            if (brawlTalkVideoTimer && brawlTalkVideoTimer.timerEnabled) { 
+                const expiry = calculateExpiry(brawlTalkVideoTimer); 
+                if (expiry && Date.now() >= expiry) { 
+                    brawlTalkVideoData = null; brawlTalkVideoTimer = null; 
+                    saveBrawlTalkVideo(); return; 
+                } 
+            } 
+            const videoContainer = document.createElement('div'); videoContainer.className = 'video-preview-container'; 
+            if (brawlTalkVideoTimer && brawlTalkVideoTimer.timerEnabled) { 
+                const expiry = calculateExpiry(brawlTalkVideoTimer); 
+                if (expiry) { 
+                    const remaining = getTimerRemaining(expiry); 
+                    if (remaining) { const timerBadge = document.createElement('div'); timerBadge.className = 'timer-badge'; timerBadge.style.position = 'static'; timerBadge.style.marginBottom = '10px'; timerBadge.textContent = 'Видео исчезнет через: ' + remaining; timerBadge.dataset.expires = expiry; videoContainer.appendChild(timerBadge); } 
+                } 
+            } 
+            const video = document.createElement('video'); video.controls = true; video.src = brawlTalkVideoData; video.style.maxWidth = '100%'; video.style.borderRadius = '15px'; videoContainer.appendChild(video); 
+            videoSection.appendChild(videoContainer); 
+            if (isAdmin) { 
+                const videoActions = document.createElement('div'); videoActions.style.display = 'flex'; videoActions.style.gap = '10px'; videoActions.style.justifyContent = 'center'; videoActions.style.marginTop = '15px'; 
+                const changeVideoBtn = document.createElement('button'); changeVideoBtn.className = 'admin-action-btn visible'; changeVideoBtn.textContent = 'Изменить видео'; changeVideoBtn.style.display = 'inline-block'; changeVideoBtn.onclick = () => showBrawlTalkVideoForm(); 
+                const deleteVideoBtn = document.createElement('button'); deleteVideoBtn.className = 'admin-action-btn visible'; deleteVideoBtn.textContent = 'Удалить видео'; deleteVideoBtn.style.background = '#f44336'; deleteVideoBtn.style.display = 'inline-block'; deleteVideoBtn.onclick = () => deleteBrawlTalkVideo(); 
+                videoActions.appendChild(changeVideoBtn); videoActions.appendChild(deleteVideoBtn); videoSection.appendChild(videoActions); 
+            } 
+        }
+
+        function showBrawlTalkVideoForm() { 
+            const videoSection = document.getElementById('brawlTalkVideoSection'); 
+            const form = document.createElement('div'); form.className = 'post-form'; form.style.marginTop = '15px'; 
+            const titleLabel = document.createElement('div'); titleLabel.style.fontWeight = 'bold'; titleLabel.style.marginBottom = '10px'; titleLabel.style.color = '#ffffff'; titleLabel.textContent = 'Загрузить новое видео:'; form.appendChild(titleLabel); 
+            const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'video/*'; fileInput.style.marginBottom = '10px'; 
+            fileInput.onchange = function(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(ev) { brawlTalkVideoData = ev.target.result; }; reader.readAsDataURL(file); } }; 
+            form.appendChild(fileInput); 
+            const timerContainer = createTimerSettingsHTML('btVideo', brawlTalkVideoTimer); form.appendChild(timerContainer); 
+            const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
+            const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; 
+            saveBtn.onclick = () => { brawlTalkVideoTimer = getTimerDataFromForm('btVideo'); saveBrawlTalkVideo(); renderBrawlTalkVideo(); }; 
+            const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => renderBrawlTalkVideo(); 
+            actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); form.appendChild(actionsDiv); 
+            videoSection.innerHTML = ''; videoSection.appendChild(form); 
+        }
+
+        function deleteBrawlTalkVideo() { 
+            if (confirm('Удалить видео?')) { brawlTalkVideoData = null; brawlTalkVideoTimer = null; saveBrawlTalkVideo(); renderBrawlTalkVideo(); } 
+        }
+
+        function renderAllBrawlTalkPosts() { 
+            const container = document.getElementById('brawlTalkPostsContainer'); 
+            container.innerHTML = ''; 
+            brawlTalkPosts.forEach((post, index) => { 
+                if (editingBrawlTalkPostId === index) { 
+                    const placeholder = document.createElement('div'); placeholder.className = 'post-card'; placeholder.dataset.postId = index; placeholder.id = 'editing-brawltalk-' + index; container.appendChild(placeholder); 
+                } else { container.appendChild(createBrawlTalkPostElement(post, index)); } 
+            }); 
+            if (isAdmin) document.getElementById('brawlTalkAddPostBtn').style.display = editingBrawlTalkPostId === null ? 'block' : 'none';
+        }
+
+        function createBrawlTalkPostElement(post, index) { 
+            const card = document.createElement('div'); card.className = 'post-card'; card.dataset.postId = index; 
+            if (post.timerEnabled) { const expiry = post.expiresAt || calculateExpiry(post); if (expiry) { const remaining = getTimerRemaining(expiry); if (remaining) { const timerBadge = document.createElement('div'); timerBadge.className = 'timer-badge'; timerBadge.textContent = remaining; timerBadge.dataset.expires = expiry; card.appendChild(timerBadge); } } } 
+            const titleEl = document.createElement('div'); titleEl.className = 'post-title'; titleEl.textContent = post.title; card.appendChild(titleEl); 
+            const contentDiv = document.createElement('div'); contentDiv.className = 'post-content'; 
+            if (post.media && post.media.length > 0) contentDiv.appendChild(createMediaSlider(post.media, 'brawltalk', index)); 
+            if (post.text) { const textEl = document.createElement('div'); textEl.className = 'post-text'; textEl.textContent = post.text; contentDiv.appendChild(textEl); } 
+            card.appendChild(contentDiv); 
+            if (isAdmin) { 
+                const actions = document.createElement('div'); actions.className = 'post-actions'; 
+                const editBtn = document.createElement('button'); editBtn.className = 'post-edit-btn'; editBtn.textContent = 'Изменить'; editBtn.onclick = () => startEditBrawlTalkPost(index); 
+                const delBtn = document.createElement('button'); delBtn.className = 'post-delete-btn'; delBtn.textContent = 'Удалить'; delBtn.onclick = () => deleteBrawlTalkPost(index); 
+                actions.appendChild(editBtn); actions.appendChild(delBtn); card.appendChild(actions); 
+            } 
+            return card; 
+        }
+
+        function deleteBrawlTalkPost(index) { 
+            if (!confirm('Удалить этот раздел?')) return; 
+            brawlTalkPosts.splice(index, 1); saveBrawlTalkPosts(); 
+            if (editingBrawlTalkPostId === index) cancelBrawlTalkPostForm(); 
+            renderAllBrawlTalkPosts(); 
+        }
+
+        function startAddBrawlTalkPost() { 
+            cancelBrawlTalkPostForm(); editingBrawlTalkPostId = null; currentBrawlTalkFormImages = []; 
+            document.getElementById('brawlTalkAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('brawlTalkAddPostFormContainer').appendChild(buildBrawlTalkPostForm(null)); 
+            document.getElementById('brawlTalkAddPostBtn').style.display = 'none'; 
+        }
+
+        function startEditBrawlTalkPost(index) { 
+            cancelBrawlTalkPostForm(); editingBrawlTalkPostId = index; 
+            const post = brawlTalkPosts[index]; currentBrawlTalkFormImages = [...(post.media || [])]; 
+            const card = document.querySelector('#brawlTalkPostsContainer .post-card[data-post-id="' + index + '"]'); 
+            if (card) { card.innerHTML = ''; card.appendChild(buildBrawlTalkPostForm(post)); } 
+            document.getElementById('brawlTalkAddPostBtn').style.display = 'none'; 
+        }
+
+        function buildBrawlTalkPostForm(postData) { 
+            const form = document.createElement('div'); form.className = 'post-form'; 
+            const titleInput = document.createElement('input'); titleInput.type = 'text'; titleInput.className = 'post-title-input'; titleInput.placeholder = 'Введите заголовок'; titleInput.value = postData ? postData.title : ''; form.appendChild(titleInput); 
+            const addMediaBtn = document.createElement('button'); addMediaBtn.type = 'button'; addMediaBtn.className = 'admin-action-btn visible'; addMediaBtn.style.display = 'inline-block'; addMediaBtn.textContent = 'Добавить фото/видео'; addMediaBtn.onclick = () => document.getElementById('brawlTalkPostImageInput').click(); form.appendChild(addMediaBtn); 
+            const previewDiv = document.createElement('div'); previewDiv.className = 'images-preview'; form.appendChild(previewDiv); 
+            function refreshPreview() { 
+                previewDiv.innerHTML = ''; 
+                currentBrawlTalkFormImages.forEach((mediaData, idx) => { 
+                    const thumb = document.createElement('div'); thumb.className = 'image-thumb'; 
+                    if (isVideoData(mediaData)) { const video = document.createElement('video'); video.src = mediaData; video.muted = true; thumb.appendChild(video); } 
+                    else { const img = document.createElement('img'); img.src = mediaData; thumb.appendChild(img); } 
+                    const removeBtn = document.createElement('button'); removeBtn.className = 'remove-img-btn'; removeBtn.innerHTML = '&#10005;'; removeBtn.title = 'Удалить'; 
+                    removeBtn.onclick = function(e) { e.stopPropagation(); currentBrawlTalkFormImages.splice(idx, 1); refreshPreview(); }; 
+                    thumb.appendChild(removeBtn); previewDiv.appendChild(thumb); 
+                }); 
+            } 
+            refreshPreview(); 
+            const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea); 
+            const timerContainer = createTimerSettingsHTML('bt', postData); form.appendChild(timerContainer); 
+            const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
+            const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; saveBtn.onclick = () => saveBrawlTalkPostFromForm(titleInput.value, textarea.value); 
+            const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => cancelBrawlTalkPostForm(); 
+            actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); form.appendChild(actionsDiv); 
+            return form; 
+        }
+
+        function saveBrawlTalkPostFromForm(title, text) { 
+            if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
+            const timerData = getTimerDataFromForm('bt'); 
+            const postData = { title: title.trim(), text: text, media: [...currentBrawlTalkFormImages], timerEnabled: timerData.timerEnabled, timerType: timerData.timerType, timerDays: timerData.timerDays || 0, timerHours: timerData.timerHours || 0, timerMinutes: timerData.timerMinutes || 0, deadlineHour: timerData.deadlineHour || 0, deadlineDate: timerData.deadlineDate || '', createdAt: timerData.createdAt || Date.now(), expiresAt: timerData.expiresAt || null }; 
+            if (editingBrawlTalkPostId !== null) brawlTalkPosts[editingBrawlTalkPostId] = postData; 
+            else brawlTalkPosts.push(postData); 
+            saveBrawlTalkPosts(); cancelBrawlTalkPostForm(); renderAllBrawlTalkPosts(); updateAllAdminButtons(); 
+        }
+
+        function cancelBrawlTalkPostForm() { 
+            var wasEditing = editingBrawlTalkPostId !== null; 
+            editingBrawlTalkPostId = null; currentBrawlTalkFormImages = []; 
+            document.getElementById('brawlTalkAddPostFormContainer').innerHTML = ''; 
+            document.getElementById('brawlTalkAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
+            if (wasEditing) renderAllBrawlTalkPosts(); 
+        }
+
+        function handleBrawlTalkPostImagesSelected(event) { 
+            const files = event.target.files; if (!files.length) return; 
+            const promises = []; 
+            for (let i = 0; i < files.length; i++) { promises.push(new Promise(resolve => { const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.readAsDataURL(files[i]); })); } 
+            Promise.all(promises).then(results => { 
+                currentBrawlTalkFormImages.push(...results); 
+                let form = editingBrawlTalkPostId !== null ? document.querySelector('#brawlTalkPostsContainer .post-card[data-post-id="' + editingBrawlTalkPostId + '"] .post-form') : document.querySelector('#brawlTalkAddPostFormContainer .post-form'); 
+                if (form) { 
+                    const previewDiv = form.querySelector('.images-preview'); 
+                    if (previewDiv) { 
+                        previewDiv.innerHTML = ''; 
+                        currentBrawlTalkFormImages.forEach((mediaData, idx) => { 
+                            const thumb = document.createElement('div'); thumb.className = 'image-thumb'; 
+                            if (isVideoData(mediaData)) { const video = document.createElement('video'); video.src = mediaData; video.muted = true; thumb.appendChild(video); } 
+                            else { const img = document.createElement('img'); img.src = mediaData; thumb.appendChild(img); } 
+                            const removeBtn = document.createElement('button'); removeBtn.className = 'remove-img-btn'; removeBtn.innerHTML = '&#10005;'; 
+                            removeBtn.onclick = function(e) { e.stopPropagation(); currentBrawlTalkFormImages.splice(idx, 1); handleBrawlTalkPostImagesSelected({ target: { files: [] } }); }; 
+                            thumb.appendChild(removeBtn); previewDiv.appendChild(thumb); 
+                        }); 
+                    } 
+                } 
+            }); 
+            event.target.value = ''; 
+        }
+
+        // ==================== РАЗДЕЛ ПРО БРАВЛЕРОВ ====================
+        function changeBrawlersSection(direction) {
+            if (!isAdmin) { if (brawlersSections.length === 0) return; currentBrawlersSection = (currentBrawlersSection + direction + brawlersSections.length) % brawlersSections.length; } 
+            else { const totalSlides = brawlersSections.length + 1; currentBrawlersSection = (currentBrawlersSection + direction + totalSlides) % totalSlides; }
+            updateBrawlersDisplay();
+        }
+
+        function updateBrawlersDisplay() {
+            const isAddSlideScreen = isAdmin && currentBrawlersSection >= brawlersSections.length;
+            if (isAddSlideScreen) { document.getElementById('brawlersSectionTitle').textContent = 'Добавить новый слайд'; } 
+            else if (brawlersSections.length > 0) { document.getElementById('brawlersSectionTitle').textContent = brawlersSections[currentBrawlersSection].title; } 
+            else { document.getElementById('brawlersSectionTitle').textContent = 'Про бравлеров'; }
+            
+            const imageContainer = document.getElementById('brawlersImageContainer');
+            const addSlideSection = document.getElementById('addSlideSection');
+            const addSlideForm = document.getElementById('addSlideForm');
+            const descriptionContainer = document.getElementById('brawlersDescriptionContainer');
+            const prevBtn = document.getElementById('brawlersPrevBtn');
+            const nextBtn = document.getElementById('brawlersNextBtn');
+            addSlideForm.style.display = 'none';
+            
+            if (isAddSlideScreen && isAdmin) { imageContainer.style.display = 'none'; addSlideSection.style.display = 'flex'; descriptionContainer.style.display = 'none'; } 
+            else if (brawlersSections.length > 0) { 
+                addSlideSection.style.display = 'none'; descriptionContainer.style.display = 'block';
+                const section = brawlersSections[currentBrawlersSection];
+                const display = document.getElementById('brawlersDescriptionDisplay');
+                display.textContent = section.description.trim() || 'Описание отсутствует';
+                display.style.opacity = section.description.trim() ? '1' : '0.6';
+                if (isAdmin) { document.getElementById('brawlersDescriptionEdit').style.display = 'block'; document.getElementById('brawlersDescriptionTextarea').value = section.description; } 
+                else { document.getElementById('brawlersDescriptionEdit').style.display = 'none'; }
+                const img = document.getElementById('brawlersImage');
+                if (section.images.length > 0) { img.src = section.images[section.currentIndex]; imageContainer.style.display = 'flex'; } 
+                else { imageContainer.style.display = 'none'; }
+            } else { imageContainer.style.display = 'none'; addSlideSection.style.display = 'none'; descriptionContainer.style.display = 'none'; }
+            prevBtn.style.display = 'flex'; nextBtn.style.display = 'flex';
+            updateAllAdminButtons();
+        }
+
+        function deleteCurrentSlide() { 
+            if (!isAdmin || currentBrawlersSection >= brawlersSections.length) return; 
+            if (!confirm(`Удалить слайд?`)) return; 
+            brawlersSections.splice(currentBrawlersSection, 1); 
+            if (currentBrawlersSection >= brawlersSections.length && brawlersSections.length > 0) currentBrawlersSection = brawlersSections.length - 1; 
+            saveBrawlersSections(); updateBrawlersDisplay(); 
+        }
+
+        function startAddBrawlersSlide() { 
+            document.getElementById('addSlideSection').style.display = 'none'; 
+            document.getElementById('addSlideForm').style.display = 'flex'; 
+            document.getElementById('addSlideForm').innerHTML = `<input type="text" id="newSlideTitle" placeholder="Введите заголовок слайда" class="post-title-input"><textarea id="newSlideDescription" placeholder="Введите описание..." class="post-textarea"></textarea><div class="slide-form-buttons"><button class="save-btn" onclick="saveNewBrawlersSlide()">Сохранить слайд</button><button class="cancel-btn" onclick="cancelAddBrawlersSlide()">Отмена</button></div>`; 
+        }
+
+        function cancelAddBrawlersSlide() { 
+            document.getElementById('addSlideForm').style.display = 'none'; 
+            document.getElementById('addSlideSection').style.display = 'flex'; 
+        }
+
+        function saveNewBrawlersSlide() { 
+            const title = document.getElementById('newSlideTitle').value.trim(); 
+            if (!title) { alert('Введите заголовок!'); return; } 
+            brawlersSections.push({ id: 'custom_' + Date.now(), title: title, description: document.getElementById('newSlideDescription').value.trim(), images: [], currentIndex: 0 }); 
+            currentBrawlersSection = brawlersSections.length - 1; 
+            saveBrawlersSections(); updateBrawlersDisplay(); alert('Слайд добавлен!'); 
+        }
+
+        function saveBrawlersDescription() { 
+            if (currentBrawlersSection >= brawlersSections.length) return; 
+            brawlersSections[currentBrawlersSection].description = document.getElementById('brawlersDescriptionTextarea').value; 
+            saveBrawlersSections(); updateBrawlersDisplay(); alert('Описание сохранено!'); 
+        }
+
+        function handleBrawlersImageUpload(event) { 
+            const files = event.target.files; if (!files.length || currentBrawlersSection >= brawlersSections.length) return; 
+            const promises = []; 
+            for (let i = 0; i < files.length; i++) { promises.push(new Promise(resolve => { const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.readAsDataURL(files[i]); })); } 
+            Promise.all(promises).then(results => { brawlersSections[currentBrawlersSection].images.push(...results); saveBrawlersSections(); updateBrawlersDisplay(); }); 
+            event.target.value = ''; 
+        }
+
+        function deleteBrawlersImage() { 
+            if (currentBrawlersSection >= brawlersSections.length) return; 
+            const section = brawlersSections[currentBrawlersSection]; 
+            if (!section.images.length) return; 
+            if (confirm('Удалить текущее изображение?')) { section.images.splice(section.currentIndex, 1); if (section.currentIndex >= section.images.length) section.currentIndex = Math.max(0, section.images.length - 1); saveBrawlersSections(); updateBrawlersDisplay(); } 
+        }
+
+        // ==================== ИГРА ====================
+        function initGame() {
+            const savedBrawlers = localStorage.getItem('allBrawlers');
+            if (savedBrawlers) allBrawlers = JSON.parse(savedBrawlers);
+            if (allBrawlers.length === 0) {
+                allBrawlers = [
+                    { name: "Шелли", rarity: "Редкий", type: "Человек", gender: "Жен", class: "Урон", age: "Средний возраст", image: "" },
+                    { name: "Кольт", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Стрелок", age: "Средний возраст", image: "" },
+                    { name: "Булл", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Танк", age: "Средний возраст", image: "" }
+                ];
+                saveAllBrawlers();
+            }
+            gameState = { mode: 'traits', difficulty: null, currentItem: null, attempts: 0, maxAttempts: 0, guessedNames: [] };
+        }
+
+        function renderGameStart() {
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = `<div class="game-title">Игра - Угадай бравлера</div><p style="color:white;">Режим: По признакам</p><button class="game-btn play-game-btn" id="playGameBtn">Играть</button>${isAdmin ? '<button class="game-btn" id="adminSetupBrawlersBtn" style="background:#5b8ec9;">Настроить бравлеров</button><button class="game-btn" id="adminSetupModesBtn" style="background:#5b8ec9;">Настроить попытки</button>' : ''}`;
+            document.getElementById('playGameBtn').addEventListener('click', renderDifficultyScreen);
+            if (isAdmin) {
+                document.getElementById('adminSetupBrawlersBtn').addEventListener('click', showBrawlerList);
+                document.getElementById('adminSetupModesBtn').addEventListener('click', showAdminSetupModes);
+            }
+        }
+
+        function showAdminSetupModes() {
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = `<div class="game-title">Настройка попыток</div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Легко:</label><input type="number" id="attemptsEasy" value="${localStorage.getItem('attempts_traits_easy') || 5}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Нормально:</label><input type="number" id="attemptsNormal" value="${localStorage.getItem('attempts_traits_normal') || 3}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Сложно:</label><input type="number" id="attemptsHard" value="${localStorage.getItem('attempts_traits_hard') || 2}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Невозможно:</label><input type="number" id="attemptsImpossible" value="${localStorage.getItem('attempts_traits_impossible') || 1}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><button class="game-btn save-btn" id="saveModeAttempts">Сохранить</button><button class="game-btn game-back-btn" id="backToStart">Назад</button>`;
+            document.getElementById('saveModeAttempts').onclick = () => { localStorage.setItem('attempts_traits_easy', document.getElementById('attemptsEasy').value); localStorage.setItem('attempts_traits_normal', document.getElementById('attemptsNormal').value); localStorage.setItem('attempts_traits_hard', document.getElementById('attemptsHard').value); localStorage.setItem('attempts_traits_impossible', document.getElementById('attemptsImpossible').value); alert('Настройки сохранены!'); renderGameStart(); };
+            document.getElementById('backToStart').onclick = renderGameStart;
+        }
+
+        function showBrawlerList() {
+            const container = document.getElementById('gameContainer');
+            let brawlersHtml = allBrawlers.map((b, i) => `<div style="display:flex; gap:10px; align-items:center; margin:10px 0; background:rgba(255,255,255,0.1); padding:10px; border-radius:10px;"><span style="color:white; flex:1; font-weight:bold;">${b.name || 'Без имени'}</span><button class="game-btn" style="width:auto; padding:5px 15px; font-size:14px;" onclick="editBrawler(${i})">✏️</button><button class="game-btn" style="width:auto; padding:5px 15px; font-size:14px; background:#f44336;" onclick="deleteBrawler(${i})">✕</button></div>`).join('');
+            container.innerHTML = `<div class="game-title">Список бравлеров (${allBrawlers.length})</div><div style="max-height:400px; overflow-y:auto; width:100%;">${brawlersHtml || '<p style="color:white;">Нет бравлеров</p>'}</div><button class="game-btn" id="addBrawlerBtn">Добавить бравлера</button><button class="game-btn game-back-btn" id="backToStart">Назад</button>`;
+            document.getElementById('addBrawlerBtn').onclick = () => editBrawler(-1);
+            document.getElementById('backToStart').onclick = renderGameStart;
+        }
+
+        function editBrawler(index) {
+            const brawler = index >= 0 ? allBrawlers[index] : { name: '', rarity: '', type: '', gender: '', class: '', age: '', image: '' };
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = `<div class="game-title">${index >= 0 ? 'Редактировать' : 'Добавить'} бравлера</div><div style="text-align:left; width:100%;"><label style="color:white; display:block; margin-top:10px;">Имя бравлера:</label><input type="text" id="brawlerName" value="${brawler.name}" class="game-input" style="width:100%;" placeholder="Например: Шелли"><label style="color:white; display:block; margin-top:15px;">Изображение:</label><input type="file" id="brawlerImageFile" accept="image/*" style="color:white;"><div style="margin-top:10px;"><img id="brawlerImagePreview" src="${brawler.image || ''}" style="max-width:200px; max-height:200px; ${brawler.image ? '' : 'display:none;'} border-radius:10px;"></div>`;
+            ['rarity','type','gender','class','age'].forEach(trait => {
+                const options = trait === 'rarity' ? RARITY_OPTIONS : trait === 'type' ? TYPE_OPTIONS : trait === 'gender' ? GENDER_OPTIONS : trait === 'class' ? CLASS_OPTIONS : AGE_OPTIONS;
+                container.querySelector('div').innerHTML += `<label style="color:white; display:block; margin-top:15px;">${TRAIT_LABELS[trait]}:</label><div class="trait-selector" id="${trait}Selector">${options.map(o => `<button class="trait-btn ${brawler[trait] === o ? 'selected' : ''}" data-value="${o}">${o}</button>`).join('')}</div>`;
+            });
+            container.innerHTML += `</div><button class="game-btn save-btn" id="saveBrawlerBtn" style="margin-top:20px;">Сохранить</button><button class="game-btn game-back-btn" id="cancelBrawlerBtn">Отмена</button>`;
+            document.querySelectorAll('.trait-selector').forEach(s => s.querySelectorAll('.trait-btn').forEach(b => b.onclick = function() { s.querySelectorAll('.trait-btn').forEach(x => x.classList.remove('selected')); this.classList.add('selected'); }));
+            document.getElementById('brawlerImageFile').onchange = function(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = ev => { document.getElementById('brawlerImagePreview').src = ev.target.result; document.getElementById('brawlerImagePreview').style.display = 'block'; }; reader.readAsDataURL(file); } };
+            document.getElementById('saveBrawlerBtn').onclick = () => {
+                const name = document.getElementById('brawlerName').value.trim();
+                if (!name) { alert('Введите имя бравлера!'); return; }
+                const newBrawler = { name, image: document.getElementById('brawlerImagePreview').src || '', rarity: document.querySelector('#raritySelector .trait-btn.selected')?.dataset.value || '', type: document.querySelector('#typeSelector .trait-btn.selected')?.dataset.value || '', gender: document.querySelector('#genderSelector .trait-btn.selected')?.dataset.value || '', class: document.querySelector('#classSelector .trait-btn.selected')?.dataset.value || '', age: document.querySelector('#ageSelector .trait-btn.selected')?.dataset.value || '' };
+                if (index >= 0) allBrawlers[index] = newBrawler; else allBrawlers.push(newBrawler);
+                saveAllBrawlers(); showBrawlerList();
+            };
+            document.getElementById('cancelBrawlerBtn').onclick = showBrawlerList;
+        }
+
+        function deleteBrawler(index) { if (confirm(`Удалить "${allBrawlers[index].name}"?`)) { allBrawlers.splice(index, 1); saveAllBrawlers(); showBrawlerList(); } }
+
+        function renderDifficultyScreen() {
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = `<div class="game-title">Сложность</div><button class="game-btn diff-btn" id="diffEasy">Легко</button><button class="game-btn diff-btn" id="diffNormal">Нормально</button><button class="game-btn diff-btn" id="diffHard">Сложно</button><button class="game-btn diff-btn" id="diffImpossible">Невозможно</button><button class="game-btn diff-btn" id="diffFree">Свободная</button><button class="game-btn game-back-btn" id="backToStartBtn">Назад</button>`;
+            ['Easy','Normal','Hard','Impossible','Free'].forEach(d => document.getElementById('diff'+d).onclick = () => startGameRound(d.toLowerCase()));
+            document.getElementById('backToStartBtn').onclick = renderGameStart;
+        }
+
+        function startGameRound(difficulty) {
+            if (allBrawlers.length === 0) { alert('Нет бравлеров!'); renderGameStart(); return; }
+            gameState.difficulty = difficulty; gameState.mode = 'traits';
+            if (difficulty === 'free') gameState.maxAttempts = 0;
+            else { const saved = localStorage.getItem('attempts_traits_' + difficulty); gameState.maxAttempts = saved ? parseInt(saved) : difficulty === 'easy' ? 5 : difficulty === 'normal' ? 3 : difficulty === 'hard' ? 2 : 1; }
+            gameState.attempts = 0; gameState.currentItem = allBrawlers[Math.floor(Math.random() * allBrawlers.length)]; gameState.guessedNames = [];
+            renderGamePlay();
+        }
+
+        function renderGamePlay() {
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = `<div class="game-title">По признакам | ${gameState.difficulty}</div>${gameState.maxAttempts > 0 ? `<p style="color:white;">Попытки: ${gameState.attempts}/${gameState.maxAttempts}</p>` : '<p style="color:white;">Свободный режим</p>'}<div style="position:relative; display:inline-block;"><input type="text" id="guessInput" class="game-input" placeholder="Введите имя бравлера" autocomplete="off"><div id="suggestionsDropdown" class="suggestions-dropdown" style="display:none;"></div></div><button class="game-btn" id="submitGuessBtn">Проверить</button><div class="game-result" id="gameResult"></div><div class="guess-history" id="guessHistory"></div><button class="game-btn game-back-btn" id="backToDiffBtn">Назад</button>`;
+            if (gameState.guessedNames.length > 0) renderGuessHistory();
+            const input = document.getElementById('guessInput');
+            const dropdown = document.getElementById('suggestionsDropdown');
+            const brawlerNames = allBrawlers.map(b => b.name);
+            input.addEventListener('input', function() { const val = this.value.toLowerCase(); dropdown.innerHTML = ''; if (!val) { dropdown.style.display = 'none'; return; } const matches = brawlerNames.filter(n => n.toLowerCase().startsWith(val) && !gameState.guessedNames.includes(n)); if (matches.length) { matches.forEach(n => { const div = document.createElement('div'); div.textContent = n; div.onclick = () => { input.value = n; dropdown.style.display = 'none'; }; dropdown.appendChild(div); }); dropdown.style.display = 'block'; } else dropdown.style.display = 'none'; });
+            document.addEventListener('click', function(e) { if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none'; });
+            document.getElementById('submitGuessBtn').onclick = checkGuess;
+            input.addEventListener('keypress', function(e) { if (e.key === 'Enter') checkGuess(); });
+            document.getElementById('backToDiffBtn').onclick = renderDifficultyScreen;
+        }
+
+        function findBrawlerByName(name) { return allBrawlers.find(b => b.name.toLowerCase() === name.toLowerCase()); }
+        function compareTraits(guessed, target) { const result = {}; ['rarity', 'type', 'gender', 'class', 'age'].forEach(t => { result[t] = { value: guessed[t] || 'Не указано', correct: guessed[t] === target[t] }; }); return result; }
+
+        function renderGuessHistory() {
+            const historyDiv = document.getElementById('guessHistory'); if (!historyDiv) return; historyDiv.innerHTML = '';
+            gameState.guessedNames.forEach(guessedName => {
+                const brawler = findBrawlerByName(guessedName); const item = document.createElement('div'); item.className = 'guess-history-item';
+                if (brawler && gameState.mode === 'traits') {
+                    const traits = compareTraits(brawler, gameState.currentItem);
+                    let traitsText = '';
+                    ['rarity', 'type', 'gender', 'class', 'age'].forEach(t => { const d = traits[t]; traitsText += `<span class="trait-tag ${d.correct ? 'correct' : 'incorrect'}" style="margin:2px; display:inline-block;">${TRAIT_LABELS[t]}: ${d.value}</span>`; });
+                    item.innerHTML = `<div class="guess-history-name">${guessedName}</div>${traitsText}`;
+                } else item.innerHTML = `<div class="guess-history-name">${guessedName}</div>`;
+                historyDiv.appendChild(item);
+            });
+        }
+
+        function checkGuess() {
+            const input = document.getElementById('guessInput'); if (!input) return;
+            const guess = input.value.trim(); const resultDiv = document.getElementById('gameResult');
+            if (!guess) { resultDiv.textContent = 'Введите имя бравлера!'; resultDiv.style.color = '#ffaa00'; return; }
+            if (!findBrawlerByName(guess)) { resultDiv.textContent = 'Такого бравлера нет в списке!'; resultDiv.style.color = '#ffaa00'; input.value = ''; return; }
+            if (gameState.guessedNames.includes(guess)) { resultDiv.textContent = 'Уже называли!'; resultDiv.style.color = '#ffaa00'; input.value = ''; return; }
+            gameState.attempts++; gameState.guessedNames.push(guess); input.value = '';
+            if (guess.toLowerCase() === gameState.currentItem.name.toLowerCase()) { resultDiv.textContent = `🎉 Правильно! Это ${gameState.currentItem.name}!`; resultDiv.style.color = '#4CAF50'; endGame(true); }
+            else { const b = findBrawlerByName(guess); if (gameState.mode === 'traits' && b) { const t = compareTraits(b, gameState.currentItem); resultDiv.textContent = Object.values(t).every(x => x.correct) ? 'Все признаки совпадают, но имя другое!' : 'Неверно! Смотрите подсказки.'; resultDiv.style.color = Object.values(t).every(x => x.correct) ? '#ffaa00' : '#ff5722'; } else { resultDiv.textContent = 'Неверно!'; resultDiv.style.color = '#ff5722'; }
+                renderGuessHistory();
+                if (gameState.maxAttempts > 0 && gameState.attempts >= gameState.maxAttempts) { resultDiv.textContent = `😞 Попытки закончились! Это: ${gameState.currentItem.name}`; resultDiv.style.color = '#f44336'; endGame(false); } }
+        }
+
+        function endGame(won) {
+            const submitBtn = document.getElementById('submitGuessBtn'); const input = document.getElementById('guessInput');
+            if (submitBtn) submitBtn.disabled = true; if (input) input.disabled = true;
+            renderGuessHistory();
+            const container = document.getElementById('gameContainer');
+            const retryBtn = document.createElement('button'); retryBtn.className = 'game-btn'; retryBtn.textContent = 'Играть ещё'; retryBtn.onclick = () => startGameRound(gameState.difficulty);
+            const homeBtn = document.createElement('button'); homeBtn.className = 'game-btn game-back-btn'; homeBtn.textContent = 'В меню'; homeBtn.onclick = renderGameStart;
+            container.appendChild(retryBtn); container.appendChild(homeBtn);
+        }
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        function initializeApp() {
+            const adminStatus = localStorage.getItem('isAdmin');
+            isAdmin = (adminStatus === 'true');
+            if (isAdmin) { document.getElementById('adminLoginBtn').style.display = 'none'; document.getElementById('logoutBtn').classList.add('visible'); }
+            else { document.getElementById('adminLoginBtn').style.display = 'block'; document.getElementById('logoutBtn').classList.remove('visible'); }
+            loadDataFromFirebase();
+            updateAllAdminButtons();
+            setInterval(updateAllTimers, 30000);
+            initGame();
+        }
+
+        window.addEventListener('DOMContentLoaded', initializeApp);
+        
+        // Глобальные функции
+        window.showContacts = showContacts;
+        window.closeContacts = closeContacts;
+        window.showSection = showSection;
+        window.showAdminLogin = showAdminLogin;
+        window.checkPassword = checkPassword;
+        window.closeModal = closeModal;
+        window.logout = logout;
+        window.changeBrawlersSection = changeBrawlersSection;
+        window.deleteCurrentSlide = deleteCurrentSlide;
+        window.saveBrawlersDescription = saveBrawlersDescription;
+        window.handleBrawlersImageUpload = handleBrawlersImageUpload;
+        window.deleteBrawlersImage = deleteBrawlersImage;
+        window.startAddBrawlersSlide = startAddBrawlersSlide;
+        window.cancelAddBrawlersSlide = cancelAddBrawlersSlide;
+        window.saveNewBrawlersSlide = saveNewBrawlersSlide;
+        window.enlargeImage = enlargeImage;
+        window.closeEnlargedImage = closeEnlargedImage;
+        window.startAddNewsPost = startAddNewsPost;
+        window.handleNewsPostImagesSelected = handleNewsPostImagesSelected;
+        window.startAddBalancePost = startAddBalancePost;
+        window.handleBalancePostImagesSelected = handleBalancePostImagesSelected;
+        window.startAddPost = startAddPost;
+        window.handlePostImagesSelected = handlePostImagesSelected;
+        window.startAddBugsPost = startAddBugsPost;
+        window.handleBugsPostImagesSelected = handleBugsPostImagesSelected;
+        window.startAddBrawlTalkPost = startAddBrawlTalkPost;
+        window.handleBrawlTalkPostImagesSelected = handleBrawlTalkPostImagesSelected;
+        window.editBrawler = editBrawler;
+        window.deleteBrawler = deleteBrawler;
+        window.installApp = installApp;
+    
+</script>
+</body>
+</html>
