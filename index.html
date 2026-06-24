@@ -3435,7 +3435,81 @@
         window.editBrawler = editBrawler;
         window.deleteBrawler = deleteBrawler;
         window.installApp = installApp;
-    
+        // ==================== ДИАГНОСТИКА PWA ====================
+        window.addEventListener('load', () => {
+            console.log('=== PWA Диагностика ===');
+            
+            // Проверка manifest
+            fetch('/Boom-Brawl/manifest.json')
+                .then(r => r.json())
+                .then(m => {
+                    console.log('✅ manifest.json загружен:', m);
+                    console.log('Иконки:', m.icons);
+                })
+                .catch(e => console.error('❌ Ошибка manifest:', e));
+            
+            // Проверка SW
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    console.log('Service Workers:', regs.length);
+                    regs.forEach(r => console.log('SW scope:', r.scope));
+                });
+            } else {
+                console.log('❌ Service Worker не поддерживается');
+            }
+            
+            // Проверка HTTPS
+            console.log('Протокол:', window.location.protocol);
+            console.log('Полный URL:', window.location.href);
+            
+            // Проверка beforeinstallprompt
+            let checkCount = 0;
+            const checkInstall = setInterval(() => {
+                checkCount++;
+                if (deferredPrompt) {
+                    console.log('✅ beforeinstallprompt сработал! Кнопка должна быть видна');
+                    clearInterval(checkInstall);
+                } else if (checkCount > 10) {
+                    console.log('⚠️ beforeinstallprompt не сработал. Возможные причины:');
+                    console.log('1. Сайт открыт первый раз (нужно 2+ посещения)');
+                    console.log('2. Уже установлено как PWA');
+                    console.log('3. Не все критерии PWA выполнены');
+                    clearInterval(checkInstall);
+                }
+            }, 1000);
+            
+            // Принудительная проверка критериев
+            setTimeout(() => {
+                console.log('=== Проверка критериев PWA ===');
+                console.log('HTTPS:', window.location.protocol === 'https:');
+                console.log('Manifest link:', !!document.querySelector('link[rel="manifest"]'));
+                console.log('Service Worker registered:', 'serviceWorker' in navigator);
+                console.log('Иконка 192:', checkImage('/Boom-Brawl/icon-192x192.png'));
+                console.log('Иконка 512:', checkImage('/Boom-Brawl/icon-512x512.png'));
+                console.log('display-mode:', window.matchMedia('(display-mode: standalone)').matches);
+            }, 3000);
+        });
+        
+        function checkImage(url) {
+            const img = new Image();
+            img.src = url;
+            return new Promise(resolve => {
+                img.onload = () => resolve('✅ Загружена');
+                img.onerror = () => resolve('❌ Не найдена');
+            });
+        }
+        
+        // Принудительно показываем кнопку для теста (удалите после отладки)
+        setTimeout(() => {
+            const btn = document.getElementById('installButton');
+            if (btn && !btn.classList.contains('show') && !isPWA()) {
+                console.log('🔧 Принудительный показ кнопки для теста');
+                btn.classList.add('show');
+                btn.onclick = () => {
+                    alert('Чтобы установить:\n1. Нажмите ⋮ в браузере\n2. Выберите "Установить приложение"\n\nИли в адресной строке справа значок ⊕');
+                };
+            }
+        }, 5000);
 </script>
 </body>
 </html>
