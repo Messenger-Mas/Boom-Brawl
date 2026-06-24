@@ -8,14 +8,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Boom Brawl">
     <link rel="apple-touch-icon" href="icon-192x192.png">
-    <link rel="manifest" href="/Boom-Brawl/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <title>Boom Brawl</title>
     
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <style>
         * {
@@ -29,6 +27,69 @@
             background: linear-gradient(145deg, #2b3b6b 0%, #1a2744 100%);
             min-height: 100vh;
             display: flex;
+            overflow-x: hidden;
+        }
+
+        /* Затемнение фона при открытом меню */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Кнопка гамбургера */
+        .hamburger-btn {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 200;
+            background: #f0851e;
+            border: none;
+            color: white;
+            font-size: 28px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger-btn span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
         }
 
         .install-button {
@@ -83,10 +144,13 @@
             display: block;
         }
 
+        /* Сайдбар */
         .sidebar {
             width: 280px;
-            background: rgba(18, 25, 45, 0.85);
+            min-width: 280px;
+            background: rgba(18, 25, 45, 0.95);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-right: 2px solid rgba(255, 255, 255, 0.15);
             padding: 20px;
             display: flex;
@@ -98,6 +162,7 @@
             top: 0;
             z-index: 100;
             overflow-y: auto;
+            transition: transform 0.3s ease;
         }
 
         .site-title {
@@ -123,17 +188,17 @@
         .nav-buttons {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             flex: 1;
         }
 
         .nav-btn {
-            padding: 16px 18px;
+            padding: 14px 16px;
             background: #f0851e;
             color: #000;
             border: none;
             border-radius: 14px;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.25s ease;
@@ -254,6 +319,7 @@
             justify-content: center;
             margin-left: 280px;
             min-height: 100vh;
+            width: calc(100% - 280px);
         }
 
         .welcome-message {
@@ -1333,46 +1399,105 @@
             margin-bottom: 8px;
         }
 
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                flex-direction: row;
-                flex-wrap: wrap;
-                padding: 10px;
-                gap: 10px;
+                transform: translateX(-100%);
+                width: 280px;
+                min-width: 280px;
+                z-index: 101;
             }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
             .main-content {
                 margin-left: 0;
+                width: 100%;
                 padding: 15px;
+                padding-top: 70px;
             }
-            .nav-buttons {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 5px;
+
+            .hamburger-btn {
+                display: flex;
             }
-            .nav-btn {
-                font-size: 14px;
-                padding: 10px;
-                width: auto;
-            }
+
             .brawlers-slider-nav-btn {
                 width: 40px;
                 height: 40px;
                 font-size: 24px;
             }
+
             .brawlers-slider-nav-btn.prev-btn {
-                left: -20px;
+                left: -10px;
             }
+
             .brawlers-slider-nav-btn.next-btn {
-                right: -20px;
+                right: -10px;
+            }
+
+            .post-title {
+                font-size: 24px;
+            }
+
+            .post-text {
+                font-size: 16px;
+            }
+
+            .game-btn {
+                width: 90%;
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .post-card {
+                padding: 15px;
+            }
+
+            .post-form input[type="text"].post-title-input {
+                font-size: 20px;
+                padding: 10px;
+            }
+
+            .post-form textarea.post-textarea {
+                font-size: 16px;
+                min-height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-input {
+                width: 200px;
+                font-size: 16px;
+            }
+
+            .brawlers-description-display {
+                font-size: 22px;
+            }
+
+            .brawl-talk-title {
+                font-size: 22px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <!-- Затемнение фона -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Кнопка гамбургера -->
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="sidebar" id="sidebar">
         <h1 class="site-title" onclick="showContacts()">Boom Brawl</h1>
         
         <!-- Кнопка установки -->
@@ -1386,13 +1511,13 @@
         </div>
         
         <div class="nav-buttons">
-            <button class="nav-btn" onclick="showSection('news')">Новости</button>
-            <button class="nav-btn" onclick="showSection('brawltalk')">Бравл толк</button>
-            <button class="nav-btn" onclick="showSection('balance')">Изменения в балансе</button>
-            <button class="nav-btn" onclick="showSection('shop')">Акции в магазине</button>
-            <button class="nav-btn" onclick="showSection('bugs')">Баги и изменения</button>
-            <button class="nav-btn" onclick="showSection('brawlers')">Про бравлеров</button>
-            <button class="nav-btn game-nav-btn" onclick="showSection('game')">Игра - Угадай бравлера</button>
+            <button class="nav-btn" onclick="navigateTo('news')">Новости</button>
+            <button class="nav-btn" onclick="navigateTo('brawltalk')">Бравл толк</button>
+            <button class="nav-btn" onclick="navigateTo('balance')">Изменения в балансе</button>
+            <button class="nav-btn" onclick="navigateTo('shop')">Акции в магазине</button>
+            <button class="nav-btn" onclick="navigateTo('bugs')">Баги и изменения</button>
+            <button class="nav-btn" onclick="navigateTo('brawlers')">Про бравлеров</button>
+            <button class="nav-btn game-nav-btn" onclick="navigateTo('game')">Игра - Угадай бравлера</button>
         </div>
         <button class="admin-btn" id="adminLoginBtn" onclick="showAdminLogin()">Войти как администратор</button>
         <button class="logout-btn" id="logoutBtn" onclick="logout()">Выйти из админа</button>
@@ -1514,7 +1639,7 @@
     </div>
 
     <script>
-        // ==================== КОНФИГУРАЦИЯ FIREBASE ====================
+        // ==================== FIREBASE ====================
         const firebaseConfig = {
             apiKey: "AIzaSyCgx-V8GP_cgCZLGws2e1pHZ5OnMy20nxk",
             authDomain: "clash-of-mas.firebaseapp.com",
@@ -1526,7 +1651,6 @@
             measurementId: "G-E29KKDYG4E"
         };
 
-        // Инициализация Firebase
         let database;
         try {
             firebase.initializeApp(firebaseConfig);
@@ -1536,6 +1660,46 @@
             console.error('Ошибка Firebase:', error);
             database = null;
         }
+
+        // ==================== МОБИЛЬНОЕ МЕНЮ ====================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const hamburger = document.getElementById('hamburgerBtn');
+            
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const hamburger = document.getElementById('hamburgerBtn');
+            
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+
+        function navigateTo(section) {
+            closeMobileMenu();
+            showSection(section);
+        }
+
+        // Проверка размера экрана
+        function checkScreenSize() {
+            const hamburger = document.getElementById('hamburgerBtn');
+            if (window.innerWidth <= 768) {
+                hamburger.style.display = 'flex';
+            } else {
+                hamburger.style.display = 'none';
+                closeMobileMenu();
+            }
+        }
+
+        window.addEventListener('resize', checkScreenSize);
+        window.addEventListener('load', checkScreenSize);
 
         // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
         let isAdmin = false;
@@ -1569,147 +1733,7 @@
         const GENDER_OPTIONS = ['Муж', 'Жен'];
         const CLASS_OPTIONS = ['Танк', 'Поддержка', 'Убийца', 'Контроль', 'Урон', 'Стрелок', 'Артиллерия'];
         const AGE_OPTIONS = ['Ребёнок', 'Подросток', 'Средний возраст', 'Старческий возраст'];
-        const TRAIT_LABELS = {
-            rarity: 'Редкость',
-            type: 'Вид',
-            gender: 'Пол',
-            class: 'Класс',
-            age: 'Возраст'
-        };
-
-        // ==================== ЗАГРУЗКА ДАННЫХ ИЗ FIREBASE ====================
-        function loadDataFromFirebase() {
-            if (!firebaseAvailable) {
-                loadLocalData();
-                return;
-            }
-
-            database.ref('newsPosts').on('value', (snapshot) => {
-                newsPosts = snapshot.val() || [];
-                if (!Array.isArray(newsPosts)) newsPosts = [];
-                renderAllNewsPosts();
-            });
-
-            database.ref('shopPosts').on('value', (snapshot) => {
-                shopPosts = snapshot.val() || [];
-                if (!Array.isArray(shopPosts)) shopPosts = [];
-                shopPosts = cleanExpiredPosts(shopPosts);
-                renderAllShopPosts();
-            });
-
-            database.ref('balancePosts').on('value', (snapshot) => {
-                balancePosts = snapshot.val() || [];
-                if (!Array.isArray(balancePosts)) balancePosts = [];
-                renderAllBalancePosts();
-            });
-
-            database.ref('bugsPosts').on('value', (snapshot) => {
-                bugsPosts = snapshot.val() || [];
-                if (!Array.isArray(bugsPosts)) bugsPosts = [];
-                renderAllBugsPosts();
-            });
-
-            database.ref('brawlTalkPosts').on('value', (snapshot) => {
-                brawlTalkPosts = snapshot.val() || [];
-                if (!Array.isArray(brawlTalkPosts)) brawlTalkPosts = [];
-                brawlTalkPosts = cleanExpiredPosts(brawlTalkPosts);
-                renderAllBrawlTalkPosts();
-            });
-
-            database.ref('brawlTalkVideo').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    brawlTalkVideoData = data.videoData || null;
-                    brawlTalkVideoTimer = data.timer || null;
-                    if (brawlTalkVideoTimer?.timerEnabled) {
-                        const expiry = calculateExpiry(brawlTalkVideoTimer);
-                        if (expiry && Date.now() >= expiry) {
-                            brawlTalkVideoData = null;
-                            brawlTalkVideoTimer = null;
-                            database.ref('brawlTalkVideo').set(null);
-                        }
-                    }
-                }
-                renderBrawlTalkVideo();
-            });
-
-            database.ref('brawlersSections').on('value', (snapshot) => {
-                brawlersSections = snapshot.val() || [];
-                if (!Array.isArray(brawlersSections)) brawlersSections = [];
-                if (brawlersSections.length === 0) {
-                    brawlersSections = [
-                        { id: 'tierlist', title: 'Тир лист бравлеров', description: '', images: [], currentIndex: 0 },
-                        { id: 'trios', title: 'Трио бравлеров', description: '', images: [], currentIndex: 0 },
-                        { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
-                    ];
-                }
-                updateBrawlersDisplay();
-            });
-
-            database.ref('allBrawlers').on('value', (snapshot) => {
-                allBrawlers = snapshot.val() || [];
-                if (!Array.isArray(allBrawlers)) allBrawlers = [];
-            });
-        }
-
-        function saveToFirebase(path, data) {
-            if (!firebaseAvailable) {
-                saveLocalData(path, data);
-                return;
-            }
-            database.ref(path).set(data);
-        }
-
-        function saveLocalData(path, data) {
-            const key = path;
-            localStorage.setItem(key, JSON.stringify(data));
-        }
-
-        function loadLocalData() {
-            const savedNews = localStorage.getItem('newsPosts');
-            if (savedNews) { newsPosts = JSON.parse(savedNews); renderAllNewsPosts(); }
-            
-            const savedShop = localStorage.getItem('shopPosts');
-            if (savedShop) { 
-                shopPosts = cleanExpiredPosts(JSON.parse(savedShop)); 
-                renderAllShopPosts(); 
-            }
-            
-            const savedBalance = localStorage.getItem('balancePosts');
-            if (savedBalance) { balancePosts = JSON.parse(savedBalance); renderAllBalancePosts(); }
-            
-            const savedBugs = localStorage.getItem('bugsPosts');
-            if (savedBugs) { bugsPosts = JSON.parse(savedBugs); renderAllBugsPosts(); }
-            
-            const savedBrawlTalk = localStorage.getItem('brawlTalkPosts');
-            if (savedBrawlTalk) { 
-                brawlTalkPosts = cleanExpiredPosts(JSON.parse(savedBrawlTalk)); 
-                renderAllBrawlTalkPosts(); 
-            }
-            
-            const savedBrawlTalkVideo = localStorage.getItem('brawlTalkVideo');
-            if (savedBrawlTalkVideo) {
-                const data = JSON.parse(savedBrawlTalkVideo);
-                brawlTalkVideoData = data.videoData;
-                brawlTalkVideoTimer = data.timer;
-                renderBrawlTalkVideo();
-            }
-            
-            const savedBrawlersSections = localStorage.getItem('brawlersSections');
-            if (savedBrawlersSections) {
-                brawlersSections = JSON.parse(savedBrawlersSections);
-            } else {
-                brawlersSections = [
-                    { id: 'tierlist', title: 'Тир лист бравлеров', description: '', images: [], currentIndex: 0 },
-                    { id: 'trios', title: 'Трио бравлеров', description: '', images: [], currentIndex: 0 },
-                    { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
-                ];
-            }
-            updateBrawlersDisplay();
-            
-            const savedBrawlers = localStorage.getItem('allBrawlers');
-            if (savedBrawlers) allBrawlers = JSON.parse(savedBrawlers);
-        }
+        const TRAIT_LABELS = { rarity: 'Редкость', type: 'Вид', gender: 'Пол', class: 'Класс', age: 'Возраст' };
 
         // ==================== PWA УСТАНОВКА ====================
         let deferredPrompt;
@@ -1740,11 +1764,8 @@
         
         function updateOnlineStatus() {
             const offlineBadge = document.getElementById('offlineBadge');
-            if (navigator.onLine) {
-                offlineBadge.classList.remove('show');
-            } else {
-                offlineBadge.classList.add('show');
-            }
+            if (navigator.onLine) offlineBadge.classList.remove('show');
+            else offlineBadge.classList.add('show');
         }
         
         window.addEventListener('online', updateOnlineStatus);
@@ -1752,24 +1773,17 @@
         
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then((registration) => {
-                        console.log('Service Worker зарегистрирован:', registration.scope);
-                    })
-                    .catch((error) => {
-                        console.log('Ошибка регистрации Service Worker:', error);
-                    });
+                navigator.serviceWorker.register('/Boom-Brawl/service-worker.js')
+                    .then((reg) => console.log('SW зарегистрирован:', reg.scope))
+                    .catch((err) => console.log('Ошибка SW:', err));
             });
         }
         
         function isPWA() {
-            return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.navigator.standalone === true;
+            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         }
         
-        if (isPWA()) {
-            installButton.classList.remove('show');
-        }
+        if (isPWA()) installButton.classList.remove('show');
                 // ==================== КОНТАКТЫ ====================
         function showContacts() {
             document.getElementById('contactsModal').classList.add('active');
@@ -1874,13 +1888,18 @@
             const countdownDiv = document.createElement('div');
             countdownDiv.id = prefix + 'CountdownSettings';
             countdownDiv.style.display = postData?.timerType === 'deadline' ? 'none' : 'block';
-            countdownDiv.innerHTML = `<label style="color:#ffffff;font-weight:bold;font-size:14px;">Дней: <input type="number" id="${prefix}TimerDays" value="${postData?.timerDays || 0}" min="0" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label><label style="color:#ffffff;font-weight:bold;font-size:14px;">Часов: <input type="number" id="${prefix}TimerHours" value="${postData?.timerHours || 0}" min="0" max="23" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label><label style="color:#ffffff;font-weight:bold;font-size:14px;">Минут: <input type="number" id="${prefix}TimerMinutes" value="${postData?.timerMinutes || 0}" min="0" max="59" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>`;
+            countdownDiv.innerHTML = `
+                <label style="color:#fff;font-weight:bold;font-size:14px;">Дней: <input type="number" id="${prefix}TimerDays" value="${postData?.timerDays || 0}" min="0" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>
+                <label style="color:#fff;font-weight:bold;font-size:14px;">Часов: <input type="number" id="${prefix}TimerHours" value="${postData?.timerHours || 0}" min="0" max="23" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>
+                <label style="color:#fff;font-weight:bold;font-size:14px;">Минут: <input type="number" id="${prefix}TimerMinutes" value="${postData?.timerMinutes || 0}" min="0" max="59" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>`;
             settingsDiv.appendChild(countdownDiv);
 
             const deadlineDiv = document.createElement('div');
             deadlineDiv.id = prefix + 'DeadlineSettings';
             deadlineDiv.style.display = postData?.timerType === 'deadline' ? 'block' : 'none';
-            deadlineDiv.innerHTML = `<label style="color:#ffffff;font-weight:bold;font-size:14px;">Час (0-23): <input type="number" id="${prefix}DeadlineHour" value="${postData?.deadlineHour || 0}" min="0" max="23" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label><label style="color:#ffffff;font-weight:bold;font-size:14px;">Дата (ГГГГ.ММ.ДД): <input type="text" id="${prefix}DeadlineDate" value="${postData?.deadlineDate || ''}" placeholder="2026.12.31" class="date-input" style="width:100px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>`;
+            deadlineDiv.innerHTML = `
+                <label style="color:#fff;font-weight:bold;font-size:14px;">Час (0-23): <input type="number" id="${prefix}DeadlineHour" value="${postData?.deadlineHour || 0}" min="0" max="23" style="width:60px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>
+                <label style="color:#fff;font-weight:bold;font-size:14px;">Дата (ГГГГ.ММ.ДД): <input type="text" id="${prefix}DeadlineDate" value="${postData?.deadlineDate || ''}" placeholder="2026.12.31" class="date-input" style="width:100px;padding:5px;margin:0 5px;border-radius:6px;border:1px solid #ccc;"></label>`;
             settingsDiv.appendChild(deadlineDiv);
 
             container.appendChild(settingsDiv);
@@ -1931,7 +1950,127 @@
             });
         }
 
-        // ==================== ФУНКЦИИ СОХРАНЕНИЯ ====================
+        // ==================== ЗАГРУЗКА ДАННЫХ ====================
+        function loadDataFromFirebase() {
+            if (!firebaseAvailable) { loadLocalData(); return; }
+
+            database.ref('newsPosts').on('value', (snapshot) => {
+                newsPosts = snapshot.val() || [];
+                if (!Array.isArray(newsPosts)) newsPosts = [];
+                renderAllNewsPosts();
+            });
+
+            database.ref('shopPosts').on('value', (snapshot) => {
+                shopPosts = snapshot.val() || [];
+                if (!Array.isArray(shopPosts)) shopPosts = [];
+                shopPosts = cleanExpiredPosts(shopPosts);
+                renderAllShopPosts();
+            });
+
+            database.ref('balancePosts').on('value', (snapshot) => {
+                balancePosts = snapshot.val() || [];
+                if (!Array.isArray(balancePosts)) balancePosts = [];
+                renderAllBalancePosts();
+            });
+
+            database.ref('bugsPosts').on('value', (snapshot) => {
+                bugsPosts = snapshot.val() || [];
+                if (!Array.isArray(bugsPosts)) bugsPosts = [];
+                renderAllBugsPosts();
+            });
+
+            database.ref('brawlTalkPosts').on('value', (snapshot) => {
+                brawlTalkPosts = snapshot.val() || [];
+                if (!Array.isArray(brawlTalkPosts)) brawlTalkPosts = [];
+                brawlTalkPosts = cleanExpiredPosts(brawlTalkPosts);
+                renderAllBrawlTalkPosts();
+            });
+
+            database.ref('brawlTalkVideo').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    brawlTalkVideoData = data.videoData || null;
+                    brawlTalkVideoTimer = data.timer || null;
+                    if (brawlTalkVideoTimer?.timerEnabled) {
+                        const expiry = calculateExpiry(brawlTalkVideoTimer);
+                        if (expiry && Date.now() >= expiry) {
+                            brawlTalkVideoData = null;
+                            brawlTalkVideoTimer = null;
+                            database.ref('brawlTalkVideo').set(null);
+                        }
+                    }
+                }
+                renderBrawlTalkVideo();
+            });
+
+            database.ref('brawlersSections').on('value', (snapshot) => {
+                brawlersSections = snapshot.val() || [];
+                if (!Array.isArray(brawlersSections)) brawlersSections = [];
+                if (brawlersSections.length === 0) {
+                    brawlersSections = [
+                        { id: 'tierlist', title: 'Тир лист бравлеров', description: '', images: [], currentIndex: 0 },
+                        { id: 'trios', title: 'Трио бравлеров', description: '', images: [], currentIndex: 0 },
+                        { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
+                    ];
+                }
+                updateBrawlersDisplay();
+            });
+
+            database.ref('allBrawlers').on('value', (snapshot) => {
+                allBrawlers = snapshot.val() || [];
+                if (!Array.isArray(allBrawlers)) allBrawlers = [];
+            });
+        }
+
+        function saveToFirebase(path, data) {
+            if (!firebaseAvailable) { saveLocalData(path, data); return; }
+            database.ref(path).set(data);
+        }
+
+        function saveLocalData(path, data) {
+            localStorage.setItem(path, JSON.stringify(data));
+        }
+
+        function loadLocalData() {
+            const savedNews = localStorage.getItem('newsPosts');
+            if (savedNews) { newsPosts = JSON.parse(savedNews); renderAllNewsPosts(); }
+            
+            const savedShop = localStorage.getItem('shopPosts');
+            if (savedShop) { shopPosts = cleanExpiredPosts(JSON.parse(savedShop)); renderAllShopPosts(); }
+            
+            const savedBalance = localStorage.getItem('balancePosts');
+            if (savedBalance) { balancePosts = JSON.parse(savedBalance); renderAllBalancePosts(); }
+            
+            const savedBugs = localStorage.getItem('bugsPosts');
+            if (savedBugs) { bugsPosts = JSON.parse(savedBugs); renderAllBugsPosts(); }
+            
+            const savedBrawlTalk = localStorage.getItem('brawlTalkPosts');
+            if (savedBrawlTalk) { brawlTalkPosts = cleanExpiredPosts(JSON.parse(savedBrawlTalk)); renderAllBrawlTalkPosts(); }
+            
+            const savedBrawlTalkVideo = localStorage.getItem('brawlTalkVideo');
+            if (savedBrawlTalkVideo) {
+                const data = JSON.parse(savedBrawlTalkVideo);
+                brawlTalkVideoData = data.videoData;
+                brawlTalkVideoTimer = data.timer;
+                renderBrawlTalkVideo();
+            }
+            
+            const savedBrawlersSections = localStorage.getItem('brawlersSections');
+            if (savedBrawlersSections) {
+                brawlersSections = JSON.parse(savedBrawlersSections);
+            } else {
+                brawlersSections = [
+                    { id: 'tierlist', title: 'Тир лист бравлеров', description: '', images: [], currentIndex: 0 },
+                    { id: 'trios', title: 'Трио бравлеров', description: '', images: [], currentIndex: 0 },
+                    { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
+                ];
+            }
+            updateBrawlersDisplay();
+            
+            const savedBrawlers = localStorage.getItem('allBrawlers');
+            if (savedBrawlers) allBrawlers = JSON.parse(savedBrawlers);
+        }
+
         function saveNewsPosts() { saveToFirebase('newsPosts', newsPosts); }
         function saveShopPosts() { saveToFirebase('shopPosts', shopPosts); }
         function saveBalancePosts() { saveToFirebase('balancePosts', balancePosts); }
@@ -3063,7 +3202,7 @@
             event.target.value = ''; 
         }
 
-        // ==================== РАЗДЕЛ ПРО БРАВЛЕРОВ ====================
+        // ==================== БРАВЛЕРЫ ====================
         function changeBrawlersSection(direction) {
             if (!isAdmin) { if (brawlersSections.length === 0) return; currentBrawlersSection = (currentBrawlersSection + direction + brawlersSections.length) % brawlersSections.length; } 
             else { const totalSlides = brawlersSections.length + 1; currentBrawlersSection = (currentBrawlersSection + direction + totalSlides) % totalSlides; }
@@ -3080,30 +3219,24 @@
             const addSlideSection = document.getElementById('addSlideSection');
             const addSlideForm = document.getElementById('addSlideForm');
             const descriptionContainer = document.getElementById('brawlersDescriptionContainer');
-            const prevBtn = document.getElementById('brawlersPrevBtn');
-            const nextBtn = document.getElementById('brawlersNextBtn');
             addSlideForm.style.display = 'none';
             
             if (isAddSlideScreen && isAdmin) { imageContainer.style.display = 'none'; addSlideSection.style.display = 'flex'; descriptionContainer.style.display = 'none'; } 
             else if (brawlersSections.length > 0) { 
                 addSlideSection.style.display = 'none'; descriptionContainer.style.display = 'block';
                 const section = brawlersSections[currentBrawlersSection];
-                const display = document.getElementById('brawlersDescriptionDisplay');
-                display.textContent = section.description.trim() || 'Описание отсутствует';
-                display.style.opacity = section.description.trim() ? '1' : '0.6';
+                document.getElementById('brawlersDescriptionDisplay').textContent = section.description.trim() || 'Описание отсутствует';
                 if (isAdmin) { document.getElementById('brawlersDescriptionEdit').style.display = 'block'; document.getElementById('brawlersDescriptionTextarea').value = section.description; } 
                 else { document.getElementById('brawlersDescriptionEdit').style.display = 'none'; }
-                const img = document.getElementById('brawlersImage');
-                if (section.images.length > 0) { img.src = section.images[section.currentIndex]; imageContainer.style.display = 'flex'; } 
+                if (section.images.length > 0) { document.getElementById('brawlersImage').src = section.images[section.currentIndex]; imageContainer.style.display = 'flex'; } 
                 else { imageContainer.style.display = 'none'; }
             } else { imageContainer.style.display = 'none'; addSlideSection.style.display = 'none'; descriptionContainer.style.display = 'none'; }
-            prevBtn.style.display = 'flex'; nextBtn.style.display = 'flex';
             updateAllAdminButtons();
         }
 
         function deleteCurrentSlide() { 
             if (!isAdmin || currentBrawlersSection >= brawlersSections.length) return; 
-            if (!confirm(`Удалить слайд?`)) return; 
+            if (!confirm('Удалить слайд?')) return; 
             brawlersSections.splice(currentBrawlersSection, 1); 
             if (currentBrawlersSection >= brawlersSections.length && brawlersSections.length > 0) currentBrawlersSection = brawlersSections.length - 1; 
             saveBrawlersSections(); updateBrawlersDisplay(); 
@@ -3112,7 +3245,7 @@
         function startAddBrawlersSlide() { 
             document.getElementById('addSlideSection').style.display = 'none'; 
             document.getElementById('addSlideForm').style.display = 'flex'; 
-            document.getElementById('addSlideForm').innerHTML = `<input type="text" id="newSlideTitle" placeholder="Введите заголовок слайда" class="post-title-input"><textarea id="newSlideDescription" placeholder="Введите описание..." class="post-textarea"></textarea><div class="slide-form-buttons"><button class="save-btn" onclick="saveNewBrawlersSlide()">Сохранить слайд</button><button class="cancel-btn" onclick="cancelAddBrawlersSlide()">Отмена</button></div>`; 
+            document.getElementById('addSlideForm').innerHTML = `<input type="text" id="newSlideTitle" placeholder="Введите заголовок слайда"><textarea id="newSlideDescription" placeholder="Введите описание..." class="post-textarea"></textarea><div class="slide-form-buttons"><button class="save-btn" onclick="saveNewBrawlersSlide()">Сохранить</button><button class="cancel-btn" onclick="cancelAddBrawlersSlide()">Отмена</button></div>`; 
         }
 
         function cancelAddBrawlersSlide() { 
@@ -3123,7 +3256,7 @@
         function saveNewBrawlersSlide() { 
             const title = document.getElementById('newSlideTitle').value.trim(); 
             if (!title) { alert('Введите заголовок!'); return; } 
-            brawlersSections.push({ id: 'custom_' + Date.now(), title: title, description: document.getElementById('newSlideDescription').value.trim(), images: [], currentIndex: 0 }); 
+            brawlersSections.push({ id: 'custom_' + Date.now(), title, description: document.getElementById('newSlideDescription').value.trim(), images: [], currentIndex: 0 }); 
             currentBrawlersSection = brawlersSections.length - 1; 
             saveBrawlersSections(); updateBrawlersDisplay(); alert('Слайд добавлен!'); 
         }
@@ -3146,152 +3279,125 @@
             if (currentBrawlersSection >= brawlersSections.length) return; 
             const section = brawlersSections[currentBrawlersSection]; 
             if (!section.images.length) return; 
-            if (confirm('Удалить текущее изображение?')) { section.images.splice(section.currentIndex, 1); if (section.currentIndex >= section.images.length) section.currentIndex = Math.max(0, section.images.length - 1); saveBrawlersSections(); updateBrawlersDisplay(); } 
+            if (confirm('Удалить изображение?')) { section.images.splice(section.currentIndex, 1); if (section.currentIndex >= section.images.length) section.currentIndex = Math.max(0, section.images.length - 1); saveBrawlersSections(); updateBrawlersDisplay(); } 
         }
 
         // ==================== ИГРА ====================
-        function initGame() {
-            const savedBrawlers = localStorage.getItem('allBrawlers');
-            if (savedBrawlers) allBrawlers = JSON.parse(savedBrawlers);
-            if (allBrawlers.length === 0) {
-                allBrawlers = [
-                    { name: "Шелли", rarity: "Редкий", type: "Человек", gender: "Жен", class: "Урон", age: "Средний возраст", image: "" },
-                    { name: "Кольт", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Стрелок", age: "Средний возраст", image: "" },
-                    { name: "Булл", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Танк", age: "Средний возраст", image: "" }
-                ];
-                saveAllBrawlers();
-            }
-            gameState = { mode: 'traits', difficulty: null, currentItem: null, attempts: 0, maxAttempts: 0, guessedNames: [] };
-        }
+        function initGame() { if (allBrawlers.length === 0) { allBrawlers = [{ name: "Шелли", rarity: "Редкий", type: "Человек", gender: "Жен", class: "Урон", age: "Средний возраст", image: "" }, { name: "Кольт", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Стрелок", age: "Средний возраст", image: "" }, { name: "Булл", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Танк", age: "Средний возраст", image: "" }]; saveAllBrawlers(); } gameState = { mode: 'traits', difficulty: null, currentItem: null, attempts: 0, maxAttempts: 0, guessedNames: [] }; }
 
         function renderGameStart() {
-            const container = document.getElementById('gameContainer');
-            container.innerHTML = `<div class="game-title">Игра - Угадай бравлера</div><p style="color:white;">Режим: По признакам</p><button class="game-btn play-game-btn" id="playGameBtn">Играть</button>${isAdmin ? '<button class="game-btn" id="adminSetupBrawlersBtn" style="background:#5b8ec9;">Настроить бравлеров</button><button class="game-btn" id="adminSetupModesBtn" style="background:#5b8ec9;">Настроить попытки</button>' : ''}`;
-            document.getElementById('playGameBtn').addEventListener('click', renderDifficultyScreen);
-            if (isAdmin) {
-                document.getElementById('adminSetupBrawlersBtn').addEventListener('click', showBrawlerList);
-                document.getElementById('adminSetupModesBtn').addEventListener('click', showAdminSetupModes);
-            }
+            const c = document.getElementById('gameContainer');
+            c.innerHTML = `<div class="game-title">Игра - Угадай бравлера</div><p style="color:white;">Режим: По признакам</p><button class="game-btn play-game-btn" id="playGameBtn">Играть</button>${isAdmin ? '<button class="game-btn" id="adminBrawlersBtn" style="background:#5b8ec9;">Настроить бравлеров</button><button class="game-btn" id="adminModesBtn" style="background:#5b8ec9;">Настроить попытки</button>' : ''}`;
+            document.getElementById('playGameBtn').onclick = renderDifficultyScreen;
+            if (isAdmin) { document.getElementById('adminBrawlersBtn').onclick = showBrawlerList; document.getElementById('adminModesBtn').onclick = showAdminSetupModes; }
         }
 
         function showAdminSetupModes() {
-            const container = document.getElementById('gameContainer');
-            container.innerHTML = `<div class="game-title">Настройка попыток</div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Легко:</label><input type="number" id="attemptsEasy" value="${localStorage.getItem('attempts_traits_easy') || 5}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Нормально:</label><input type="number" id="attemptsNormal" value="${localStorage.getItem('attempts_traits_normal') || 3}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Сложно:</label><input type="number" id="attemptsHard" value="${localStorage.getItem('attempts_traits_hard') || 2}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><div style="margin:15px 0;"><label style="color:white; display:block; margin-bottom:5px;">Невозможно:</label><input type="number" id="attemptsImpossible" value="${localStorage.getItem('attempts_traits_impossible') || 1}" min="1" max="20" style="width:100px; padding:8px; border-radius:8px; border:none;"></div><button class="game-btn save-btn" id="saveModeAttempts">Сохранить</button><button class="game-btn game-back-btn" id="backToStart">Назад</button>`;
-            document.getElementById('saveModeAttempts').onclick = () => { localStorage.setItem('attempts_traits_easy', document.getElementById('attemptsEasy').value); localStorage.setItem('attempts_traits_normal', document.getElementById('attemptsNormal').value); localStorage.setItem('attempts_traits_hard', document.getElementById('attemptsHard').value); localStorage.setItem('attempts_traits_impossible', document.getElementById('attemptsImpossible').value); alert('Настройки сохранены!'); renderGameStart(); };
-            document.getElementById('backToStart').onclick = renderGameStart;
+            const c = document.getElementById('gameContainer');
+            c.innerHTML = `<div class="game-title">Настройка попыток</div>${['easy','normal','hard','impossible'].map(d => `<div style="margin:15px 0;"><label style="color:white;">${d==='easy'?'Легко':d==='normal'?'Нормально':d==='hard'?'Сложно':'Невозможно'}:</label><input type="number" id="att${d}" value="${localStorage.getItem('attempts_traits_'+d)||(d==='easy'?5:d==='normal'?3:d==='hard'?2:1)}" min="1" max="20" style="width:100px;padding:8px;border-radius:8px;border:none;"></div>`).join('')}<button class="game-btn save-btn" id="saveModes">Сохранить</button><button class="game-btn game-back-btn" id="backStart">Назад</button>`;
+            document.getElementById('saveModes').onclick = () => { ['easy','normal','hard','impossible'].forEach(d => localStorage.setItem('attempts_traits_'+d, document.getElementById('att'+d).value)); alert('Сохранено!'); renderGameStart(); };
+            document.getElementById('backStart').onclick = renderGameStart;
         }
 
         function showBrawlerList() {
-            const container = document.getElementById('gameContainer');
-            let brawlersHtml = allBrawlers.map((b, i) => `<div style="display:flex; gap:10px; align-items:center; margin:10px 0; background:rgba(255,255,255,0.1); padding:10px; border-radius:10px;"><span style="color:white; flex:1; font-weight:bold;">${b.name || 'Без имени'}</span><button class="game-btn" style="width:auto; padding:5px 15px; font-size:14px;" onclick="editBrawler(${i})">✏️</button><button class="game-btn" style="width:auto; padding:5px 15px; font-size:14px; background:#f44336;" onclick="deleteBrawler(${i})">✕</button></div>`).join('');
-            container.innerHTML = `<div class="game-title">Список бравлеров (${allBrawlers.length})</div><div style="max-height:400px; overflow-y:auto; width:100%;">${brawlersHtml || '<p style="color:white;">Нет бравлеров</p>'}</div><button class="game-btn" id="addBrawlerBtn">Добавить бравлера</button><button class="game-btn game-back-btn" id="backToStart">Назад</button>`;
-            document.getElementById('addBrawlerBtn').onclick = () => editBrawler(-1);
-            document.getElementById('backToStart').onclick = renderGameStart;
+            const c = document.getElementById('gameContainer');
+            c.innerHTML = `<div class="game-title">Бравлеры (${allBrawlers.length})</div><div style="max-height:400px;overflow-y:auto;width:100%;">${allBrawlers.map((b,i) => `<div style="display:flex;gap:10px;align-items:center;margin:10px 0;background:rgba(255,255,255,0.1);padding:10px;border-radius:10px;"><span style="color:white;flex:1;">${b.name||'?'}</span><button class="game-btn" style="width:auto;padding:5px 15px;font-size:14px;" onclick="editBrawler(${i})">✏️</button><button class="game-btn" style="width:auto;padding:5px 15px;font-size:14px;background:#f44336;" onclick="deleteBrawler(${i})">✕</button></div>`).join('')}</div><button class="game-btn" id="addB">Добавить</button><button class="game-btn game-back-btn" id="backS">Назад</button>`;
+            document.getElementById('addB').onclick = () => editBrawler(-1);
+            document.getElementById('backS').onclick = renderGameStart;
         }
 
         function editBrawler(index) {
-            const brawler = index >= 0 ? allBrawlers[index] : { name: '', rarity: '', type: '', gender: '', class: '', age: '', image: '' };
-            const container = document.getElementById('gameContainer');
-            container.innerHTML = `<div class="game-title">${index >= 0 ? 'Редактировать' : 'Добавить'} бравлера</div><div style="text-align:left; width:100%;"><label style="color:white; display:block; margin-top:10px;">Имя бравлера:</label><input type="text" id="brawlerName" value="${brawler.name}" class="game-input" style="width:100%;" placeholder="Например: Шелли"><label style="color:white; display:block; margin-top:15px;">Изображение:</label><input type="file" id="brawlerImageFile" accept="image/*" style="color:white;"><div style="margin-top:10px;"><img id="brawlerImagePreview" src="${brawler.image || ''}" style="max-width:200px; max-height:200px; ${brawler.image ? '' : 'display:none;'} border-radius:10px;"></div>`;
-            ['rarity','type','gender','class','age'].forEach(trait => {
-                const options = trait === 'rarity' ? RARITY_OPTIONS : trait === 'type' ? TYPE_OPTIONS : trait === 'gender' ? GENDER_OPTIONS : trait === 'class' ? CLASS_OPTIONS : AGE_OPTIONS;
-                container.querySelector('div').innerHTML += `<label style="color:white; display:block; margin-top:15px;">${TRAIT_LABELS[trait]}:</label><div class="trait-selector" id="${trait}Selector">${options.map(o => `<button class="trait-btn ${brawler[trait] === o ? 'selected' : ''}" data-value="${o}">${o}</button>`).join('')}</div>`;
-            });
-            container.innerHTML += `</div><button class="game-btn save-btn" id="saveBrawlerBtn" style="margin-top:20px;">Сохранить</button><button class="game-btn game-back-btn" id="cancelBrawlerBtn">Отмена</button>`;
-            document.querySelectorAll('.trait-selector').forEach(s => s.querySelectorAll('.trait-btn').forEach(b => b.onclick = function() { s.querySelectorAll('.trait-btn').forEach(x => x.classList.remove('selected')); this.classList.add('selected'); }));
-            document.getElementById('brawlerImageFile').onchange = function(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = ev => { document.getElementById('brawlerImagePreview').src = ev.target.result; document.getElementById('brawlerImagePreview').style.display = 'block'; }; reader.readAsDataURL(file); } };
-            document.getElementById('saveBrawlerBtn').onclick = () => {
-                const name = document.getElementById('brawlerName').value.trim();
-                if (!name) { alert('Введите имя бравлера!'); return; }
-                const newBrawler = { name, image: document.getElementById('brawlerImagePreview').src || '', rarity: document.querySelector('#raritySelector .trait-btn.selected')?.dataset.value || '', type: document.querySelector('#typeSelector .trait-btn.selected')?.dataset.value || '', gender: document.querySelector('#genderSelector .trait-btn.selected')?.dataset.value || '', class: document.querySelector('#classSelector .trait-btn.selected')?.dataset.value || '', age: document.querySelector('#ageSelector .trait-btn.selected')?.dataset.value || '' };
-                if (index >= 0) allBrawlers[index] = newBrawler; else allBrawlers.push(newBrawler);
+            const b = index >= 0 ? allBrawlers[index] : { name: '', rarity: '', type: '', gender: '', class: '', age: '', image: '' };
+            const c = document.getElementById('gameContainer');
+            let html = `<div class="game-title">${index>=0?'Изменить':'Добавить'}</div><input type="text" id="bName" value="${b.name}" class="game-input" style="width:100%;" placeholder="Имя"><input type="file" id="bImg" accept="image/*" style="color:white;"><img id="bImgPrev" src="${b.image||''}" style="max-width:200px;${b.image?'':'display:none;'}border-radius:10px;">`;
+            ['rarity','type','gender','class','age'].forEach(t => { const opts = t==='rarity'?RARITY_OPTIONS:t==='type'?TYPE_OPTIONS:t==='gender'?GENDER_OPTIONS:t==='class'?CLASS_OPTIONS:AGE_OPTIONS; html += `<label style="color:white;">${TRAIT_LABELS[t]}:</label><div class="trait-selector" id="${t}Sel">${opts.map(o => `<button class="trait-btn ${b[t]===o?'selected':''}" data-v="${o}">${o}</button>`).join('')}</div>`; });
+            html += `<button class="game-btn save-btn" id="saveB">Сохранить</button><button class="game-btn game-back-btn" id="cancelB">Отмена</button>`;
+            c.innerHTML = html;
+            document.querySelectorAll('.trait-selector').forEach(s => s.querySelectorAll('.trait-btn').forEach(btn => btn.onclick = function() { s.querySelectorAll('.trait-btn').forEach(x => x.classList.remove('selected')); this.classList.add('selected'); }));
+            document.getElementById('bImg').onchange = function(e) { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => { document.getElementById('bImgPrev').src = ev.target.result; document.getElementById('bImgPrev').style.display = 'block'; }; r.readAsDataURL(f); } };
+            document.getElementById('saveB').onclick = () => {
+                const name = document.getElementById('bName').value.trim();
+                if (!name) { alert('Введите имя!'); return; }
+                const nb = { name, image: document.getElementById('bImgPrev').src || '', rarity: document.querySelector('#raritySel .selected')?.dataset.v || '', type: document.querySelector('#typeSel .selected')?.dataset.v || '', gender: document.querySelector('#genderSel .selected')?.dataset.v || '', class: document.querySelector('#classSel .selected')?.dataset.v || '', age: document.querySelector('#ageSel .selected')?.dataset.v || '' };
+                if (index >= 0) allBrawlers[index] = nb; else allBrawlers.push(nb);
                 saveAllBrawlers(); showBrawlerList();
             };
-            document.getElementById('cancelBrawlerBtn').onclick = showBrawlerList;
+            document.getElementById('cancelB').onclick = showBrawlerList;
         }
 
-        function deleteBrawler(index) { if (confirm(`Удалить "${allBrawlers[index].name}"?`)) { allBrawlers.splice(index, 1); saveAllBrawlers(); showBrawlerList(); } }
+        function deleteBrawler(index) { if (confirm('Удалить?')) { allBrawlers.splice(index, 1); saveAllBrawlers(); showBrawlerList(); } }
 
         function renderDifficultyScreen() {
-            const container = document.getElementById('gameContainer');
-            container.innerHTML = `<div class="game-title">Сложность</div><button class="game-btn diff-btn" id="diffEasy">Легко</button><button class="game-btn diff-btn" id="diffNormal">Нормально</button><button class="game-btn diff-btn" id="diffHard">Сложно</button><button class="game-btn diff-btn" id="diffImpossible">Невозможно</button><button class="game-btn diff-btn" id="diffFree">Свободная</button><button class="game-btn game-back-btn" id="backToStartBtn">Назад</button>`;
+            const c = document.getElementById('gameContainer');
+            c.innerHTML = `<div class="game-title">Сложность</div>${['Easy','Normal','Hard','Impossible','Free'].map(d => `<button class="game-btn diff-btn" id="diff${d}">${d==='Easy'?'Легко':d==='Normal'?'Нормально':d==='Hard'?'Сложно':d==='Impossible'?'Невозможно':'Свободная'}</button>`).join('')}<button class="game-btn game-back-btn" id="backS">Назад</button>`;
             ['Easy','Normal','Hard','Impossible','Free'].forEach(d => document.getElementById('diff'+d).onclick = () => startGameRound(d.toLowerCase()));
-            document.getElementById('backToStartBtn').onclick = renderGameStart;
+            document.getElementById('backS').onclick = renderGameStart;
         }
 
         function startGameRound(difficulty) {
             if (allBrawlers.length === 0) { alert('Нет бравлеров!'); renderGameStart(); return; }
-            gameState.difficulty = difficulty; gameState.mode = 'traits';
-            if (difficulty === 'free') gameState.maxAttempts = 0;
-            else { const saved = localStorage.getItem('attempts_traits_' + difficulty); gameState.maxAttempts = saved ? parseInt(saved) : difficulty === 'easy' ? 5 : difficulty === 'normal' ? 3 : difficulty === 'hard' ? 2 : 1; }
-            gameState.attempts = 0; gameState.currentItem = allBrawlers[Math.floor(Math.random() * allBrawlers.length)]; gameState.guessedNames = [];
+            gameState = { mode: 'traits', difficulty, currentItem: allBrawlers[Math.floor(Math.random()*allBrawlers.length)], attempts: 0, maxAttempts: difficulty==='free'?0:parseInt(localStorage.getItem('attempts_traits_'+difficulty))||(difficulty==='easy'?5:difficulty==='normal'?3:difficulty==='hard'?2:1), guessedNames: [] };
             renderGamePlay();
         }
 
         function renderGamePlay() {
-            const container = document.getElementById('gameContainer');
-            container.innerHTML = `<div class="game-title">По признакам | ${gameState.difficulty}</div>${gameState.maxAttempts > 0 ? `<p style="color:white;">Попытки: ${gameState.attempts}/${gameState.maxAttempts}</p>` : '<p style="color:white;">Свободный режим</p>'}<div style="position:relative; display:inline-block;"><input type="text" id="guessInput" class="game-input" placeholder="Введите имя бравлера" autocomplete="off"><div id="suggestionsDropdown" class="suggestions-dropdown" style="display:none;"></div></div><button class="game-btn" id="submitGuessBtn">Проверить</button><div class="game-result" id="gameResult"></div><div class="guess-history" id="guessHistory"></div><button class="game-btn game-back-btn" id="backToDiffBtn">Назад</button>`;
-            if (gameState.guessedNames.length > 0) renderGuessHistory();
-            const input = document.getElementById('guessInput');
-            const dropdown = document.getElementById('suggestionsDropdown');
-            const brawlerNames = allBrawlers.map(b => b.name);
-            input.addEventListener('input', function() { const val = this.value.toLowerCase(); dropdown.innerHTML = ''; if (!val) { dropdown.style.display = 'none'; return; } const matches = brawlerNames.filter(n => n.toLowerCase().startsWith(val) && !gameState.guessedNames.includes(n)); if (matches.length) { matches.forEach(n => { const div = document.createElement('div'); div.textContent = n; div.onclick = () => { input.value = n; dropdown.style.display = 'none'; }; dropdown.appendChild(div); }); dropdown.style.display = 'block'; } else dropdown.style.display = 'none'; });
-            document.addEventListener('click', function(e) { if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none'; });
-            document.getElementById('submitGuessBtn').onclick = checkGuess;
-            input.addEventListener('keypress', function(e) { if (e.key === 'Enter') checkGuess(); });
-            document.getElementById('backToDiffBtn').onclick = renderDifficultyScreen;
+            const c = document.getElementById('gameContainer');
+            c.innerHTML = `<div class="game-title">${gameState.difficulty}</div>${gameState.maxAttempts>0?`<p style="color:white;">${gameState.attempts}/${gameState.maxAttempts}</p>`:'<p style="color:white;">Свободный режим</p>'}<div style="position:relative;"><input type="text" id="guessI" class="game-input" placeholder="Имя бравлера" autocomplete="off"><div id="sugg" class="suggestions-dropdown" style="display:none;"></div></div><button class="game-btn" id="subG">Проверить</button><div class="game-result" id="res"></div><div class="guess-history" id="hist"></div><button class="game-btn game-back-btn" id="backD">Назад</button>`;
+            const inp = document.getElementById('guessI'), dd = document.getElementById('sugg'), names = allBrawlers.map(b => b.name);
+            inp.addEventListener('input', function() { const v = this.value.toLowerCase(); dd.innerHTML = ''; if (!v) { dd.style.display = 'none'; return; } const m = names.filter(n => n.toLowerCase().startsWith(v) && !gameState.guessedNames.includes(n)); if (m.length) { m.forEach(n => { const d = document.createElement('div'); d.textContent = n; d.onclick = () => { inp.value = n; dd.style.display = 'none'; }; dd.appendChild(d); }); dd.style.display = 'block'; } else dd.style.display = 'none'; });
+            document.addEventListener('click', function(e) { if (!inp.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none'; });
+            document.getElementById('subG').onclick = checkGuess;
+            inp.addEventListener('keypress', function(e) { if (e.key === 'Enter') checkGuess(); });
+            document.getElementById('backD').onclick = renderDifficultyScreen;
+            if (gameState.guessedNames.length) renderGuessHistory();
         }
 
-        function findBrawlerByName(name) { return allBrawlers.find(b => b.name.toLowerCase() === name.toLowerCase()); }
-        function compareTraits(guessed, target) { const result = {}; ['rarity', 'type', 'gender', 'class', 'age'].forEach(t => { result[t] = { value: guessed[t] || 'Не указано', correct: guessed[t] === target[t] }; }); return result; }
+        function findBrawlerByName(n) { return allBrawlers.find(b => b.name.toLowerCase() === n.toLowerCase()); }
+        function compareTraits(g, t) { const r = {}; ['rarity','type','gender','class','age'].forEach(k => { r[k] = { value: g[k]||'?', correct: g[k]===t[k] }; }); return r; }
 
         function renderGuessHistory() {
-            const historyDiv = document.getElementById('guessHistory'); if (!historyDiv) return; historyDiv.innerHTML = '';
-            gameState.guessedNames.forEach(guessedName => {
-                const brawler = findBrawlerByName(guessedName); const item = document.createElement('div'); item.className = 'guess-history-item';
-                if (brawler && gameState.mode === 'traits') {
-                    const traits = compareTraits(brawler, gameState.currentItem);
-                    let traitsText = '';
-                    ['rarity', 'type', 'gender', 'class', 'age'].forEach(t => { const d = traits[t]; traitsText += `<span class="trait-tag ${d.correct ? 'correct' : 'incorrect'}" style="margin:2px; display:inline-block;">${TRAIT_LABELS[t]}: ${d.value}</span>`; });
-                    item.innerHTML = `<div class="guess-history-name">${guessedName}</div>${traitsText}`;
-                } else item.innerHTML = `<div class="guess-history-name">${guessedName}</div>`;
-                historyDiv.appendChild(item);
+            const h = document.getElementById('hist'); if (!h) return; h.innerHTML = '';
+            gameState.guessedNames.forEach(n => {
+                const b = findBrawlerByName(n), item = document.createElement('div'); item.className = 'guess-history-item';
+                if (b && gameState.mode==='traits') { const t = compareTraits(b, gameState.currentItem); item.innerHTML = `<div class="guess-history-name">${n}</div>${['rarity','type','gender','class','age'].map(k => `<span class="trait-tag ${t[k].correct?'correct':'incorrect'}" style="margin:2px;display:inline-block;">${TRAIT_LABELS[k]}: ${t[k].value}</span>`).join('')}`; }
+                else item.innerHTML = `<div class="guess-history-name">${n}</div>`;
+                h.appendChild(item);
             });
         }
 
         function checkGuess() {
-            const input = document.getElementById('guessInput'); if (!input) return;
-            const guess = input.value.trim(); const resultDiv = document.getElementById('gameResult');
-            if (!guess) { resultDiv.textContent = 'Введите имя бравлера!'; resultDiv.style.color = '#ffaa00'; return; }
-            if (!findBrawlerByName(guess)) { resultDiv.textContent = 'Такого бравлера нет в списке!'; resultDiv.style.color = '#ffaa00'; input.value = ''; return; }
-            if (gameState.guessedNames.includes(guess)) { resultDiv.textContent = 'Уже называли!'; resultDiv.style.color = '#ffaa00'; input.value = ''; return; }
-            gameState.attempts++; gameState.guessedNames.push(guess); input.value = '';
-            if (guess.toLowerCase() === gameState.currentItem.name.toLowerCase()) { resultDiv.textContent = `🎉 Правильно! Это ${gameState.currentItem.name}!`; resultDiv.style.color = '#4CAF50'; endGame(true); }
-            else { const b = findBrawlerByName(guess); if (gameState.mode === 'traits' && b) { const t = compareTraits(b, gameState.currentItem); resultDiv.textContent = Object.values(t).every(x => x.correct) ? 'Все признаки совпадают, но имя другое!' : 'Неверно! Смотрите подсказки.'; resultDiv.style.color = Object.values(t).every(x => x.correct) ? '#ffaa00' : '#ff5722'; } else { resultDiv.textContent = 'Неверно!'; resultDiv.style.color = '#ff5722'; }
+            const inp = document.getElementById('guessI'), res = document.getElementById('gameResult');
+            if (!inp) return;
+            const g = inp.value.trim();
+            if (!g) { res.textContent = 'Введите имя!'; res.style.color = '#ffaa00'; return; }
+            if (!findBrawlerByName(g)) { res.textContent = 'Нет в списке!'; res.style.color = '#ffaa00'; inp.value = ''; return; }
+            if (gameState.guessedNames.includes(g)) { res.textContent = 'Уже называли!'; res.style.color = '#ffaa00'; inp.value = ''; return; }
+            gameState.attempts++; gameState.guessedNames.push(g); inp.value = '';
+            if (g.toLowerCase() === gameState.currentItem.name.toLowerCase()) { res.textContent = `🎉 ${gameState.currentItem.name}!`; res.style.color = '#4CAF50'; endGame(true); }
+            else { const b = findBrawlerByName(g); if (gameState.mode==='traits' && b) { const t = compareTraits(b, gameState.currentItem); res.textContent = Object.values(t).every(x => x.correct) ? 'Признаки совпадают!' : 'Неверно!'; res.style.color = Object.values(t).every(x => x.correct) ? '#ffaa00' : '#ff5722'; } else { res.textContent = 'Неверно!'; res.style.color = '#ff5722'; }
                 renderGuessHistory();
-                if (gameState.maxAttempts > 0 && gameState.attempts >= gameState.maxAttempts) { resultDiv.textContent = `😞 Попытки закончились! Это: ${gameState.currentItem.name}`; resultDiv.style.color = '#f44336'; endGame(false); } }
+                if (gameState.maxAttempts > 0 && gameState.attempts >= gameState.maxAttempts) { res.textContent = `😞 Это: ${gameState.currentItem.name}`; res.style.color = '#f44336'; endGame(false); } }
         }
 
-        function endGame(won) {
-            const submitBtn = document.getElementById('submitGuessBtn'); const input = document.getElementById('guessInput');
-            if (submitBtn) submitBtn.disabled = true; if (input) input.disabled = true;
+        function endGame() {
+            const sb = document.getElementById('subG'), inp = document.getElementById('guessI');
+            if (sb) sb.disabled = true; if (inp) inp.disabled = true;
             renderGuessHistory();
-            const container = document.getElementById('gameContainer');
-            const retryBtn = document.createElement('button'); retryBtn.className = 'game-btn'; retryBtn.textContent = 'Играть ещё'; retryBtn.onclick = () => startGameRound(gameState.difficulty);
-            const homeBtn = document.createElement('button'); homeBtn.className = 'game-btn game-back-btn'; homeBtn.textContent = 'В меню'; homeBtn.onclick = renderGameStart;
-            container.appendChild(retryBtn); container.appendChild(homeBtn);
+            const c = document.getElementById('gameContainer');
+            const rb = document.createElement('button'); rb.className = 'game-btn'; rb.textContent = 'Ещё'; rb.onclick = () => startGameRound(gameState.difficulty);
+            const hb = document.createElement('button'); hb.className = 'game-btn game-back-btn'; hb.textContent = 'Меню'; hb.onclick = renderGameStart;
+            c.appendChild(rb); c.appendChild(hb);
         }
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         function initializeApp() {
-            const adminStatus = localStorage.getItem('isAdmin');
-            isAdmin = (adminStatus === 'true');
+            isAdmin = localStorage.getItem('isAdmin') === 'true';
             if (isAdmin) { document.getElementById('adminLoginBtn').style.display = 'none'; document.getElementById('logoutBtn').classList.add('visible'); }
-            else { document.getElementById('adminLoginBtn').style.display = 'block'; document.getElementById('logoutBtn').classList.remove('visible'); }
             loadDataFromFirebase();
             updateAllAdminButtons();
             setInterval(updateAllTimers, 30000);
             initGame();
+            checkScreenSize();
         }
 
         window.addEventListener('DOMContentLoaded', initializeApp);
@@ -3300,6 +3406,8 @@
         window.showContacts = showContacts;
         window.closeContacts = closeContacts;
         window.showSection = showSection;
+        window.navigateTo = navigateTo;
+        window.toggleSidebar = toggleSidebar;
         window.showAdminLogin = showAdminLogin;
         window.checkPassword = checkPassword;
         window.closeModal = closeModal;
