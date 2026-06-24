@@ -1,5 +1,9 @@
 const CACHE_NAME = 'boom-brawl-v1';
-const ASSETS = ['/','/index.html','/manifest.json'];
+const ASSETS = [
+  '/Boom-Brawl/',
+  '/Boom-Brawl/index.html',
+  '/Boom-Brawl/manifest.json'
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
