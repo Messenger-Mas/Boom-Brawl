@@ -205,9 +205,33 @@
             text-align: left;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             letter-spacing: 0.5px;
             width: 100%;
+        }
+
+        /* Бейдж "новое" на кнопке навигации */
+        .nav-btn .new-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ff4444;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 3px 7px;
+            border-radius: 10px;
+            z-index: 5;
+            box-shadow: 0 2px 6px rgba(255, 0, 0, 0.4);
+            animation: badgePulse 2s infinite;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        @keyframes badgePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .nav-btn.game-nav-btn {
@@ -239,6 +263,7 @@
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: 0.5s;
+            pointer-events: none;
         }
 
         .nav-btn:hover {
@@ -454,6 +479,7 @@
             opacity: 0.9;
         }
 
+        /* Карточка поста */
         .post-card {
             background: #5b8ec9;
             border-radius: 20px;
@@ -462,6 +488,24 @@
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.35);
             width: 100%;
+        }
+
+        /* Бейдж "новое" на карточке */
+        .post-card-new-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ff4444;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 15;
+            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.4);
+            animation: badgePulse 2s infinite;
+            pointer-events: none;
+            white-space: nowrap;
         }
 
         .timer-badge {
@@ -738,6 +782,33 @@
         .save-btn:hover,
         .cancel-btn:hover {
             transform: scale(1.05);
+        }
+
+        /* Чекбокс "показать как новое" */
+        .show-as-new-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .show-as-new-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #ff4444;
+        }
+
+        .show-as-new-checkbox label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            user-select: none;
         }
 
         .checkbox-container {
@@ -1027,6 +1098,25 @@
             align-items: center;
             justify-content: center;
             background: transparent;
+            position: relative;
+        }
+
+        /* Бейдж "новое" на слайде бравлеров */
+        .slide-new-badge {
+            position: absolute;
+            top: -5px;
+            left: 10px;
+            background: #ff4444;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 15;
+            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.4);
+            animation: badgePulse 2s infinite;
+            pointer-events: none;
+            white-space: nowrap;
         }
 
         .image-container img {
@@ -1510,14 +1600,14 @@
             📡 Оффлайн режим
         </div>
         
-        <div class="nav-buttons">
-            <button class="nav-btn" onclick="navigateTo('news')">Новости</button>
-            <button class="nav-btn" onclick="navigateTo('brawltalk')">Бравл толк</button>
-            <button class="nav-btn" onclick="navigateTo('balance')">Изменения в балансе</button>
-            <button class="nav-btn" onclick="navigateTo('shop')">Акции в магазине</button>
-            <button class="nav-btn" onclick="navigateTo('bugs')">Баги и изменения</button>
-            <button class="nav-btn" onclick="navigateTo('brawlers')">Про бравлеров</button>
-            <button class="nav-btn game-nav-btn" onclick="navigateTo('game')">Игра - Угадай бравлера</button>
+        <div class="nav-buttons" id="navButtons">
+            <button class="nav-btn" data-section="news" onclick="navigateTo('news')">Новости</button>
+            <button class="nav-btn" data-section="brawltalk" onclick="navigateTo('brawltalk')">Бравл толк</button>
+            <button class="nav-btn" data-section="balance" onclick="navigateTo('balance')">Изменения в балансе</button>
+            <button class="nav-btn" data-section="shop" onclick="navigateTo('shop')">Акции в магазине</button>
+            <button class="nav-btn" data-section="bugs" onclick="navigateTo('bugs')">Баги и изменения</button>
+            <button class="nav-btn" data-section="brawlers" onclick="navigateTo('brawlers')">Про бравлеров</button>
+            <button class="nav-btn game-nav-btn" data-section="game" onclick="navigateTo('game')">Игра - Угадай бравлера</button>
         </div>
         <button class="admin-btn" id="adminLoginBtn" onclick="showAdminLogin()">Войти как администратор</button>
         <button class="logout-btn" id="logoutBtn" onclick="logout()">Выйти из админа</button>
@@ -1639,6 +1729,8 @@
     </div>
 
     <script>
+        // Часть 2 будет содержать весь JavaScript код
+        
         // ==================== FIREBASE ====================
         const firebaseConfig = {
             apiKey: "AIzaSyCgx-V8GP_cgCZLGws2e1pHZ5OnMy20nxk",
@@ -1659,6 +1751,278 @@
         } catch (error) {
             console.error('Ошибка Firebase:', error);
             database = null;
+        }
+
+        // ==================== СИСТЕМА НЕПРОЧИТАННЫХ ====================
+        // Генерируем или получаем ID пользователя
+        function getUserId() {
+            let userId = localStorage.getItem('boomBrawlUserId');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('boomBrawlUserId', userId);
+            }
+            return userId;
+        }
+        
+        const currentUserId = getUserId();
+
+        // Ключи для хранения прочитанных
+        function getReadKey(section) {
+            return `read_${section}_${currentUserId}`;
+        }
+
+        // Получить список прочитанных ID для раздела
+        function getReadItems(section) {
+            const key = getReadKey(section);
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : { postIds: [], slideIds: [], lastSeen: 0 };
+        }
+
+        // Сохранить список прочитанных
+        function saveReadItems(section, readData) {
+            const key = getReadKey(section);
+            readData.lastSeen = Date.now();
+            localStorage.setItem(key, JSON.stringify(readData));
+        }
+
+        // Отметить пост как прочитанный
+        function markPostAsRead(section, postId) {
+            const readData = getReadItems(section);
+            if (!readData.postIds.includes(postId)) {
+                readData.postIds.push(postId);
+                saveReadItems(section, readData);
+                updateNavBadge(section);
+                refreshPostBadges(section);
+            }
+        }
+
+        // Отметить слайд как прочитанный
+        function markSlideAsRead(section, slideId) {
+            const readData = getReadItems(section);
+            if (!readData.slideIds.includes(slideId)) {
+                readData.slideIds.push(slideId);
+                saveReadItems(section, readData);
+                updateNavBadge(section);
+                updateBrawlersDisplay();
+            }
+        }
+
+        // Сбросить прочитанное для поста (при редактировании с галочкой "показать как новое")
+        function resetPostRead(section, postId) {
+            const readData = getReadItems(section);
+            readData.postIds = readData.postIds.filter(id => id !== postId);
+            saveReadItems(section, readData);
+            updateNavBadge(section);
+        }
+
+        // Сбросить прочитанное для слайда
+        function resetSlideRead(section, slideId) {
+            const readData = getReadItems(section);
+            readData.slideIds = readData.slideIds.filter(id => id !== slideId);
+            saveReadItems(section, readData);
+            updateNavBadge(section);
+        }
+
+        // Проверить, есть ли непрочитанные в разделе
+        function hasUnread(section) {
+            const readData = getReadItems(section);
+            
+            if (section === 'brawlers') {
+                // Проверяем слайды
+                for (let i = 0; i < brawlersSections.length; i++) {
+                    const slideId = brawlersSections[i].id;
+                    if (!readData.slideIds.includes(slideId)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            // Для разделов с постами
+            let posts;
+            switch (section) {
+                case 'news': posts = newsPosts; break;
+                case 'shop': posts = shopPosts; break;
+                case 'balance': posts = balancePosts; break;
+                case 'bugs': posts = bugsPosts; break;
+                case 'brawltalk': posts = brawlTalkPosts; break;
+                default: return false;
+            }
+            
+            for (let i = 0; i < posts.length; i++) {
+                const postId = posts[i].id || `post_${i}_${posts[i].createdAt || 0}`;
+                if (!readData.postIds.includes(postId)) {
+                    return true;
+                }
+            }
+            
+            // Проверяем видео Brawl Talk отдельно
+            if (section === 'brawltalk' && brawlTalkVideoData) {
+                const videoId = 'bt_video_' + (brawlTalkVideoTimer?.createdAt || 0);
+                if (!readData.postIds.includes(videoId)) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // Получить индекс первого непрочитанного поста
+        function getFirstUnreadPostIndex(section) {
+            const readData = getReadItems(section);
+            let posts;
+            switch (section) {
+                case 'news': posts = newsPosts; break;
+                case 'shop': posts = shopPosts; break;
+                case 'balance': posts = balancePosts; break;
+                case 'bugs': posts = bugsPosts; break;
+                case 'brawltalk': posts = brawlTalkPosts; break;
+                default: return -1;
+            }
+            
+            for (let i = 0; i < posts.length; i++) {
+                const postId = posts[i].id || `post_${i}_${posts[i].createdAt || 0}`;
+                if (!readData.postIds.includes(postId)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // Получить индекс первого непрочитанного слайда
+        function getFirstUnreadSlideIndex() {
+            const readData = getReadItems('brawlers');
+            for (let i = 0; i < brawlersSections.length; i++) {
+                const slideId = brawlersSections[i].id;
+                if (!readData.slideIds.includes(slideId)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // Обновить бейдж на кнопке навигации
+        function updateNavBadge(section) {
+            const btn = document.querySelector(`.nav-btn[data-section="${section}"]`);
+            if (!btn) return;
+            
+            // Удаляем старый бейдж
+            const existingBadge = btn.querySelector('.new-badge');
+            if (existingBadge) existingBadge.remove();
+            
+            if (hasUnread(section)) {
+                const badge = document.createElement('span');
+                badge.className = 'new-badge';
+                badge.textContent = 'новое';
+                btn.appendChild(badge);
+            }
+        }
+
+        // Обновить все навигационные бейджи
+        function updateAllNavBadges() {
+            ['news', 'brawltalk', 'balance', 'shop', 'bugs', 'brawlers'].forEach(section => {
+                updateNavBadge(section);
+            });
+        }
+
+        // Обновить бейджи на постах в текущем разделе
+        function refreshPostBadges(section) {
+            const readData = getReadItems(section);
+            let containerId, posts;
+            
+            switch (section) {
+                case 'news': containerId = 'newsPostsContainer'; posts = newsPosts; break;
+                case 'shop': containerId = 'postsContainer'; posts = shopPosts; break;
+                case 'balance': containerId = 'balancePostsContainer'; posts = balancePosts; break;
+                case 'bugs': containerId = 'bugsPostsContainer'; posts = bugsPosts; break;
+                case 'brawltalk': containerId = 'brawlTalkPostsContainer'; posts = brawlTalkPosts; break;
+                default: return;
+            }
+            
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const cards = container.querySelectorAll('.post-card');
+            cards.forEach((card, index) => {
+                if (index < posts.length) {
+                    const postId = posts[index].id || `post_${index}_${posts[index].createdAt || 0}`;
+                    const existingBadge = card.querySelector('.post-card-new-badge');
+                    if (existingBadge) existingBadge.remove();
+                    
+                    if (!readData.postIds.includes(postId)) {
+                        const badge = document.createElement('span');
+                        badge.className = 'post-card-new-badge';
+                        badge.textContent = 'новое';
+                        card.appendChild(badge);
+                    }
+                }
+            });
+        }
+
+        // Прокрутка к первому непрочитанному или последнему посту
+        function scrollToUnreadOrLast(section) {
+            const containerId = getContainerIdForSection(section);
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const firstUnreadIndex = getFirstUnreadPostIndex(section);
+            
+            if (firstUnreadIndex >= 0) {
+                // Скроллим к первому непрочитанному
+                const cards = container.querySelectorAll('.post-card');
+                if (cards[firstUnreadIndex]) {
+                    setTimeout(() => {
+                        cards[firstUnreadIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+            } else {
+                // Скроллим к последнему
+                setTimeout(() => {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    // Дополнительно скроллим к последнему элементу
+                    const cards = container.querySelectorAll('.post-card');
+                    if (cards.length > 0) {
+                        cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            }
+        }
+
+        // Получить ID контейнера для раздела
+        function getContainerIdForSection(section) {
+            switch (section) {
+                case 'news': return 'newsPostsContainer';
+                case 'shop': return 'postsContainer';
+                case 'balance': return 'balancePostsContainer';
+                case 'bugs': return 'bugsPostsContainer';
+                case 'brawltalk': return 'brawlTalkPostsContainer';
+                default: return '';
+            }
+        }
+
+        // Отметить все посты в разделе как прочитанные при просмотре
+        function markAllVisiblePostsAsRead(section) {
+            let posts;
+            switch (section) {
+                case 'news': posts = newsPosts; break;
+                case 'shop': posts = shopPosts; break;
+                case 'balance': posts = balancePosts; break;
+                case 'bugs': posts = bugsPosts; break;
+                case 'brawltalk': 
+                    posts = brawlTalkPosts;
+                    // Также отмечаем видео
+                    if (brawlTalkVideoData) {
+                        const videoId = 'bt_video_' + (brawlTalkVideoTimer?.createdAt || 0);
+                        markPostAsRead('brawltalk', videoId);
+                    }
+                    break;
+                default: return;
+            }
+            
+            posts.forEach((post, index) => {
+                const postId = post.id || `post_${index}_${post.createdAt || 0}`;
+                markPostAsRead(section, postId);
+            });
         }
 
         // ==================== МОБИЛЬНОЕ МЕНЮ ====================
@@ -1687,7 +2051,6 @@
             showSection(section);
         }
 
-        // Проверка размера экрана
         function checkScreenSize() {
             const hamburger = document.getElementById('hamburgerBtn');
             if (window.innerWidth <= 768) {
@@ -1727,6 +2090,12 @@
         let editingBugsPostId = null;
         let currentBrawlTalkFormImages = [];
         let editingBrawlTalkPostId = null;
+        let showAsNewNews = false;
+        let showAsNewShop = false;
+        let showAsNewBalance = false;
+        let showAsNewBugs = false;
+        let showAsNewBrawlTalk = false;
+        let showAsNewSlide = false;
 
         const RARITY_OPTIONS = ['Редкий', 'Сверхредкий', 'Эпический', 'Мифический', 'Легендарный'];
         const TYPE_OPTIONS = ['Человек', 'Робот', 'Животное', 'Другое'];
@@ -1784,7 +2153,8 @@
         }
         
         if (isPWA()) installButton.classList.remove('show');
-                // ==================== КОНТАКТЫ ====================
+
+        // ==================== КОНТАКТЫ ====================
         function showContacts() {
             document.getElementById('contactsModal').classList.add('active');
         }
@@ -1950,6 +2320,26 @@
             });
         }
 
+        // ==================== ЧЕКБОКС "ПОКАЗАТЬ КАК НОВОЕ" ====================
+        function createShowAsNewCheckbox(section) {
+            const div = document.createElement('div');
+            div.className = 'show-as-new-checkbox';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `showAsNew_${section}`;
+            checkbox.checked = false;
+            
+            const label = document.createElement('label');
+            label.htmlFor = `showAsNew_${section}`;
+            label.textContent = 'Показать как новое (сбросить прочитанное)';
+            
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            
+            return div;
+        }
+
         // ==================== ЗАГРУЗКА ДАННЫХ ====================
         function loadDataFromFirebase() {
             if (!firebaseAvailable) { loadLocalData(); return; }
@@ -1957,33 +2347,44 @@
             database.ref('newsPosts').on('value', (snapshot) => {
                 newsPosts = snapshot.val() || [];
                 if (!Array.isArray(newsPosts)) newsPosts = [];
+                // Присваиваем ID если нет
+                newsPosts.forEach((post, i) => { if (!post.id) post.id = `news_${i}_${post.createdAt || Date.now()}`; });
                 renderAllNewsPosts();
+                updateNavBadge('news');
             });
 
             database.ref('shopPosts').on('value', (snapshot) => {
                 shopPosts = snapshot.val() || [];
                 if (!Array.isArray(shopPosts)) shopPosts = [];
                 shopPosts = cleanExpiredPosts(shopPosts);
+                shopPosts.forEach((post, i) => { if (!post.id) post.id = `shop_${i}_${post.createdAt || Date.now()}`; });
                 renderAllShopPosts();
+                updateNavBadge('shop');
             });
 
             database.ref('balancePosts').on('value', (snapshot) => {
                 balancePosts = snapshot.val() || [];
                 if (!Array.isArray(balancePosts)) balancePosts = [];
+                balancePosts.forEach((post, i) => { if (!post.id) post.id = `balance_${i}_${post.createdAt || Date.now()}`; });
                 renderAllBalancePosts();
+                updateNavBadge('balance');
             });
 
             database.ref('bugsPosts').on('value', (snapshot) => {
                 bugsPosts = snapshot.val() || [];
                 if (!Array.isArray(bugsPosts)) bugsPosts = [];
+                bugsPosts.forEach((post, i) => { if (!post.id) post.id = `bugs_${i}_${post.createdAt || Date.now()}`; });
                 renderAllBugsPosts();
+                updateNavBadge('bugs');
             });
 
             database.ref('brawlTalkPosts').on('value', (snapshot) => {
                 brawlTalkPosts = snapshot.val() || [];
                 if (!Array.isArray(brawlTalkPosts)) brawlTalkPosts = [];
                 brawlTalkPosts = cleanExpiredPosts(brawlTalkPosts);
+                brawlTalkPosts.forEach((post, i) => { if (!post.id) post.id = `bt_${i}_${post.createdAt || Date.now()}`; });
                 renderAllBrawlTalkPosts();
+                updateNavBadge('brawltalk');
             });
 
             database.ref('brawlTalkVideo').on('value', (snapshot) => {
@@ -2001,6 +2402,7 @@
                     }
                 }
                 renderBrawlTalkVideo();
+                updateNavBadge('brawltalk');
             });
 
             database.ref('brawlersSections').on('value', (snapshot) => {
@@ -2013,7 +2415,10 @@
                         { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
                     ];
                 }
+                // Присваиваем ID если нет
+                brawlersSections.forEach((s, i) => { if (!s.id) s.id = `slide_${i}_${Date.now()}`; });
                 updateBrawlersDisplay();
+                updateNavBadge('brawlers');
             });
 
             database.ref('allBrawlers').on('value', (snapshot) => {
@@ -2033,19 +2438,19 @@
 
         function loadLocalData() {
             const savedNews = localStorage.getItem('newsPosts');
-            if (savedNews) { newsPosts = JSON.parse(savedNews); renderAllNewsPosts(); }
+            if (savedNews) { newsPosts = JSON.parse(savedNews); newsPosts.forEach((p,i) => { if(!p.id) p.id = `news_${i}_${p.createdAt||Date.now()}`; }); renderAllNewsPosts(); }
             
             const savedShop = localStorage.getItem('shopPosts');
-            if (savedShop) { shopPosts = cleanExpiredPosts(JSON.parse(savedShop)); renderAllShopPosts(); }
+            if (savedShop) { shopPosts = cleanExpiredPosts(JSON.parse(savedShop)); shopPosts.forEach((p,i) => { if(!p.id) p.id = `shop_${i}_${p.createdAt||Date.now()}`; }); renderAllShopPosts(); }
             
             const savedBalance = localStorage.getItem('balancePosts');
-            if (savedBalance) { balancePosts = JSON.parse(savedBalance); renderAllBalancePosts(); }
+            if (savedBalance) { balancePosts = JSON.parse(savedBalance); balancePosts.forEach((p,i) => { if(!p.id) p.id = `balance_${i}_${p.createdAt||Date.now()}`; }); renderAllBalancePosts(); }
             
             const savedBugs = localStorage.getItem('bugsPosts');
-            if (savedBugs) { bugsPosts = JSON.parse(savedBugs); renderAllBugsPosts(); }
+            if (savedBugs) { bugsPosts = JSON.parse(savedBugs); bugsPosts.forEach((p,i) => { if(!p.id) p.id = `bugs_${i}_${p.createdAt||Date.now()}`; }); renderAllBugsPosts(); }
             
             const savedBrawlTalk = localStorage.getItem('brawlTalkPosts');
-            if (savedBrawlTalk) { brawlTalkPosts = cleanExpiredPosts(JSON.parse(savedBrawlTalk)); renderAllBrawlTalkPosts(); }
+            if (savedBrawlTalk) { brawlTalkPosts = cleanExpiredPosts(JSON.parse(savedBrawlTalk)); brawlTalkPosts.forEach((p,i) => { if(!p.id) p.id = `bt_${i}_${p.createdAt||Date.now()}`; }); renderAllBrawlTalkPosts(); }
             
             const savedBrawlTalkVideo = localStorage.getItem('brawlTalkVideo');
             if (savedBrawlTalkVideo) {
@@ -2065,10 +2470,13 @@
                     { id: 'birthdays', title: 'Дни рождения бравлеров', description: '', images: [], currentIndex: 0 }
                 ];
             }
+            brawlersSections.forEach((s,i) => { if(!s.id) s.id = `slide_${i}_${Date.now()}`; });
             updateBrawlersDisplay();
             
             const savedBrawlers = localStorage.getItem('allBrawlers');
             if (savedBrawlers) allBrawlers = JSON.parse(savedBrawlers);
+            
+            updateAllNavBadges();
         }
 
         function saveNewsPosts() { saveToFirebase('newsPosts', newsPosts); }
@@ -2097,17 +2505,56 @@
         function showSection(section) {
             document.getElementById('welcomeMessage').style.display = 'none';
             document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            
             switch (section) {
-                case 'news': document.getElementById('newsSection').classList.add('active'); renderAllNewsPosts(); break;
-                case 'brawlers': document.getElementById('brawlersSection').classList.add('active'); updateBrawlersDisplay(); break;
-                case 'balance': document.getElementById('balanceSection').classList.add('active'); renderAllBalancePosts(); break;
-                case 'shop': document.getElementById('shopSection').classList.add('active'); renderAllShopPosts(); break;
-                case 'bugs': document.getElementById('bugsSection').classList.add('active'); renderAllBugsPosts(); break;
-                case 'brawltalk': document.getElementById('brawlTalkSection').classList.add('active'); renderAllBrawlTalkPosts(); renderBrawlTalkVideo(); break;
-                case 'game': document.getElementById('gameSection').classList.add('active'); renderGameStart(); break;
+                case 'news': 
+                    document.getElementById('newsSection').classList.add('active'); 
+                    renderAllNewsPosts(); 
+                    markAllVisiblePostsAsRead('news');
+                    scrollToUnreadOrLast('news');
+                    break;
+                case 'brawlers': 
+                    document.getElementById('brawlersSection').classList.add('active'); 
+                    // Находим первый непрочитанный слайд
+                    const unreadSlideIndex = getFirstUnreadSlideIndex();
+                    if (unreadSlideIndex >= 0 && unreadSlideIndex < brawlersSections.length) {
+                        currentBrawlersSection = unreadSlideIndex;
+                    }
+                    updateBrawlersDisplay(); 
+                    break;
+                case 'balance': 
+                    document.getElementById('balanceSection').classList.add('active'); 
+                    renderAllBalancePosts(); 
+                    markAllVisiblePostsAsRead('balance');
+                    scrollToUnreadOrLast('balance');
+                    break;
+                case 'shop': 
+                    document.getElementById('shopSection').classList.add('active'); 
+                    renderAllShopPosts(); 
+                    markAllVisiblePostsAsRead('shop');
+                    scrollToUnreadOrLast('shop');
+                    break;
+                case 'bugs': 
+                    document.getElementById('bugsSection').classList.add('active'); 
+                    renderAllBugsPosts(); 
+                    markAllVisiblePostsAsRead('bugs');
+                    scrollToUnreadOrLast('bugs');
+                    break;
+                case 'brawltalk': 
+                    document.getElementById('brawlTalkSection').classList.add('active'); 
+                    renderAllBrawlTalkPosts(); 
+                    renderBrawlTalkVideo(); 
+                    markAllVisiblePostsAsRead('brawltalk');
+                    scrollToUnreadOrLast('brawltalk');
+                    break;
+                case 'game': 
+                    document.getElementById('gameSection').classList.add('active'); 
+                    renderGameStart(); 
+                    break;
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
             updateAllAdminButtons();
+            updateAllNavBadges();
         }
 
         // ==================== АДМИН ====================
@@ -2242,6 +2689,8 @@
         function renderAllNewsPosts() {
             const container = document.getElementById('newsPostsContainer');
             container.innerHTML = '';
+            const readData = getReadItems('news');
+            
             newsPosts.forEach((post, index) => {
                 if (editingNewsPostId === index) {
                     const placeholder = document.createElement('div'); 
@@ -2250,16 +2699,27 @@
                     placeholder.id = 'editing-news-' + index; 
                     container.appendChild(placeholder);
                 } else { 
-                    container.appendChild(createNewsPostElement(post, index)); 
+                    const card = createNewsPostElement(post, index);
+                    const postId = post.id || `post_${index}_${post.createdAt || 0}`;
+                    if (!readData.postIds.includes(postId)) {
+                        const badge = document.createElement('span');
+                        badge.className = 'post-card-new-badge';
+                        badge.textContent = 'новое';
+                        card.appendChild(badge);
+                    }
+                    container.appendChild(card); 
                 }
             });
             if (isAdmin) document.getElementById('newsAddPostBtn').style.display = editingNewsPostId === null ? 'block' : 'none';
+            updateNavBadge('news');
         }
 
         function createNewsPostElement(post, index) {
             const card = document.createElement('div'); 
             card.className = 'post-card'; 
             card.dataset.postId = index;
+            card.dataset.postDbId = post.id || `post_${index}_${post.createdAt || 0}`;
+            
             const titleEl = document.createElement('div'); 
             titleEl.className = 'post-title'; 
             titleEl.textContent = post.title; 
@@ -2297,6 +2757,7 @@
             newsPosts.splice(index, 1); 
             saveNewsPosts(); 
             if (editingNewsPostId === index) cancelNewsPostForm(); 
+            updateNavBadge('news');
             renderAllNewsPosts(); 
         }
 
@@ -2304,6 +2765,7 @@
             cancelNewsPostForm(); 
             editingNewsPostId = null; 
             currentNewsFormImages = []; 
+            showAsNewNews = false;
             document.getElementById('newsAddPostFormContainer').innerHTML = ''; 
             document.getElementById('newsAddPostFormContainer').appendChild(buildNewsPostForm(null)); 
             document.getElementById('newsAddPostBtn').style.display = 'none'; 
@@ -2314,6 +2776,7 @@
             editingNewsPostId = index; 
             const post = newsPosts[index]; 
             currentNewsFormImages = [...(post.media || [])]; 
+            showAsNewNews = false;
             const card = document.querySelector('#newsPostsContainer .post-card[data-post-id="' + index + '"]'); 
             if (card) { 
                 card.innerHTML = ''; 
@@ -2377,6 +2840,12 @@
             textarea.placeholder = 'Введите текст новости...'; 
             textarea.value = postData ? postData.text : ''; 
             form.appendChild(textarea);
+            
+            // Чекбокс "показать как новое"
+            if (editingNewsPostId !== null) {
+                form.appendChild(createShowAsNewCheckbox('news'));
+            }
+            
             const actionsDiv = document.createElement('div'); 
             actionsDiv.className = 'form-actions';
             const saveBtn = document.createElement('button'); 
@@ -2395,11 +2864,24 @@
 
         function saveNewsPostFromForm(title, text) { 
             if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
-            const postData = { title: title.trim(), text: text, media: [...currentNewsFormImages] }; 
-            if (editingNewsPostId !== null) newsPosts[editingNewsPostId] = postData; 
-            else newsPosts.push(postData); 
+            const postId = editingNewsPostId !== null ? newsPosts[editingNewsPostId].id : `news_${Date.now()}`;
+            const postData = { id: postId, title: title.trim(), text: text, media: [...currentNewsFormImages], createdAt: editingNewsPostId !== null ? newsPosts[editingNewsPostId].createdAt : Date.now() }; 
+            
+            // Проверяем чекбокс "показать как новое"
+            const showAsNewCheckbox = document.getElementById('showAsNew_news');
+            const showAsNew = showAsNewCheckbox ? showAsNewCheckbox.checked : false;
+            
+            if (editingNewsPostId !== null) {
+                newsPosts[editingNewsPostId] = postData;
+                if (showAsNew) {
+                    resetPostRead('news', postId);
+                }
+            } else { 
+                newsPosts.push(postData); 
+            }
             saveNewsPosts(); 
             cancelNewsPostForm(); 
+            updateNavBadge('news');
             renderAllNewsPosts(); 
             updateAllAdminButtons(); 
         }
@@ -2408,6 +2890,7 @@
             var wasEditing = editingNewsPostId !== null; 
             editingNewsPostId = null; 
             currentNewsFormImages = []; 
+            showAsNewNews = false;
             document.getElementById('newsAddPostFormContainer').innerHTML = ''; 
             document.getElementById('newsAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
             if (wasEditing) renderAllNewsPosts(); 
@@ -2469,6 +2952,8 @@
             saveShopPosts(); 
             const container = document.getElementById('postsContainer'); 
             container.innerHTML = ''; 
+            const readData = getReadItems('shop');
+            
             shopPosts.forEach((post, index) => { 
                 if (editingPostId === index) { 
                     const placeholder = document.createElement('div'); 
@@ -2477,16 +2962,27 @@
                     placeholder.id = 'editing-shop-' + index; 
                     container.appendChild(placeholder); 
                 } else { 
-                    container.appendChild(createShopPostElement(post, index)); 
+                    const card = createShopPostElement(post, index);
+                    const postId = post.id || `post_${index}_${post.createdAt || 0}`;
+                    if (!readData.postIds.includes(postId)) {
+                        const badge = document.createElement('span');
+                        badge.className = 'post-card-new-badge';
+                        badge.textContent = 'новое';
+                        card.appendChild(badge);
+                    }
+                    container.appendChild(card); 
                 } 
             }); 
             if (isAdmin) document.getElementById('addPostBtn').style.display = editingPostId === null ? 'block' : 'none';
+            updateNavBadge('shop');
         }
 
         function createShopPostElement(post, index) {
             const card = document.createElement('div'); 
             card.className = 'post-card'; 
             card.dataset.postId = index;
+            card.dataset.postDbId = post.id || `post_${index}_${post.createdAt || 0}`;
+            
             if (post.timerEnabled) { 
                 const expiry = post.expiresAt || calculateExpiry(post); 
                 if (expiry) { 
@@ -2590,6 +3086,7 @@
             shopPosts.splice(index, 1); 
             saveShopPosts(); 
             if (editingPostId === index) cancelShopPostForm(); 
+            updateNavBadge('shop');
             renderAllShopPosts(); 
         }
 
@@ -2597,6 +3094,7 @@
             cancelShopPostForm(); 
             editingPostId = null; 
             currentFormImages = []; 
+            showAsNewShop = false;
             document.getElementById('addPostFormContainer').innerHTML = ''; 
             document.getElementById('addPostFormContainer').appendChild(buildShopPostForm(null)); 
             document.getElementById('addPostBtn').style.display = 'none'; 
@@ -2607,6 +3105,7 @@
             editingPostId = index; 
             const post = shopPosts[index]; 
             currentFormImages = [...post.images]; 
+            showAsNewShop = false;
             const card = document.querySelector('#postsContainer .post-card[data-post-id="' + index + '"]'); 
             if (card) { 
                 card.innerHTML = ''; 
@@ -2664,6 +3163,12 @@
             form.appendChild(textarea);
             const timerContainer = createTimerSettingsHTML('shop', postData); 
             form.appendChild(timerContainer);
+            
+            // Чекбокс "показать как новое"
+            if (editingPostId !== null) {
+                form.appendChild(createShowAsNewCheckbox('shop'));
+            }
+            
             const actionsDiv = document.createElement('div'); 
             actionsDiv.className = 'form-actions';
             const saveBtn = document.createElement('button'); 
@@ -2683,18 +3188,29 @@
         function saveShopPostFromForm(title, text) { 
             if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
             const timerData = getTimerDataFromForm('shop'); 
+            const postId = editingPostId !== null ? shopPosts[editingPostId].id : `shop_${Date.now()}`;
             const postData = { 
+                id: postId,
                 title: title.trim(), text: text, images: [...currentFormImages], 
                 timerEnabled: timerData.timerEnabled, timerType: timerData.timerType, 
                 timerDays: timerData.timerDays || 0, timerHours: timerData.timerHours || 0, 
                 timerMinutes: timerData.timerMinutes || 0, deadlineHour: timerData.deadlineHour || 0, 
-                deadlineDate: timerData.deadlineDate || '', createdAt: timerData.createdAt || Date.now(), 
+                deadlineDate: timerData.deadlineDate || '', createdAt: editingPostId !== null ? shopPosts[editingPostId].createdAt : Date.now(), 
                 expiresAt: timerData.expiresAt || null 
-            }; 
-            if (editingPostId !== null) shopPosts[editingPostId] = postData; 
-            else shopPosts.push(postData); 
+            };
+            
+            const showAsNewCheckbox = document.getElementById('showAsNew_shop');
+            const showAsNew = showAsNewCheckbox ? showAsNewCheckbox.checked : false;
+            
+            if (editingPostId !== null) {
+                shopPosts[editingPostId] = postData;
+                if (showAsNew) resetPostRead('shop', postId);
+            } else { 
+                shopPosts.push(postData); 
+            }
             saveShopPosts(); 
             cancelShopPostForm(); 
+            updateNavBadge('shop');
             renderAllShopPosts(); 
             updateAllAdminButtons(); 
         }
@@ -2703,6 +3219,7 @@
             var wasEditing = editingPostId !== null; 
             editingPostId = null; 
             currentFormImages = []; 
+            showAsNewShop = false;
             document.getElementById('addPostFormContainer').innerHTML = ''; 
             document.getElementById('addPostBtn').style.display = isAdmin ? 'block' : 'none'; 
             if (wasEditing) renderAllShopPosts(); 
@@ -2755,6 +3272,8 @@
         function renderAllBalancePosts() { 
             const container = document.getElementById('balancePostsContainer'); 
             container.innerHTML = ''; 
+            const readData = getReadItems('balance');
+            
             balancePosts.forEach((post, index) => { 
                 if (editingBalancePostId === index) { 
                     const placeholder = document.createElement('div'); 
@@ -2763,16 +3282,27 @@
                     placeholder.id = 'editing-balance-' + index; 
                     container.appendChild(placeholder); 
                 } else { 
-                    container.appendChild(createBalancePostElement(post, index)); 
+                    const card = createBalancePostElement(post, index);
+                    const postId = post.id || `post_${index}_${post.createdAt || 0}`;
+                    if (!readData.postIds.includes(postId)) {
+                        const badge = document.createElement('span');
+                        badge.className = 'post-card-new-badge';
+                        badge.textContent = 'новое';
+                        card.appendChild(badge);
+                    }
+                    container.appendChild(card); 
                 } 
             }); 
             if (isAdmin) document.getElementById('balanceAddPostBtn').style.display = editingBalancePostId === null ? 'block' : 'none';
+            updateNavBadge('balance');
         }
 
         function createBalancePostElement(post, index) { 
             const card = document.createElement('div'); 
             card.className = 'post-card'; 
-            card.dataset.postId = index; 
+            card.dataset.postId = index;
+            card.dataset.postDbId = post.id || `post_${index}_${post.createdAt || 0}`;
+            
             const titleEl = document.createElement('div'); 
             titleEl.className = 'post-title'; 
             titleEl.textContent = post.title; 
@@ -2833,6 +3363,7 @@
             balancePosts.splice(index, 1); 
             saveBalancePosts(); 
             if (editingBalancePostId === index) cancelBalancePostForm(); 
+            updateNavBadge('balance');
             renderAllBalancePosts(); 
         }
 
@@ -2840,6 +3371,7 @@
             cancelBalancePostForm(); 
             editingBalancePostId = null; 
             currentBalanceFormImages = []; 
+            showAsNewBalance = false;
             document.getElementById('balanceAddPostFormContainer').innerHTML = ''; 
             document.getElementById('balanceAddPostFormContainer').appendChild(buildBalancePostForm(null)); 
             document.getElementById('balanceAddPostBtn').style.display = 'none'; 
@@ -2850,6 +3382,7 @@
             editingBalancePostId = index; 
             const post = balancePosts[index]; 
             currentBalanceFormImages = [...post.images]; 
+            showAsNewBalance = false;
             const card = document.querySelector('#balancePostsContainer .post-card[data-post-id="' + index + '"]'); 
             if (card) { card.innerHTML = ''; card.appendChild(buildBalancePostForm(post)); } 
         }
@@ -2870,7 +3403,12 @@
                 }); 
             } 
             refreshPreview(); 
-            const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст изменений...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea); 
+            const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст изменений...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea);
+            
+            if (editingBalancePostId !== null) {
+                form.appendChild(createShowAsNewCheckbox('balance'));
+            }
+            
             const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
             const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; saveBtn.onclick = () => saveBalancePostFromForm(titleInput.value, textarea.value); 
             const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => cancelBalancePostForm(); 
@@ -2880,15 +3418,27 @@
 
         function saveBalancePostFromForm(title, text) { 
             if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
-            const postData = { title: title.trim(), text: text, images: [...currentBalanceFormImages] }; 
-            if (editingBalancePostId !== null) balancePosts[editingBalancePostId] = postData; 
-            else balancePosts.push(postData); 
-            saveBalancePosts(); cancelBalancePostForm(); renderAllBalancePosts(); updateAllAdminButtons(); 
+            const postId = editingBalancePostId !== null ? balancePosts[editingBalancePostId].id : `balance_${Date.now()}`;
+            const postData = { id: postId, title: title.trim(), text: text, images: [...currentBalanceFormImages], createdAt: editingBalancePostId !== null ? balancePosts[editingBalancePostId].createdAt : Date.now() };
+            
+            const showAsNewCheckbox = document.getElementById('showAsNew_balance');
+            const showAsNew = showAsNewCheckbox ? showAsNewCheckbox.checked : false;
+            
+            if (editingBalancePostId !== null) {
+                balancePosts[editingBalancePostId] = postData;
+                if (showAsNew) resetPostRead('balance', postId);
+            } else { 
+                balancePosts.push(postData); 
+            }
+            saveBalancePosts(); cancelBalancePostForm(); 
+            updateNavBadge('balance');
+            renderAllBalancePosts(); updateAllAdminButtons(); 
         }
 
         function cancelBalancePostForm() { 
             var wasEditing = editingBalancePostId !== null; 
             editingBalancePostId = null; currentBalanceFormImages = []; 
+            showAsNewBalance = false;
             document.getElementById('balanceAddPostFormContainer').innerHTML = ''; 
             document.getElementById('balanceAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
             if (wasEditing) renderAllBalancePosts(); 
@@ -2922,16 +3472,31 @@
         function renderAllBugsPosts() { 
             const container = document.getElementById('bugsPostsContainer'); 
             container.innerHTML = ''; 
+            const readData = getReadItems('bugs');
+            
             bugsPosts.forEach((post, index) => { 
                 if (editingBugsPostId === index) { 
                     const placeholder = document.createElement('div'); placeholder.className = 'post-card'; placeholder.dataset.postId = index; placeholder.id = 'editing-bugs-' + index; container.appendChild(placeholder); 
-                } else { container.appendChild(createBugsPostElement(post, index)); } 
+                } else { 
+                    const card = createBugsPostElement(post, index);
+                    const postId = post.id || `post_${index}_${post.createdAt || 0}`;
+                    if (!readData.postIds.includes(postId)) {
+                        const badge = document.createElement('span');
+                        badge.className = 'post-card-new-badge';
+                        badge.textContent = 'новое';
+                        card.appendChild(badge);
+                    }
+                    container.appendChild(card); 
+                } 
             }); 
             if (isAdmin) document.getElementById('bugsAddPostBtn').style.display = editingBugsPostId === null ? 'block' : 'none';
+            updateNavBadge('bugs');
         }
 
         function createBugsPostElement(post, index) { 
-            const card = document.createElement('div'); card.className = 'post-card'; card.dataset.postId = index; 
+            const card = document.createElement('div'); card.className = 'post-card'; card.dataset.postId = index;
+            card.dataset.postDbId = post.id || `post_${index}_${post.createdAt || 0}`;
+            
             const titleEl = document.createElement('div'); titleEl.className = 'post-title'; titleEl.textContent = post.title; card.appendChild(titleEl); 
             const contentDiv = document.createElement('div'); contentDiv.className = 'post-content'; 
             if (post.media && post.media.length > 0) contentDiv.appendChild(createMediaSlider(post.media, 'bugs', index)); 
@@ -2950,11 +3515,13 @@
             if (!confirm('Удалить этот раздел?')) return; 
             bugsPosts.splice(index, 1); saveBugsPosts(); 
             if (editingBugsPostId === index) cancelBugsPostForm(); 
+            updateNavBadge('bugs');
             renderAllBugsPosts(); 
         }
 
         function startAddBugsPost() { 
             cancelBugsPostForm(); editingBugsPostId = null; currentBugsFormImages = []; 
+            showAsNewBugs = false;
             document.getElementById('bugsAddPostFormContainer').innerHTML = ''; 
             document.getElementById('bugsAddPostFormContainer').appendChild(buildBugsPostForm(null)); 
             document.getElementById('bugsAddPostBtn').style.display = 'none'; 
@@ -2963,6 +3530,7 @@
         function startEditBugsPost(index) { 
             cancelBugsPostForm(); editingBugsPostId = index; 
             const post = bugsPosts[index]; currentBugsFormImages = [...(post.media || [])]; 
+            showAsNewBugs = false;
             const card = document.querySelector('#bugsPostsContainer .post-card[data-post-id="' + index + '"]'); 
             if (card) { card.innerHTML = ''; card.appendChild(buildBugsPostForm(post)); } 
             document.getElementById('bugsAddPostBtn').style.display = 'none'; 
@@ -2985,7 +3553,12 @@
                 }); 
             } 
             refreshPreview(); 
-            const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea); 
+            const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea);
+            
+            if (editingBugsPostId !== null) {
+                form.appendChild(createShowAsNewCheckbox('bugs'));
+            }
+            
             const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
             const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; saveBtn.onclick = () => saveBugsPostFromForm(titleInput.value, textarea.value); 
             const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => cancelBugsPostForm(); 
@@ -2995,15 +3568,27 @@
 
         function saveBugsPostFromForm(title, text) { 
             if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
-            const postData = { title: title.trim(), text: text, media: [...currentBugsFormImages] }; 
-            if (editingBugsPostId !== null) bugsPosts[editingBugsPostId] = postData; 
-            else bugsPosts.push(postData); 
-            saveBugsPosts(); cancelBugsPostForm(); renderAllBugsPosts(); updateAllAdminButtons(); 
+            const postId = editingBugsPostId !== null ? bugsPosts[editingBugsPostId].id : `bugs_${Date.now()}`;
+            const postData = { id: postId, title: title.trim(), text: text, media: [...currentBugsFormImages], createdAt: editingBugsPostId !== null ? bugsPosts[editingBugsPostId].createdAt : Date.now() };
+            
+            const showAsNewCheckbox = document.getElementById('showAsNew_bugs');
+            const showAsNew = showAsNewCheckbox ? showAsNewCheckbox.checked : false;
+            
+            if (editingBugsPostId !== null) {
+                bugsPosts[editingBugsPostId] = postData;
+                if (showAsNew) resetPostRead('bugs', postId);
+            } else { 
+                bugsPosts.push(postData); 
+            }
+            saveBugsPosts(); cancelBugsPostForm(); 
+            updateNavBadge('bugs');
+            renderAllBugsPosts(); updateAllAdminButtons(); 
         }
 
         function cancelBugsPostForm() { 
             var wasEditing = editingBugsPostId !== null; 
             editingBugsPostId = null; currentBugsFormImages = []; 
+            showAsNewBugs = false;
             document.getElementById('bugsAddPostFormContainer').innerHTML = ''; 
             document.getElementById('bugsAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
             if (wasEditing) renderAllBugsPosts(); 
@@ -3046,7 +3631,21 @@
                     saveBrawlTalkVideo(); return; 
                 } 
             } 
-            const videoContainer = document.createElement('div'); videoContainer.className = 'video-preview-container'; 
+            const videoContainer = document.createElement('div'); videoContainer.className = 'video-preview-container';
+            videoContainer.style.position = 'relative';
+            
+            // Бейдж "новое" для видео
+            const readData = getReadItems('brawltalk');
+            const videoId = 'bt_video_' + (brawlTalkVideoTimer?.createdAt || 0);
+            if (!readData.postIds.includes(videoId)) {
+                const badge = document.createElement('span');
+                badge.className = 'post-card-new-badge';
+                badge.style.position = 'static';
+                badge.style.marginBottom = '10px';
+                badge.textContent = 'новое';
+                videoContainer.appendChild(badge);
+            }
+            
             if (brawlTalkVideoTimer && brawlTalkVideoTimer.timerEnabled) { 
                 const expiry = calculateExpiry(brawlTalkVideoTimer); 
                 if (expiry) { 
@@ -3072,31 +3671,69 @@
             fileInput.onchange = function(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(ev) { brawlTalkVideoData = ev.target.result; }; reader.readAsDataURL(file); } }; 
             form.appendChild(fileInput); 
             const timerContainer = createTimerSettingsHTML('btVideo', brawlTalkVideoTimer); form.appendChild(timerContainer); 
+            
+            // Чекбокс "показать как новое"
+            const showAsNewDiv = document.createElement('div');
+            showAsNewDiv.className = 'show-as-new-checkbox';
+            const showAsNewCheckbox = document.createElement('input');
+            showAsNewCheckbox.type = 'checkbox';
+            showAsNewCheckbox.id = 'showAsNew_btVideo';
+            const showAsNewLabel = document.createElement('label');
+            showAsNewLabel.htmlFor = 'showAsNew_btVideo';
+            showAsNewLabel.textContent = 'Показать как новое (сбросить прочитанное)';
+            showAsNewDiv.appendChild(showAsNewCheckbox);
+            showAsNewDiv.appendChild(showAsNewLabel);
+            form.appendChild(showAsNewDiv);
+            
             const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
             const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; 
-            saveBtn.onclick = () => { brawlTalkVideoTimer = getTimerDataFromForm('btVideo'); saveBrawlTalkVideo(); renderBrawlTalkVideo(); }; 
+            saveBtn.onclick = () => { 
+                brawlTalkVideoTimer = getTimerDataFromForm('btVideo');
+                if (showAsNewCheckbox.checked) {
+                    const videoId = 'bt_video_' + (brawlTalkVideoTimer?.createdAt || Date.now());
+                    resetPostRead('brawltalk', videoId);
+                }
+                saveBrawlTalkVideo(); 
+                updateNavBadge('brawltalk');
+                renderBrawlTalkVideo(); 
+            }; 
             const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => renderBrawlTalkVideo(); 
             actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); form.appendChild(actionsDiv); 
             videoSection.innerHTML = ''; videoSection.appendChild(form); 
         }
 
         function deleteBrawlTalkVideo() { 
-            if (confirm('Удалить видео?')) { brawlTalkVideoData = null; brawlTalkVideoTimer = null; saveBrawlTalkVideo(); renderBrawlTalkVideo(); } 
+            if (confirm('Удалить видео?')) { brawlTalkVideoData = null; brawlTalkVideoTimer = null; saveBrawlTalkVideo(); updateNavBadge('brawltalk'); renderBrawlTalkVideo(); } 
         }
 
         function renderAllBrawlTalkPosts() { 
             const container = document.getElementById('brawlTalkPostsContainer'); 
             container.innerHTML = ''; 
+            const readData = getReadItems('brawltalk');
+            
             brawlTalkPosts.forEach((post, index) => { 
                 if (editingBrawlTalkPostId === index) { 
                     const placeholder = document.createElement('div'); placeholder.className = 'post-card'; placeholder.dataset.postId = index; placeholder.id = 'editing-brawltalk-' + index; container.appendChild(placeholder); 
-                } else { container.appendChild(createBrawlTalkPostElement(post, index)); } 
+                } else { 
+                    const card = createBrawlTalkPostElement(post, index);
+                    const postId = post.id || `post_${index}_${post.createdAt || 0}`;
+                    if (!readData.postIds.includes(postId)) {
+                        const badge = document.createElement('span');
+                        badge.className = 'post-card-new-badge';
+                        badge.textContent = 'новое';
+                        card.appendChild(badge);
+                    }
+                    container.appendChild(card); 
+                } 
             }); 
             if (isAdmin) document.getElementById('brawlTalkAddPostBtn').style.display = editingBrawlTalkPostId === null ? 'block' : 'none';
+            updateNavBadge('brawltalk');
         }
 
         function createBrawlTalkPostElement(post, index) { 
-            const card = document.createElement('div'); card.className = 'post-card'; card.dataset.postId = index; 
+            const card = document.createElement('div'); card.className = 'post-card'; card.dataset.postId = index;
+            card.dataset.postDbId = post.id || `post_${index}_${post.createdAt || 0}`;
+            
             if (post.timerEnabled) { const expiry = post.expiresAt || calculateExpiry(post); if (expiry) { const remaining = getTimerRemaining(expiry); if (remaining) { const timerBadge = document.createElement('div'); timerBadge.className = 'timer-badge'; timerBadge.textContent = remaining; timerBadge.dataset.expires = expiry; card.appendChild(timerBadge); } } } 
             const titleEl = document.createElement('div'); titleEl.className = 'post-title'; titleEl.textContent = post.title; card.appendChild(titleEl); 
             const contentDiv = document.createElement('div'); contentDiv.className = 'post-content'; 
@@ -3116,11 +3753,13 @@
             if (!confirm('Удалить этот раздел?')) return; 
             brawlTalkPosts.splice(index, 1); saveBrawlTalkPosts(); 
             if (editingBrawlTalkPostId === index) cancelBrawlTalkPostForm(); 
+            updateNavBadge('brawltalk');
             renderAllBrawlTalkPosts(); 
         }
 
         function startAddBrawlTalkPost() { 
             cancelBrawlTalkPostForm(); editingBrawlTalkPostId = null; currentBrawlTalkFormImages = []; 
+            showAsNewBrawlTalk = false;
             document.getElementById('brawlTalkAddPostFormContainer').innerHTML = ''; 
             document.getElementById('brawlTalkAddPostFormContainer').appendChild(buildBrawlTalkPostForm(null)); 
             document.getElementById('brawlTalkAddPostBtn').style.display = 'none'; 
@@ -3129,6 +3768,7 @@
         function startEditBrawlTalkPost(index) { 
             cancelBrawlTalkPostForm(); editingBrawlTalkPostId = index; 
             const post = brawlTalkPosts[index]; currentBrawlTalkFormImages = [...(post.media || [])]; 
+            showAsNewBrawlTalk = false;
             const card = document.querySelector('#brawlTalkPostsContainer .post-card[data-post-id="' + index + '"]'); 
             if (card) { card.innerHTML = ''; card.appendChild(buildBrawlTalkPostForm(post)); } 
             document.getElementById('brawlTalkAddPostBtn').style.display = 'none'; 
@@ -3152,7 +3792,12 @@
             } 
             refreshPreview(); 
             const textarea = document.createElement('textarea'); textarea.className = 'post-textarea'; textarea.placeholder = 'Введите текст...'; textarea.value = postData ? postData.text : ''; form.appendChild(textarea); 
-            const timerContainer = createTimerSettingsHTML('bt', postData); form.appendChild(timerContainer); 
+            const timerContainer = createTimerSettingsHTML('bt', postData); form.appendChild(timerContainer);
+            
+            if (editingBrawlTalkPostId !== null) {
+                form.appendChild(createShowAsNewCheckbox('brawltalk'));
+            }
+            
             const actionsDiv = document.createElement('div'); actionsDiv.className = 'form-actions'; 
             const saveBtn = document.createElement('button'); saveBtn.className = 'save-btn'; saveBtn.textContent = 'Сохранить'; saveBtn.onclick = () => saveBrawlTalkPostFromForm(titleInput.value, textarea.value); 
             const cancelBtn = document.createElement('button'); cancelBtn.className = 'cancel-btn'; cancelBtn.textContent = 'Отменить'; cancelBtn.onclick = () => cancelBrawlTalkPostForm(); 
@@ -3163,15 +3808,27 @@
         function saveBrawlTalkPostFromForm(title, text) { 
             if (!title.trim()) { alert('Заголовок не может быть пустым!'); return; } 
             const timerData = getTimerDataFromForm('bt'); 
-            const postData = { title: title.trim(), text: text, media: [...currentBrawlTalkFormImages], timerEnabled: timerData.timerEnabled, timerType: timerData.timerType, timerDays: timerData.timerDays || 0, timerHours: timerData.timerHours || 0, timerMinutes: timerData.timerMinutes || 0, deadlineHour: timerData.deadlineHour || 0, deadlineDate: timerData.deadlineDate || '', createdAt: timerData.createdAt || Date.now(), expiresAt: timerData.expiresAt || null }; 
-            if (editingBrawlTalkPostId !== null) brawlTalkPosts[editingBrawlTalkPostId] = postData; 
-            else brawlTalkPosts.push(postData); 
-            saveBrawlTalkPosts(); cancelBrawlTalkPostForm(); renderAllBrawlTalkPosts(); updateAllAdminButtons(); 
+            const postId = editingBrawlTalkPostId !== null ? brawlTalkPosts[editingBrawlTalkPostId].id : `bt_${Date.now()}`;
+            const postData = { id: postId, title: title.trim(), text: text, media: [...currentBrawlTalkFormImages], timerEnabled: timerData.timerEnabled, timerType: timerData.timerType, timerDays: timerData.timerDays || 0, timerHours: timerData.timerHours || 0, timerMinutes: timerData.timerMinutes || 0, deadlineHour: timerData.deadlineHour || 0, deadlineDate: timerData.deadlineDate || '', createdAt: editingBrawlTalkPostId !== null ? brawlTalkPosts[editingBrawlTalkPostId].createdAt : Date.now(), expiresAt: timerData.expiresAt || null };
+            
+            const showAsNewCheckbox = document.getElementById('showAsNew_brawltalk');
+            const showAsNew = showAsNewCheckbox ? showAsNewCheckbox.checked : false;
+            
+            if (editingBrawlTalkPostId !== null) {
+                brawlTalkPosts[editingBrawlTalkPostId] = postData;
+                if (showAsNew) resetPostRead('brawltalk', postId);
+            } else { 
+                brawlTalkPosts.push(postData); 
+            }
+            saveBrawlTalkPosts(); cancelBrawlTalkPostForm(); 
+            updateNavBadge('brawltalk');
+            renderAllBrawlTalkPosts(); updateAllAdminButtons(); 
         }
 
         function cancelBrawlTalkPostForm() { 
             var wasEditing = editingBrawlTalkPostId !== null; 
             editingBrawlTalkPostId = null; currentBrawlTalkFormImages = []; 
+            showAsNewBrawlTalk = false;
             document.getElementById('brawlTalkAddPostFormContainer').innerHTML = ''; 
             document.getElementById('brawlTalkAddPostBtn').style.display = isAdmin ? 'block' : 'none'; 
             if (wasEditing) renderAllBrawlTalkPosts(); 
@@ -3204,8 +3861,19 @@
 
         // ==================== БРАВЛЕРЫ ====================
         function changeBrawlersSection(direction) {
-            if (!isAdmin) { if (brawlersSections.length === 0) return; currentBrawlersSection = (currentBrawlersSection + direction + brawlersSections.length) % brawlersSections.length; } 
-            else { const totalSlides = brawlersSections.length + 1; currentBrawlersSection = (currentBrawlersSection + direction + totalSlides) % totalSlides; }
+            if (!isAdmin) { 
+                if (brawlersSections.length === 0) return; 
+                currentBrawlersSection = (currentBrawlersSection + direction + brawlersSections.length) % brawlersSections.length; 
+            } else { 
+                const totalSlides = brawlersSections.length + 1; 
+                currentBrawlersSection = (currentBrawlersSection + direction + totalSlides) % totalSlides; 
+            }
+            
+            // Отмечаем слайд как прочитанный
+            if (currentBrawlersSection < brawlersSections.length && brawlersSections.length > 0) {
+                markSlideAsRead('brawlers', brawlersSections[currentBrawlersSection].id);
+            }
+            
             updateBrawlersDisplay();
         }
 
@@ -3221,16 +3889,55 @@
             const descriptionContainer = document.getElementById('brawlersDescriptionContainer');
             addSlideForm.style.display = 'none';
             
-            if (isAddSlideScreen && isAdmin) { imageContainer.style.display = 'none'; addSlideSection.style.display = 'flex'; descriptionContainer.style.display = 'none'; } 
-            else if (brawlersSections.length > 0) { 
-                addSlideSection.style.display = 'none'; descriptionContainer.style.display = 'block';
+            // Удаляем старый бейдж
+            const existingBadge = document.querySelector('.slide-new-badge');
+            if (existingBadge) existingBadge.remove();
+            
+            if (isAddSlideScreen && isAdmin) { 
+                imageContainer.style.display = 'none'; 
+                addSlideSection.style.display = 'flex'; 
+                descriptionContainer.style.display = 'none'; 
+            } else if (brawlersSections.length > 0) { 
+                addSlideSection.style.display = 'none'; 
+                descriptionContainer.style.display = 'block';
                 const section = brawlersSections[currentBrawlersSection];
                 document.getElementById('brawlersDescriptionDisplay').textContent = section.description.trim() || 'Описание отсутствует';
-                if (isAdmin) { document.getElementById('brawlersDescriptionEdit').style.display = 'block'; document.getElementById('brawlersDescriptionTextarea').value = section.description; } 
-                else { document.getElementById('brawlersDescriptionEdit').style.display = 'none'; }
-                if (section.images.length > 0) { document.getElementById('brawlersImage').src = section.images[section.currentIndex]; imageContainer.style.display = 'flex'; } 
-                else { imageContainer.style.display = 'none'; }
-            } else { imageContainer.style.display = 'none'; addSlideSection.style.display = 'none'; descriptionContainer.style.display = 'none'; }
+                
+                if (isAdmin) { 
+                    document.getElementById('brawlersDescriptionEdit').style.display = 'block'; 
+                    document.getElementById('brawlersDescriptionTextarea').value = section.description; 
+                } else { 
+                    document.getElementById('brawlersDescriptionEdit').style.display = 'none'; 
+                }
+                
+                // Проверяем, прочитан ли слайд
+                const readData = getReadItems('brawlers');
+                const isUnread = !readData.slideIds.includes(section.id);
+                
+                if (section.images.length > 0) { 
+                    document.getElementById('brawlersImage').src = section.images[section.currentIndex]; 
+                    imageContainer.style.display = 'flex';
+                    
+                    // Добавляем бейдж "новое" если слайд непрочитан
+                    if (isUnread) {
+                        const badge = document.createElement('span');
+                        badge.className = 'slide-new-badge';
+                        badge.textContent = 'новое';
+                        imageContainer.appendChild(badge);
+                    }
+                } else { 
+                    imageContainer.style.display = 'none'; 
+                }
+                
+                // Отмечаем как прочитанный
+                if (isUnread) {
+                    markSlideAsRead('brawlers', section.id);
+                }
+            } else { 
+                imageContainer.style.display = 'none'; 
+                addSlideSection.style.display = 'none'; 
+                descriptionContainer.style.display = 'none'; 
+            }
             updateAllAdminButtons();
         }
 
@@ -3239,10 +3946,13 @@
             if (!confirm('Удалить слайд?')) return; 
             brawlersSections.splice(currentBrawlersSection, 1); 
             if (currentBrawlersSection >= brawlersSections.length && brawlersSections.length > 0) currentBrawlersSection = brawlersSections.length - 1; 
-            saveBrawlersSections(); updateBrawlersDisplay(); 
+            saveBrawlersSections(); 
+            updateNavBadge('brawlers');
+            updateBrawlersDisplay(); 
         }
 
         function startAddBrawlersSlide() { 
+            showAsNewSlide = false;
             document.getElementById('addSlideSection').style.display = 'none'; 
             document.getElementById('addSlideForm').style.display = 'flex'; 
             document.getElementById('addSlideForm').innerHTML = `<input type="text" id="newSlideTitle" placeholder="Введите заголовок слайда"><textarea id="newSlideDescription" placeholder="Введите описание..." class="post-textarea"></textarea><div class="slide-form-buttons"><button class="save-btn" onclick="saveNewBrawlersSlide()">Сохранить</button><button class="cancel-btn" onclick="cancelAddBrawlersSlide()">Отмена</button></div>`; 
@@ -3256,22 +3966,53 @@
         function saveNewBrawlersSlide() { 
             const title = document.getElementById('newSlideTitle').value.trim(); 
             if (!title) { alert('Введите заголовок!'); return; } 
-            brawlersSections.push({ id: 'custom_' + Date.now(), title, description: document.getElementById('newSlideDescription').value.trim(), images: [], currentIndex: 0 }); 
+            const newSlide = { 
+                id: 'slide_' + Date.now(), 
+                title, 
+                description: document.getElementById('newSlideDescription').value.trim(), 
+                images: [], 
+                currentIndex: 0 
+            };
+            brawlersSections.push(newSlide); 
             currentBrawlersSection = brawlersSections.length - 1; 
-            saveBrawlersSections(); updateBrawlersDisplay(); alert('Слайд добавлен!'); 
+            saveBrawlersSections(); 
+            updateNavBadge('brawlers');
+            updateBrawlersDisplay(); 
+            alert('Слайд добавлен!'); 
         }
 
         function saveBrawlersDescription() { 
             if (currentBrawlersSection >= brawlersSections.length) return; 
             brawlersSections[currentBrawlersSection].description = document.getElementById('brawlersDescriptionTextarea').value; 
-            saveBrawlersSections(); updateBrawlersDisplay(); alert('Описание сохранено!'); 
+            saveBrawlersSections(); 
+            
+            // Проверяем чекбокс "показать как новое"
+            const showAsNewCheckbox = document.getElementById('showAsNew_brawlers');
+            if (showAsNewCheckbox && showAsNewCheckbox.checked) {
+                resetSlideRead('brawlers', brawlersSections[currentBrawlersSection].id);
+            }
+            
+            updateNavBadge('brawlers');
+            updateBrawlersDisplay(); 
+            alert('Описание сохранено!'); 
         }
 
         function handleBrawlersImageUpload(event) { 
-            const files = event.target.files; if (!files.length || currentBrawlersSection >= brawlersSections.length) return; 
+            const files = event.target.files; 
+            if (!files.length || currentBrawlersSection >= brawlersSections.length) return; 
             const promises = []; 
-            for (let i = 0; i < files.length; i++) { promises.push(new Promise(resolve => { const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.readAsDataURL(files[i]); })); } 
-            Promise.all(promises).then(results => { brawlersSections[currentBrawlersSection].images.push(...results); saveBrawlersSections(); updateBrawlersDisplay(); }); 
+            for (let i = 0; i < files.length; i++) { 
+                promises.push(new Promise(resolve => { 
+                    const reader = new FileReader(); 
+                    reader.onload = e => resolve(e.target.result); 
+                    reader.readAsDataURL(files[i]); 
+                })); 
+            } 
+            Promise.all(promises).then(results => { 
+                brawlersSections[currentBrawlersSection].images.push(...results); 
+                saveBrawlersSections(); 
+                updateBrawlersDisplay(); 
+            }); 
             event.target.value = ''; 
         }
 
@@ -3279,11 +4020,26 @@
             if (currentBrawlersSection >= brawlersSections.length) return; 
             const section = brawlersSections[currentBrawlersSection]; 
             if (!section.images.length) return; 
-            if (confirm('Удалить изображение?')) { section.images.splice(section.currentIndex, 1); if (section.currentIndex >= section.images.length) section.currentIndex = Math.max(0, section.images.length - 1); saveBrawlersSections(); updateBrawlersDisplay(); } 
+            if (confirm('Удалить изображение?')) { 
+                section.images.splice(section.currentIndex, 1); 
+                if (section.currentIndex >= section.images.length) section.currentIndex = Math.max(0, section.images.length - 1); 
+                saveBrawlersSections(); 
+                updateBrawlersDisplay(); 
+            } 
         }
 
         // ==================== ИГРА ====================
-        function initGame() { if (allBrawlers.length === 0) { allBrawlers = [{ name: "Шелли", rarity: "Редкий", type: "Человек", gender: "Жен", class: "Урон", age: "Средний возраст", image: "" }, { name: "Кольт", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Стрелок", age: "Средний возраст", image: "" }, { name: "Булл", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Танк", age: "Средний возраст", image: "" }]; saveAllBrawlers(); } gameState = { mode: 'traits', difficulty: null, currentItem: null, attempts: 0, maxAttempts: 0, guessedNames: [] }; }
+        function initGame() { 
+            if (allBrawlers.length === 0) { 
+                allBrawlers = [
+                    { name: "Шелли", rarity: "Редкий", type: "Человек", gender: "Жен", class: "Урон", age: "Средний возраст", image: "" }, 
+                    { name: "Кольт", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Стрелок", age: "Средний возраст", image: "" }, 
+                    { name: "Булл", rarity: "Редкий", type: "Человек", gender: "Муж", class: "Танк", age: "Средний возраст", image: "" }
+                ]; 
+                saveAllBrawlers(); 
+            } 
+            gameState = { mode: 'traits', difficulty: null, currentItem: null, attempts: 0, maxAttempts: 0, guessedNames: [] }; 
+        }
 
         function renderGameStart() {
             const c = document.getElementById('gameContainer');
@@ -3366,7 +4122,7 @@
         }
 
         function checkGuess() {
-            const inp = document.getElementById('guessI'), res = document.getElementById('gameResult');
+            const inp = document.getElementById('guessI'), res = document.getElementById('res');
             if (!inp) return;
             const g = inp.value.trim();
             if (!g) { res.textContent = 'Введите имя!'; res.style.color = '#ffaa00'; return; }
@@ -3393,8 +4149,33 @@
         function initializeApp() {
             isAdmin = localStorage.getItem('isAdmin') === 'true';
             if (isAdmin) { document.getElementById('adminLoginBtn').style.display = 'none'; document.getElementById('logoutBtn').classList.add('visible'); }
+            
+            // Добавляем чекбокс "показать как новое" в форму редактирования описания бравлеров
+            const brawlersDescEdit = document.getElementById('brawlersDescriptionEdit');
+            if (brawlersDescEdit) {
+                const existingCheckbox = document.getElementById('showAsNew_brawlers_container');
+                if (!existingCheckbox) {
+                    const showAsNewContainer = document.createElement('div');
+                    showAsNewContainer.id = 'showAsNew_brawlers_container';
+                    showAsNewContainer.style.marginTop = '10px';
+                    const showAsNewDiv = document.createElement('div');
+                    showAsNewDiv.className = 'show-as-new-checkbox';
+                    const showAsNewCheckbox = document.createElement('input');
+                    showAsNewCheckbox.type = 'checkbox';
+                    showAsNewCheckbox.id = 'showAsNew_brawlers';
+                    const showAsNewLabel = document.createElement('label');
+                    showAsNewLabel.htmlFor = 'showAsNew_brawlers';
+                    showAsNewLabel.textContent = 'Показать как новое (сбросить прочитанное)';
+                    showAsNewDiv.appendChild(showAsNewCheckbox);
+                    showAsNewDiv.appendChild(showAsNewLabel);
+                    showAsNewContainer.appendChild(showAsNewDiv);
+                    brawlersDescEdit.appendChild(showAsNewContainer);
+                }
+            }
+            
             loadDataFromFirebase();
             updateAllAdminButtons();
+            updateAllNavBadges();
             setInterval(updateAllTimers, 30000);
             initGame();
             checkScreenSize();
@@ -3435,81 +4216,6 @@
         window.editBrawler = editBrawler;
         window.deleteBrawler = deleteBrawler;
         window.installApp = installApp;
-        // ==================== ДИАГНОСТИКА PWA ====================
-        window.addEventListener('load', () => {
-            console.log('=== PWA Диагностика ===');
-            
-            // Проверка manifest
-            fetch('/Boom-Brawl/manifest.json')
-                .then(r => r.json())
-                .then(m => {
-                    console.log('✅ manifest.json загружен:', m);
-                    console.log('Иконки:', m.icons);
-                })
-                .catch(e => console.error('❌ Ошибка manifest:', e));
-            
-            // Проверка SW
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(regs => {
-                    console.log('Service Workers:', regs.length);
-                    regs.forEach(r => console.log('SW scope:', r.scope));
-                });
-            } else {
-                console.log('❌ Service Worker не поддерживается');
-            }
-            
-            // Проверка HTTPS
-            console.log('Протокол:', window.location.protocol);
-            console.log('Полный URL:', window.location.href);
-            
-            // Проверка beforeinstallprompt
-            let checkCount = 0;
-            const checkInstall = setInterval(() => {
-                checkCount++;
-                if (deferredPrompt) {
-                    console.log('✅ beforeinstallprompt сработал! Кнопка должна быть видна');
-                    clearInterval(checkInstall);
-                } else if (checkCount > 10) {
-                    console.log('⚠️ beforeinstallprompt не сработал. Возможные причины:');
-                    console.log('1. Сайт открыт первый раз (нужно 2+ посещения)');
-                    console.log('2. Уже установлено как PWA');
-                    console.log('3. Не все критерии PWA выполнены');
-                    clearInterval(checkInstall);
-                }
-            }, 1000);
-            
-            // Принудительная проверка критериев
-            setTimeout(() => {
-                console.log('=== Проверка критериев PWA ===');
-                console.log('HTTPS:', window.location.protocol === 'https:');
-                console.log('Manifest link:', !!document.querySelector('link[rel="manifest"]'));
-                console.log('Service Worker registered:', 'serviceWorker' in navigator);
-                console.log('Иконка 192:', checkImage('/Boom-Brawl/icon-192x192.png'));
-                console.log('Иконка 512:', checkImage('/Boom-Brawl/icon-512x512.png'));
-                console.log('display-mode:', window.matchMedia('(display-mode: standalone)').matches);
-            }, 3000);
-        });
-        
-        function checkImage(url) {
-            const img = new Image();
-            img.src = url;
-            return new Promise(resolve => {
-                img.onload = () => resolve('✅ Загружена');
-                img.onerror = () => resolve('❌ Не найдена');
-            });
-        }
-        
-        // Принудительно показываем кнопку для теста (удалите после отладки)
-        setTimeout(() => {
-            const btn = document.getElementById('installButton');
-            if (btn && !btn.classList.contains('show') && !isPWA()) {
-                console.log('🔧 Принудительный показ кнопки для теста');
-                btn.classList.add('show');
-                btn.onclick = () => {
-                    alert('Чтобы установить:\n1. Нажмите ⋮ в браузере\n2. Выберите "Установить приложение"\n\nИли в адресной строке справа значок ⊕');
-                };
-            }
-        }, 5000);
-</script>
+    </script>
 </body>
 </html>
