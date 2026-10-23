@@ -26,6 +26,8 @@
             --amber: #f59e0b;
             --blue: #3b82f6;
             --blue-bg: rgba(59, 130, 246, 0.12);
+            --purple: #a855f7;
+            --purple-bg: rgba(168, 85, 247, 0.12);
         }
 
         body {
@@ -113,6 +115,10 @@
         .btn-danger:hover { background: var(--danger-bg); border-color: rgba(239, 68, 68, 0.3); }
         .btn-cancel { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-light); }
         .btn-cancel:hover { background: var(--black-elevated); color: var(--text-primary); }
+        .btn-copy { background: transparent; color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.4); }
+        .btn-copy:hover { background: var(--purple-bg); border-color: var(--purple); }
+        .btn-paste { background: transparent; color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.4); }
+        .btn-paste:hover { background: rgba(245, 158, 11, 0.12); border-color: var(--amber); }
 
         .action-bar {
             display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem;
@@ -130,6 +136,19 @@
         }
         .type-select:hover { border-color: var(--emerald-dark); }
         .type-select:focus { border-color: var(--emerald); box-shadow: 0 0 0 3px var(--emerald-glow); }
+
+        /* Права публичной папки */
+        .folder-perms {
+            display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.6rem;
+            padding: 0.7rem 0.9rem; background: var(--black-card); border: 1px solid var(--border-light);
+            border-radius: 0.6rem; animation: fadeIn 0.2s ease;
+        }
+        .folder-perms.hidden { display: none; }
+        .folder-perms-title {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--emerald-light); margin-bottom: 0.1rem;
+        }
+        .folder-perms .checkbox-item { padding: 0.45rem 0.8rem; font-size: 0.82rem; }
 
         .toolbar {
             display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: 2rem;
@@ -189,6 +208,7 @@
         .folder.foreign-public { border-left: 3px solid var(--blue); }
         .folder.own-private { border-left: 3px solid var(--emerald-dark); }
         .folder.own-public { border-left: 3px solid var(--emerald); }
+        .folder.copy-source { border-left: 3px solid var(--purple); box-shadow: 0 0 0 1px var(--purple); }
 
         .folder-header {
             display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.1rem;
@@ -203,6 +223,8 @@
         .folder-badge.badge-private { background: rgba(16, 185, 129, 0.15); color: var(--emerald-light); border: 1px solid rgba(16, 185, 129, 0.35); }
         .folder-badge.badge-public { background: var(--emerald); color: var(--black); }
         .folder-badge.badge-foreign { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.35); }
+        .folder-badge.badge-copyable { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.35); }
+        .folder-badge.badge-editable { background: rgba(245, 158, 11, 0.12); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.35); }
 
         .folder-actions { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; flex-wrap: wrap; }
         .folder-chevron { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.2s ease; margin-left: 0.2rem; }
@@ -288,6 +310,24 @@
             color: var(--text-muted);
             margin-bottom: 0.8rem;
         }
+
+        .copy-indicator {
+            background: var(--purple-bg);
+            color: var(--purple);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 0.6rem;
+            padding: 0.7rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .copy-indicator.hidden { display: none; }
+        .copy-indicator .copy-indicator-text { display: flex; align-items: center; gap: 0.5rem; }
+        .copy-indicator .copy-indicator-text strong { color: var(--text-primary); }
 
         @media (max-width: 760px) {
             .app { padding: 1.6rem 1.2rem; border-radius: 1rem; }
@@ -388,6 +428,22 @@
             </div>
             <button class="btn btn-secondary" id="createFolderBtn" style="align-self: flex-end;">Создать папку</button>
         </div>
+    </div>
+
+    <!-- Права для публичной папки -->
+    <div class="folder-perms hidden" id="publicFolderPerms">
+        <div class="folder-perms-title">Права для публичной папки</div>
+        <label class="checkbox-item" id="lblAllowEdit"><input type="checkbox" id="chkAllowEdit"> Разрешить другим изменять</label>
+        <label class="checkbox-item" id="lblAllowCopy"><input type="checkbox" id="chkAllowCopy"> Разрешить копировать</label>
+    </div>
+
+    <!-- Индикатор режима вставки -->
+    <div class="copy-indicator hidden" id="copyIndicator">
+        <div class="copy-indicator-text">
+            <span>📋</span>
+            <span>Скопирована папка: <strong id="copySourceName">—</strong> (<span id="copyThemeCount">0</span> записей). Выберите целевую папку и нажмите «Вставить».</span>
+        </div>
+        <button class="btn btn-sm btn-cancel" id="cancelCopyBtn">Отменить</button>
     </div>
 
     <div class="toolbar">
@@ -508,16 +564,21 @@
         const LOCAL_KEY = 'app_folders_' + deviceId;
 
         // ---------- Состояние ----------
-        // Каждая папка: { id, name, type: 'private'|'public', ownerId, closed, themes: [] }
-        let allFolders = [];    // все папки со всех пользователей
-        let folders = [];       // свои папки (для совместимости с pushToFirebase)
+        // Папка: { id, name, type: 'private'|'public', ownerId, closed, themes: [],
+        //          allowEdit: bool, allowCopy: bool }
+        let allFolders = [];
+        let folders = [];
         let selectedFolderId = null;
         let sortKey = 'updated';
         let sortDir = 'desc';
-        let folderFilter = 'all'; // 'all' | 'own-private' | 'own-public' | 'foreign-public'
+        let folderFilter = 'all';
         let editingThemeId = null;
         let isRemoteUpdate = false;
         let firebaseReceivedFirst = false;
+
+        // Состояние копирования (вставки)
+        // { folderId, name, themes: [...] } — исходные данные для вставки
+        let copyBuffer = null;
 
         // ---------- DOM ----------
         const fullNameInput = document.getElementById('fullName');
@@ -548,6 +609,17 @@
         const newFolderTypeSelect = document.getElementById('newFolderType');
         const foldersContainer = document.getElementById('foldersContainer');
         const toastEl = document.getElementById('toast');
+
+        const publicFolderPerms = document.getElementById('publicFolderPerms');
+        const chkAllowEdit = document.getElementById('chkAllowEdit');
+        const chkAllowCopy = document.getElementById('chkAllowCopy');
+        const lblAllowEdit = document.getElementById('lblAllowEdit');
+        const lblAllowCopy = document.getElementById('lblAllowCopy');
+
+        const copyIndicator = document.getElementById('copyIndicator');
+        const copySourceName = document.getElementById('copySourceName');
+        const copyThemeCount = document.getElementById('copyThemeCount');
+        const cancelCopyBtn = document.getElementById('cancelCopyBtn');
 
         const sortDropdown = document.getElementById('sortDropdown');
         const sortTrigger = document.getElementById('sortTrigger');
@@ -642,6 +714,20 @@
                 if (t) return t;
             }
             return null;
+        }
+
+        // Можно ли редактировать чужую публичную папку
+        function canEditForeignFolder(folder) {
+            return folder.ownerId !== deviceId
+                && folder.type === 'public'
+                && folder.allowEdit === true;
+        }
+
+        // Можно ли копировать чужую публичную папку
+        function canCopyForeignFolder(folder) {
+            return folder.ownerId !== deviceId
+                && folder.type === 'public'
+                && folder.allowCopy === true;
         }
 
         function parseFio(fio) {
@@ -747,6 +833,21 @@
             fullNameInput.focus();
         }
 
+        // ---------- Публичные права при создании папки ----------
+        function updatePublicPermsVisibility() {
+            const isPublic = newFolderTypeSelect.value === 'public';
+            publicFolderPerms.classList.toggle('hidden', !isPublic);
+        }
+        newFolderTypeSelect.addEventListener('change', updatePublicPermsVisibility);
+        updatePublicPermsVisibility();
+
+        chkAllowEdit.addEventListener('change', function() {
+            lblAllowEdit.classList.toggle('active', this.checked);
+        });
+        chkAllowCopy.addEventListener('change', function() {
+            lblAllowCopy.classList.toggle('active', this.checked);
+        });
+
         // ---------- Локальное хранилище ----------
         function saveLocal() {
             try {
@@ -762,12 +863,13 @@
                 if (raw) {
                     const data = JSON.parse(raw);
                     if (Array.isArray(data) && data.length > 0) {
-                        // Страховка: у старых записей без type считаем private, без ownerId — свой
                         return data.map(f => ({
                             ...f,
                             type: f.type === 'public' ? 'public' : 'private',
                             ownerId: f.ownerId || deviceId,
-                            themes: f.themes || []
+                            themes: f.themes || [],
+                            allowEdit: !!f.allowEdit,
+                            allowCopy: !!f.allowCopy
                         }));
                     }
                 }
@@ -802,7 +904,9 @@
                         type: folderType,
                         ownerId: ownerId,
                         closed: !!rawFolder.closed,
-                        themes: Array.isArray(rawFolder.themes) ? rawFolder.themes : []
+                        themes: Array.isArray(rawFolder.themes) ? rawFolder.themes : [],
+                        allowEdit: !!rawFolder.allowEdit,
+                        allowCopy: !!rawFolder.allowCopy
                     });
                 });
             });
@@ -841,7 +945,6 @@
 
                 if (data === null || data === undefined) {
                     firebaseReceivedFirst = true;
-                    // Если локально что-то есть — отправим в базу
                     if (folders.length > 0) pushToFirebase();
                     return;
                 }
@@ -852,7 +955,6 @@
                 allFolders = buildAllFoldersFromSnapshot(snapshot);
                 saveLocal();
 
-                // Восстановить selectedFolderId, если он исчез или стал чужим
                 if (selectedFolderId) {
                     const my = folders.find(f => f.id === selectedFolderId);
                     if (!my) selectedFolderId = folders.length ? folders[0].id : null;
@@ -871,7 +973,7 @@
         }
 
         // ---------- Создание папки ----------
-        function createFolder(name, type) {
+        function createFolder(name, type, allowEdit, allowCopy) {
             const trimmed = name.trim();
             if (!trimmed) { showToast('Введите название папки'); return false; }
             const folderType = type === 'public' ? 'public' : 'private';
@@ -881,14 +983,24 @@
                 type: folderType,
                 ownerId: deviceId,
                 closed: false,
-                themes: []
+                themes: [],
+                allowEdit: folderType === 'public' ? !!allowEdit : false,
+                allowCopy: folderType === 'public' ? !!allowCopy : false
             };
             folders.push(newFolder);
             if (!selectedFolderId) selectedFolderId = newFolder.id;
             renderFolders();
             newFolderNameInput.value = '';
             newFolderTypeSelect.value = 'private';
-            showToast('Папка «' + trimmed + '» создана (' + (folderType === 'public' ? 'публичная' : 'приватная') + ')');
+            chkAllowEdit.checked = false;
+            chkAllowCopy.checked = false;
+            lblAllowEdit.classList.remove('active');
+            lblAllowCopy.classList.remove('active');
+            updatePublicPermsVisibility();
+            const perms = folderType === 'public'
+                ? ` (изменять: ${allowEdit ? 'да' : 'нет'}, копировать: ${allowCopy ? 'да' : 'нет'})`
+                : '';
+            showToast('Папка «' + trimmed + '» создана' + (folderType === 'public' ? ' — публичная' : ' — приватная') + perms);
             pushToFirebase();
             return true;
         }
@@ -900,8 +1012,22 @@
             const t = newType === 'public' ? 'public' : 'private';
             if (folder.type === t) return;
             folder.type = t;
+            if (t === 'private') {
+                folder.allowEdit = false;
+                folder.allowCopy = false;
+            }
             renderFolders();
             showToast('Тип папки изменён на «' + (t === 'public' ? 'публичная' : 'приватная') + '»');
+            pushToFirebase();
+        }
+
+        function toggleFolderPermission(folderId, permission) {
+            const folder = getMyFolderById(folderId);
+            if (!folder || folder.ownerId !== deviceId) return;
+            if (permission === 'allowEdit') folder.allowEdit = !folder.allowEdit;
+            if (permission === 'allowCopy') folder.allowCopy = !folder.allowCopy;
+            renderFolders();
+            showToast('Права папки обновлены');
             pushToFirebase();
         }
 
@@ -917,13 +1043,11 @@
         }
 
         function toggleFolder(folderId) {
-            // Свёрнутость — локальное состояние, но для своих папок сохраняем
             const own = getMyFolderById(folderId);
             if (own) {
                 own.closed = !own.closed;
                 pushToFirebase();
             } else {
-                // Чужие — просто переключаем отображение локально
                 const f = allFolders.find(f => f.id === folderId);
                 if (f) f.closed = !f.closed;
             }
@@ -938,12 +1062,113 @@
             showToast('Записи будут сохраняться в «' + folder.name + '»');
         }
 
-        // ---------- Темы (только в своих папках) ----------
-        function deleteTheme(themeId) {
-            const folder = findMyFolderWithTheme(themeId);
-            if (!folder) { showToast('Нельзя удалить чужую запись', true); return; }
-            if (!confirm('Удалить запись?')) return;
-            folder.themes = folder.themes.filter(t => t.id !== themeId);
+        // ---------- Копирование папки (создание локальной копии) ----------
+        function copyForeignFolderToMine(folderId) {
+            const src = allFolders.find(f => f.id === folderId);
+            if (!src) { showToast('Папка не найдена', true); return; }
+            if (src.ownerId === deviceId) { showToast('Это ваша папка — её не нужно копировать', true); return; }
+            if (!canCopyForeignFolder(src)) { showToast('Владелец запретил копирование этой папки', true); return; }
+
+            const copyThemes = (src.themes || []).map(t => ({
+                ...JSON.parse(JSON.stringify(t)),
+                id: uid(),
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            }));
+
+            const newFolder = {
+                id: uid(),
+                name: src.name + ' (копия)',
+                type: 'private',
+                ownerId: deviceId,
+                closed: false,
+                themes: copyThemes,
+                allowEdit: false,
+                allowCopy: false
+            };
+
+            folders.push(newFolder);
+            selectedFolderId = newFolder.id;
+
+            // Автоматически запускаем режим вставки этой копии в другую папку
+            copyBuffer = {
+                sourceFolderId: newFolder.id,
+                sourceName: newFolder.name,
+                themeIds: copyThemes.map(t => t.id)
+            };
+
+            renderFolders();
+            updateCopyIndicator();
+            showToast('Папка «' + src.name + '» скопирована как приватная (' + copyThemes.length + ' записей)');
+            pushToFirebase();
+        }
+
+        // ---------- Вставка скопированной папки в целевую ----------
+        function pasteCopyIntoFolder(targetFolderId) {
+            if (!copyBuffer) { showToast('Нет скопированной папки', true); return; }
+            const source = getMyFolderById(copyBuffer.sourceFolderId);
+            if (!source) { showToast('Исходная папка не найдена', true); copyBuffer = null; updateCopyIndicator(); renderFolders(); return; }
+
+            const target = getMyFolderById(targetFolderId);
+            if (!target) { showToast('Целевая папка не найдена', true); return; }
+            if (target.id === source.id) { showToast('Нельзя вставить папку в саму себя', true); return; }
+
+            const themesToMove = source.themes.filter(t => copyBuffer.themeIds.includes(t.id));
+            if (themesToMove.length === 0) { showToast('В скопированной папке нет записей для вставки', true); return; }
+
+            // Переносим записи в целевую папку
+            target.themes = target.themes || [];
+            target.themes.push(...themesToMove);
+            source.themes = source.themes.filter(t => !copyBuffer.themeIds.includes(t.id));
+
+            showToast('Вставлено ' + themesToMove.length + ' записей в «' + target.name + '»');
+
+            // Очищаем буфер
+            copyBuffer = null;
+            updateCopyIndicator();
+            renderFolders();
+            pushToFirebase();
+        }
+
+        function startPasteMode(folderId) {
+            const folder = getMyFolderById(folderId);
+            if (!folder) { showToast('Можно вставлять только в свои папки', true); return; }
+            if (!copyBuffer) { showToast('Сначала скопируйте чужую папку', true); return; }
+            pasteCopyIntoFolder(folderId);
+        }
+
+        function cancelCopy() {
+            copyBuffer = null;
+            updateCopyIndicator();
+            renderFolders();
+            showToast('Режим вставки отменён');
+        }
+
+        function updateCopyIndicator() {
+            if (copyBuffer) {
+                const source = getMyFolderById(copyBuffer.sourceFolderId);
+                if (!source) { copyBuffer = null; copyIndicator.classList.add('hidden'); return; }
+                copyIndicator.classList.remove('hidden');
+                copySourceName.textContent = copyBuffer.sourceName;
+                copyThemeCount.textContent = copyBuffer.themeIds.length;
+            } else {
+                copyIndicator.classList.add('hidden');
+            }
+        }
+
+        cancelCopyBtn.addEventListener('click', cancelCopy);
+
+        // ---------- Темы (только в своих папках или в чужих с правом редактирования) ----------
+        function deleteTheme(themeId, folderId) {
+            const own = getMyFolderById(folderId);
+            if (own) {
+                if (!own.themes) return;
+                own.themes = own.themes.filter(t => t.id !== themeId);
+            } else {
+                const foreign = allFolders.find(f => f.id === folderId);
+                if (!foreign || !canEditForeignFolder(foreign)) { showToast('Нет прав на удаление', true); return; }
+                foreign.themes = (foreign.themes || []).filter(t => t.id !== themeId);
+            }
             if (editingThemeId === themeId) editingThemeId = null;
             renderFolders();
             showToast('Запись удалена');
@@ -952,7 +1177,7 @@
 
         function moveTheme(themeId, targetFolderId) {
             const sourceFolder = findMyFolderWithTheme(themeId);
-            if (!sourceFolder) { showToast('Нельзя переместить чужую запись', true); return; }
+            if (!sourceFolder) { showToast('Нельзя переместить эту запись', true); return; }
             const targetFolder = getMyFolderById(targetFolderId);
             if (!targetFolder || sourceFolder.id === targetFolderId) return;
             const idx = sourceFolder.themes.findIndex(t => t.id === themeId);
@@ -969,10 +1194,10 @@
             if (!fullName) { showToast('Введите ФИО'); fullNameInput.focus(); return; }
 
             if (folders.length === 0) {
-                // Автосоздание «Основное» приватной
                 folders.push({
                     id: uid(), name: 'Основное', type: 'private',
-                    ownerId: deviceId, closed: false, themes: []
+                    ownerId: deviceId, closed: false, themes: [],
+                    allowEdit: false, allowCopy: false
                 });
                 selectedFolderId = folders[0].id;
             }
@@ -1004,8 +1229,17 @@
             pushToFirebase();
         }
 
-        function startEditing(themeId) {
-            if (!findMyThemeById(themeId)) { showToast('Нельзя редактировать чужую запись', true); return; }
+        function startEditing(themeId, folderId) {
+            const own = getMyFolderById(folderId);
+            const foreign = allFolders.find(f => f.id === folderId);
+            if (own) {
+                if (!own.themes || !own.themes.find(t => t.id === themeId)) { showToast('Запись не найдена', true); return; }
+            } else if (foreign) {
+                if (!canEditForeignFolder(foreign)) { showToast('Владелец запретил изменять эту папку', true); return; }
+                if (!(foreign.themes || []).find(t => t.id === themeId)) { showToast('Запись не найдена', true); return; }
+            } else {
+                showToast('Папка не найдена', true); return;
+            }
             editingThemeId = themeId;
             renderFolders();
         }
@@ -1015,9 +1249,16 @@
             renderFolders();
         }
 
-        function saveEdit(themeId) {
-            const theme = findMyThemeById(themeId);
-            if (!theme) { showToast('Нельзя редактировать чужую запись', true); return; }
+        function saveEdit(themeId, folderId) {
+            const own = getMyFolderById(folderId);
+            const foreign = allFolders.find(f => f.id === folderId);
+            let folder = own || foreign;
+            if (!folder) { showToast('Папка не найдена', true); return; }
+            if (!own && !canEditForeignFolder(foreign)) { showToast('Владелец запретил изменять эту папку', true); return; }
+
+            const theme = (folder.themes || []).find(t => t.id === themeId);
+            if (!theme) { showToast('Запись не найдена', true); return; }
+
             const card = document.querySelector('[data-theme-id="' + themeId + '"]');
             if (!card) return;
             const getVal = (sel) => { const el = card.querySelector(sel); return el ? el.value : ''; };
@@ -1122,7 +1363,6 @@
                     case 'foreign-public': return !own && f.type === 'public';
                     case 'all':
                     default:
-                        // В базе и так приватные чужие отброшены, но перестрахуемся
                         return f.type === 'public' || own;
                 }
             });
@@ -1181,6 +1421,7 @@
 
             if (filtered.length === 0) {
                 foldersContainer.innerHTML = '<div class="empty-state">По текущему фильтру папок нет. Создайте новую папку или смените фильтр.</div>';
+                updateCopyIndicator();
                 return;
             }
 
@@ -1192,21 +1433,33 @@
                 const themes = folder.themes || [];
                 const sortedThemes = sortThemesArray(themes);
 
+                const foreignEditable = !own && canEditForeignFolder(folder);
+                const foreignCopyable = !own && canCopyForeignFolder(folder);
+                const canEdit = own || foreignEditable;
+                const isCopySource = copyBuffer && copyBuffer.sourceFolderId === folder.id;
+
                 let folderClass = 'folder';
                 if (own && folder.type === 'private') folderClass += ' own-private';
                 else if (own && folder.type === 'public') folderClass += ' own-public';
                 else folderClass += ' foreign-public';
                 if (isClosed) folderClass += ' closed';
                 if (isSelected) folderClass += ' selected';
+                if (isCopySource) folderClass += ' copy-source';
 
                 // Бейджи
                 let badges = '';
                 if (isSelected) badges += '<span class="folder-badge badge-default">по умолчанию</span>';
                 if (own) {
                     if (folder.type === 'private') badges += '<span class="folder-badge badge-private">приватная</span>';
-                    else badges += '<span class="folder-badge badge-public">публичная</span>';
+                    else {
+                        badges += '<span class="folder-badge badge-public">публичная</span>';
+                        if (folder.allowEdit) badges += '<span class="folder-badge badge-editable">изменяемая</span>';
+                        if (folder.allowCopy) badges += '<span class="folder-badge badge-copyable">копируемая</span>';
+                    }
                 } else {
                     badges += '<span class="folder-badge badge-foreign">чужая · публичная</span>';
+                    if (folder.allowEdit) badges += '<span class="folder-badge badge-editable">можно изменять</span>';
+                    if (folder.allowCopy) badges += '<span class="folder-badge badge-copyable">можно копировать</span>';
                 }
 
                 // Кнопки
@@ -1215,7 +1468,21 @@
                     actionButtons += `<button class="btn btn-sm btn-secondary" data-select-folder="${folder.id}" title="Сохранять сюда">Выбрать</button>`;
                     const typeLabel = folder.type === 'public' ? 'Сделать приватной' : 'Сделать публичной';
                     actionButtons += `<button class="btn btn-sm btn-cancel" data-toggle-type="${folder.id}" title="${typeLabel}">${typeLabel}</button>`;
+                    if (folder.type === 'public') {
+                        actionButtons += `<button class="btn btn-sm ${folder.allowEdit ? 'btn-primary' : 'btn-cancel'}" data-toggle-perm="allowEdit" data-folder-id="${folder.id}" title="Разрешить/запретить другим изменять">${folder.allowEdit ? '✎' : '✎'}</button>`;
+                        actionButtons += `<button class="btn btn-sm ${folder.allowCopy ? 'btn-primary' : 'btn-cancel'}" data-toggle-perm="allowCopy" data-folder-id="${folder.id}" title="Разрешить/запретить копировать">${folder.allowCopy ? '📋' : '📋'}</button>`;
+                    }
+                    if (copyBuffer && copyBuffer.sourceFolderId !== folder.id) {
+                        actionButtons += `<button class="btn btn-sm btn-paste" data-paste-into="${folder.id}" title="Вставить сюда скопированные записи">Вставить</button>`;
+                    }
                     actionButtons += `<button class="btn btn-sm btn-danger" data-delete-folder="${folder.id}" title="Удалить папку">Удалить</button>`;
+                } else {
+                    if (foreignCopyable) {
+                        actionButtons += `<button class="btn btn-sm btn-copy" data-copy-folder="${folder.id}" title="Скопировать папку себе">Копировать</button>`;
+                    }
+                    if (foreignEditable) {
+                        actionButtons += `<span style="font-size:0.72rem;color:var(--amber);">можно изменять</span>`;
+                    }
                 }
 
                 html += `
@@ -1253,7 +1520,7 @@
                         if (theme.updatedAt) metaParts.push(`<span class="updated-at">изм.: ${formatDateTime(theme.updatedAt)}</span>`);
 
                         const displayFio = formatFioForDisplay(theme.fullName, sortKey);
-                        const isEditing = own && editingThemeId === theme.id;
+                        const isEditing = canEdit && editingThemeId === theme.id;
 
                         // Перемещение — только для своих
                         const moveOptions = own
@@ -1303,7 +1570,7 @@
                                     </div>
                                     <div class="theme-edit-actions">
                                         <button class="btn btn-sm btn-cancel" data-cancel-edit="${theme.id}">Отмена</button>
-                                        <button class="btn btn-sm btn-primary" data-save-edit="${theme.id}">Сохранить</button>
+                                        <button class="btn btn-sm btn-primary" data-save-edit="${theme.id}" data-folder-id="${folder.id}">Сохранить</button>
                                     </div>
                                 </div>
                             `;
@@ -1321,10 +1588,10 @@
                                     <span class="detail-label">Создано</span><span class="detail-value" style="color:var(--text-muted); font-size:0.78rem;">${formatDateTime(theme.createdAt)}</span>
                                 </div>
                                 <div class="detail-row"><span class="detail-label">Изменено</span><span class="detail-value" style="color:var(--emerald-light); font-size:0.78rem;">${formatDateTime(theme.updatedAt)}</span></div>
-                                ${own ? `
+                                ${canEdit ? `
                                 <div class="theme-edit-actions">
-                                    <button class="btn btn-sm btn-danger" data-delete-theme="${theme.id}">Удалить</button>
-                                    <button class="btn btn-sm btn-secondary" data-edit-theme="${theme.id}">Редактировать</button>
+                                    <button class="btn btn-sm btn-danger" data-delete-theme="${theme.id}" data-folder-id="${folder.id}">Удалить</button>
+                                    <button class="btn btn-sm btn-secondary" data-edit-theme="${theme.id}" data-folder-id="${folder.id}">Редактировать</button>
                                 </div>` : ''}
                             `;
                         }
@@ -1338,7 +1605,7 @@
 
             // Обработчики
             document.querySelectorAll('[data-folder-toggle]').forEach(el => {
-                el.addEventListener('click', (e) => { if (e.target.closest('button')) return; toggleFolder(el.getAttribute('data-folder-toggle')); });
+                el.addEventListener('click', (e) => { if (e.target.closest('button') || e.target.closest('select')) return; toggleFolder(el.getAttribute('data-folder-toggle')); });
             });
             document.querySelectorAll('[data-select-folder]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); selectFolder(btn.getAttribute('data-select-folder')); });
@@ -1352,8 +1619,20 @@
                     changeFolderType(id, f.type === 'public' ? 'private' : 'public');
                 });
             });
+            document.querySelectorAll('[data-toggle-perm]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFolderPermission(btn.getAttribute('data-folder-id'), btn.getAttribute('data-toggle-perm'));
+                });
+            });
             document.querySelectorAll('[data-delete-folder]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); deleteFolder(btn.getAttribute('data-delete-folder')); });
+            });
+            document.querySelectorAll('[data-copy-folder]').forEach(btn => {
+                btn.addEventListener('click', (e) => { e.stopPropagation(); copyForeignFolderToMine(btn.getAttribute('data-copy-folder')); });
+            });
+            document.querySelectorAll('[data-paste-into]').forEach(btn => {
+                btn.addEventListener('click', (e) => { e.stopPropagation(); startPasteMode(btn.getAttribute('data-paste-into')); });
             });
             document.querySelectorAll('[data-theme-toggle]').forEach(el => {
                 el.addEventListener('click', (e) => {
@@ -1364,16 +1643,25 @@
                 });
             });
             document.querySelectorAll('[data-edit-theme]').forEach(btn => {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); startEditing(btn.getAttribute('data-edit-theme')); });
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    startEditing(btn.getAttribute('data-edit-theme'), btn.getAttribute('data-folder-id'));
+                });
             });
             document.querySelectorAll('[data-cancel-edit]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); cancelEditing(); });
             });
             document.querySelectorAll('[data-save-edit]').forEach(btn => {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); saveEdit(btn.getAttribute('data-save-edit')); });
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    saveEdit(btn.getAttribute('data-save-edit'), btn.getAttribute('data-folder-id'));
+                });
             });
             document.querySelectorAll('[data-delete-theme]').forEach(btn => {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); deleteTheme(btn.getAttribute('data-delete-theme')); });
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteTheme(btn.getAttribute('data-delete-theme'), btn.getAttribute('data-folder-id'));
+                });
             });
             document.querySelectorAll('[data-move-theme]').forEach(select => {
                 select.addEventListener('change', () => {
@@ -1407,6 +1695,8 @@
             });
             document.querySelectorAll('.edit-phone').forEach(inp => attachPhoneMask(inp));
             document.querySelectorAll('.edit-birthDate').forEach(inp => attachDateMask(inp));
+
+            updateCopyIndicator();
         }
 
         // ---------- Инициализация ----------
@@ -1414,8 +1704,12 @@
         createFolderBtn.addEventListener('click', () => {
             const name = newFolderNameInput.value.trim();
             const type = newFolderTypeSelect.value;
-            if (name) createFolder(name, type);
-            else { showToast('Введите название папки'); newFolderNameInput.focus(); }
+            if (name) {
+                createFolder(name, type, chkAllowEdit.checked, chkAllowCopy.checked);
+            } else {
+                showToast('Введите название папки');
+                newFolderNameInput.focus();
+            }
         });
         newFolderNameInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); createFolderBtn.click(); }
@@ -1431,7 +1725,7 @@
         updateSortUI();
         updateFolderFilterUI();
 
-        // 1. Локальные данные (свои папки)
+        // 1. Локальные данные
         const localData = loadLocal();
         if (localData && localData.length > 0) {
             folders = localData;
@@ -1440,7 +1734,8 @@
         } else {
             folders = [{
                 id: uid(), name: 'Основное', type: 'private',
-                ownerId: deviceId, closed: false, themes: []
+                ownerId: deviceId, closed: false, themes: [],
+                allowEdit: false, allowCopy: false
             }];
             allFolders = folders.slice();
             selectedFolderId = folders[0].id;
