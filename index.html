@@ -28,6 +28,7 @@
             --blue-bg: rgba(59, 130, 246, 0.12);
             --purple: #a855f7;
             --purple-bg: rgba(168, 85, 247, 0.12);
+            --sidebar-w: 260px;
         }
 
         body {
@@ -41,7 +42,70 @@
             align-items: flex-start;
             min-height: 100vh;
             line-height: 1.5;
+            overflow-x: hidden;
         }
+
+        /* ===== Боковая панель ===== */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--black-soft);
+            border-right: 1px solid var(--border);
+            box-shadow: 8px 0 40px -10px rgba(0, 0, 0, 0.8);
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            padding: 1.2rem 0.9rem;
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-title {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--emerald); padding: 0.3rem 0.7rem 1rem; border-bottom: 1px solid var(--border); margin-bottom: 0.8rem;
+        }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 0.35rem; }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.85rem;
+            border-radius: 0.55rem; cursor: pointer; color: var(--text-secondary);
+            font-size: 0.9rem; font-weight: 500; transition: 0.15s ease; user-select: none;
+            border: 1px solid transparent;
+        }
+        .sidebar-item:hover { background: var(--black-elevated); color: var(--text-primary); }
+        .sidebar-item.active {
+            background: rgba(16, 185, 129, 0.12); color: var(--emerald-light);
+            border-color: rgba(16, 185, 129, 0.3); font-weight: 600;
+        }
+        .sidebar-item .icon { font-size: 1.05rem; width: 1.3rem; text-align: center; }
+        .sidebar-footer {
+            margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);
+            font-size: 0.72rem; color: var(--text-muted); padding: 0.8rem 0.7rem;
+            word-break: break-all;
+        }
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55);
+            opacity: 0; visibility: hidden; transition: 0.2s ease; z-index: 450;
+        }
+        .sidebar-overlay.show { opacity: 1; visibility: visible; }
+
+        /* Кнопка-гамбургер */
+        .hamburger {
+            position: fixed; top: 1rem; left: 1rem; z-index: 600;
+            width: 44px; height: 44px; border-radius: 0.6rem;
+            background: var(--black-elevated); border: 1px solid var(--border-light);
+            color: var(--emerald); cursor: pointer; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 4px; transition: 0.15s ease;
+        }
+        .hamburger:hover { background: var(--black-card); border-color: var(--emerald-dark); }
+        .hamburger span {
+            display: block; width: 20px; height: 2px; background: currentColor;
+            border-radius: 1px; transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
         .app {
             max-width: 1180px;
@@ -51,6 +115,7 @@
             border: 1px solid var(--border);
             box-shadow: 0 25px 60px -20px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(16, 185, 129, 0.05);
             padding: 2.5rem 2.2rem;
+            margin-left: 60px;
         }
 
         .app-header { margin-bottom: 2.2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
@@ -71,7 +136,7 @@
         label { font-weight: 600; font-size: 0.82rem; color: var(--text-secondary); letter-spacing: 0.02em; }
         label .hint { font-weight: 400; color: var(--text-muted); font-size: 0.75rem; }
 
-        input[type="text"], input[type="tel"], textarea {
+        input[type="text"], input[type="tel"], input[type="password"], textarea {
             width: 100%; padding: 0.7rem 0.9rem; border: 1px solid var(--border-light); border-radius: 0.6rem;
             font-size: 0.92rem; font-family: inherit; background: var(--black-card); color: var(--text-primary);
             transition: 0.15s ease; outline: none;
@@ -108,6 +173,7 @@
         .btn-primary { background: var(--emerald); color: var(--black); box-shadow: 0 4px 14px -4px var(--emerald-glow); }
         .btn-primary:hover { background: var(--emerald-light); box-shadow: 0 6px 20px -4px var(--emerald-glow); }
         .btn-primary:active { background: var(--emerald-dark); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-secondary { background: transparent; color: var(--emerald); border: 1px solid var(--emerald-dark); }
         .btn-secondary:hover { background: rgba(16, 185, 129, 0.1); border-color: var(--emerald); }
         .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.78rem; border-radius: 0.45rem; }
@@ -119,6 +185,10 @@
         .btn-copy:hover { background: var(--purple-bg); border-color: var(--purple); }
         .btn-paste { background: transparent; color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.4); }
         .btn-paste:hover { background: rgba(245, 158, 11, 0.12); border-color: var(--amber); }
+        .btn-fav { background: transparent; color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.4); }
+        .btn-fav:hover { background: rgba(245, 158, 11, 0.12); border-color: var(--amber); }
+        .btn-fav.active { background: var(--amber); color: var(--black); border-color: var(--amber); }
+        .btn-fav.active:hover { background: #fbbf24; }
 
         .action-bar {
             display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem;
@@ -137,7 +207,6 @@
         .type-select:hover { border-color: var(--emerald-dark); }
         .type-select:focus { border-color: var(--emerald); box-shadow: 0 0 0 3px var(--emerald-glow); }
 
-        /* Права публичной папки */
         .folder-perms {
             display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.6rem;
             padding: 0.7rem 0.9rem; background: var(--black-card); border: 1px solid var(--border-light);
@@ -232,10 +301,29 @@
         .folder.closed .folder-body { display: none; }
         .folder-body { padding: 0.9rem 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; border-top: 1px solid var(--border); }
 
-        .theme-card { background: var(--black); border: 1px solid var(--border); border-left: 3px solid var(--emerald-dark); border-radius: 0.6rem; overflow: hidden; transition: border-left-color 0.15s ease; }
-        .theme-card:hover { border-left-color: var(--emerald); }
+        /* ===== Бланки: слитный список без отступов ===== */
+        .theme-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 0.6rem;
+            overflow: hidden;
+            background: var(--black);
+        }
+        .theme-card {
+            background: var(--black);
+            border: none;
+            border-left: 3px solid var(--emerald-dark);
+            border-bottom: 1px solid var(--border);
+            border-radius: 0;
+            overflow: hidden;
+            transition: border-left-color 0.15s ease, background 0.15s ease;
+        }
+        .theme-card:last-child { border-bottom: none; }
+        .theme-card:hover { border-left-color: var(--emerald); background: rgba(255,255,255,0.012); }
         .theme-summary { padding: 0.8rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 1rem; cursor: pointer; user-select: none; }
-        .theme-summary:hover { background: rgba(255, 255, 255, 0.015); }
+        .theme-summary:hover { background: rgba(255, 255, 255, 0.02); }
         .theme-info { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; align-items: baseline; flex: 1; min-width: 0; }
         .theme-title { font-weight: 700; color: var(--text-primary); font-size: 0.92rem; }
         .theme-meta { color: var(--text-secondary); font-size: 0.78rem; display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; }
@@ -305,12 +393,6 @@
         .sync-dot.syncing { background: #f59e0b; animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .section-hint {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            margin-bottom: 0.8rem;
-        }
-
         .copy-indicator {
             background: var(--purple-bg);
             color: var(--purple);
@@ -329,8 +411,97 @@
         .copy-indicator .copy-indicator-text { display: flex; align-items: center; gap: 0.5rem; }
         .copy-indicator .copy-indicator-text strong { color: var(--text-primary); }
 
+        /* ===== Views ===== */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* ===== База данных ===== */
+        .db-toolbar {
+            display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center;
+            margin: 0.5rem 0 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+        }
+        .search-wrap { position: relative; flex: 1; min-width: 200px; }
+        .search-wrap input { padding-left: 2.2rem; }
+        .search-wrap::before {
+            content: '🔍';
+            position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+            font-size: 0.85rem; opacity: 0.6; pointer-events: none;
+        }
+        .db-stats {
+            font-size: 0.78rem; color: var(--text-muted); margin-left: auto;
+            padding: 0.4rem 0.8rem; background: var(--black-card); border-radius: 0.5rem;
+            border: 1px solid var(--border-light); white-space: nowrap;
+        }
+        .db-stats b { color: var(--emerald-light); }
+
+        .db-sort-row {
+            display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .db-section { margin-bottom: 2rem; }
+        .db-section-title {
+            font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--emerald); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem;
+        }
+        .db-section-title .count-pill {
+            background: var(--black); color: var(--emerald-light); font-size: 0.68rem;
+            padding: 0.1rem 0.55rem; border-radius: 0.4rem; border: 1px solid var(--border-light);
+        }
+        .db-section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, var(--emerald-dark), transparent); }
+        .db-section-title.foreign { color: var(--blue); }
+        .db-section-title.foreign::after { background: linear-gradient(to right, rgba(59,130,246,0.6), transparent); }
+        .db-section-title.favorites { color: var(--amber); }
+        .db-section-title.favorites::after { background: linear-gradient(to right, rgba(245,158,11,0.6), transparent); }
+
+        /* Папки в базе данных */
+        .db-folder { background: var(--black-card); border: 1px solid var(--border); border-radius: 0.7rem; margin-bottom: 0.8rem; overflow: hidden; }
+        .db-folder-header {
+            display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+            padding: 0.7rem 1rem; background: var(--black-elevated); cursor: pointer; user-select: none;
+        }
+        .db-folder-header:hover { background: #262626; }
+        .db-folder-name { font-size: 0.92rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; min-width: 0; flex-wrap: wrap; }
+        .db-folder-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .db-folder-count { background: var(--black); color: var(--emerald); font-size: 0.68rem; padding: 0.1rem 0.5rem; border-radius: 0.4rem; font-weight: 700; border: 1px solid var(--border-light); }
+        .db-folder-chevron { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.2s ease; }
+        .db-folder.closed .db-folder-chevron { transform: rotate(-90deg); }
+        .db-folder.closed .db-folder-body { display: none; }
+        .db-folder-body { padding: 0.7rem 0.8rem 0.8rem; border-top: 1px solid var(--border); }
+
+        /* ===== Auth ===== */
+        .auth-card {
+            max-width: 520px; margin: 0 auto; background: var(--black-card);
+            border: 1px solid var(--border-light); border-radius: 1rem;
+            padding: 2rem 1.8rem; box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.8);
+        }
+        .auth-card h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--emerald-light); }
+        .auth-card p.desc { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.4rem; line-height: 1.5; }
+        .auth-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+        .auth-field label { font-size: 0.8rem; }
+        .auth-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.2rem; }
+        .auth-actions .btn { flex: 1; min-width: 140px; }
+        .auth-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.6rem; min-height: 1.1rem; }
+        .auth-info {
+            margin-top: 1.4rem; padding: 0.9rem 1rem; background: var(--black);
+            border: 1px solid var(--border); border-left: 3px solid var(--emerald);
+            border-radius: 0.6rem; font-size: 0.82rem; color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .auth-info b { color: var(--text-primary); }
+        .account-box { display: flex; flex-direction: column; gap: 0.8rem; }
+        .account-row { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .account-row:last-child { border-bottom: none; }
+        .account-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .account-value { font-size: 0.85rem; color: var(--text-primary); font-weight: 600; word-break: break-all; text-align: right; }
+        .hash-display {
+            font-family: monospace; font-size: 0.7rem; color: var(--text-muted);
+            background: var(--black); padding: 0.25rem 0.5rem; border-radius: 0.3rem;
+            max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+
         @media (max-width: 760px) {
-            .app { padding: 1.6rem 1.2rem; border-radius: 1rem; }
+            .app { padding: 1.6rem 1.2rem; border-radius: 1rem; margin-left: 0; margin-top: 3.5rem; }
             h1 { font-size: 1.35rem; }
             .form-grid { grid-template-columns: 1fr; gap: 1rem; }
             .field.full { grid-column: span 1; }
@@ -344,182 +515,360 @@
             .sort-menu { min-width: 260px; }
             .folder-header { flex-direction: column; align-items: stretch; }
             .folder-actions { justify-content: flex-end; }
+            .auth-card { padding: 1.5rem 1.2rem; }
         }
     </style>
 </head>
 <body>
+
+<button class="hamburger" id="hamburger" aria-label="Меню">
+    <span></span><span></span><span></span>
+</button>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Меню</div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-item active" data-view="create">
+            <span class="icon">✏️</span><span>Создание</span>
+        </div>
+        <div class="sidebar-item" data-view="database">
+            <span class="icon">🗄️</span><span>База данных</span>
+        </div>
+        <div class="sidebar-item" data-view="settings">
+            <span class="icon">⚙️</span><span>Настройки</span>
+        </div>
+    </nav>
+    <div class="sidebar-footer" id="sidebarFooter">Не авторизован</div>
+</aside>
+
 <div class="app">
     <div class="app-header">
         <h1>Бланк данных <span class="accent">/ темы и папки</span></h1>
-        <div class="subhead">Заполните поля, отметьте разделы и сохраните в нужную папку</div>
+        <div class="subhead" id="appSubhead">Заполните поля, отметьте разделы и сохраните в нужную папку</div>
         <div class="sync-status">
             <span class="sync-dot" id="syncDot"></span>
             <span id="syncText">Инициализация...</span>
         </div>
     </div>
 
-    <div class="form-section">
-        <div class="form-section-title">Основные данные</div>
-        <div class="form-grid">
-            <div class="field">
-                <label for="fullName">ФИО</label>
-                <input type="text" id="fullName" placeholder="Иванов Иван Иванович" maxlength="80">
-            </div>
-            <div class="field">
-                <label for="birthDate">Дата рождения <span class="hint">(вводите числа — точки проставятся)</span></label>
-                <input type="text" id="birthDate" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric" autocomplete="off">
-            </div>
-            <div class="field">
-                <label for="location">Место проживания</label>
-                <input type="text" id="location" placeholder="Город, район">
-            </div>
-            <div class="field">
-                <label for="phone">Номер телефона</label>
-                <input type="tel" id="phone" placeholder="+7 (___) ___-__-__">
-            </div>
-        </div>
-    </div>
+    <!-- ===================== VIEW: СОЗДАНИЕ ===================== -->
+    <div class="view active" id="view-create">
 
-    <div class="form-section">
-        <div class="form-section-title">Описание и разделы</div>
-        <div class="form-grid">
-            <div class="field full">
-                <label for="description">Общее описание <span class="hint">(необязательно)</span></label>
-                <textarea id="description" placeholder="Краткая информация..." rows="2"></textarea>
-            </div>
-            <div class="field full">
-                <label>Дополнительные разделы</label>
-                <div class="checkbox-row">
-                    <label class="checkbox-item" id="lblSport"><input type="checkbox" id="chkSport"> Спорт</label>
-                    <label class="checkbox-item" id="lblFriends"><input type="checkbox" id="chkFriends"> Друзья</label>
-                    <label class="checkbox-item" id="lblRelations"><input type="checkbox" id="chkRelations"> Отношения</label>
+        <div class="form-section">
+            <div class="form-section-title">Основные данные</div>
+            <div class="form-grid">
+                <div class="field">
+                    <label for="fullName">ФИО</label>
+                    <input type="text" id="fullName" placeholder="Иванов Иван Иванович" maxlength="80">
                 </div>
-                <div class="extra-inputs" id="extraContainer">
-                    <div class="extra-field" id="sportField" style="display: none;">
-                        <label for="sportText">Спорт — подробности</label>
-                        <textarea id="sportText" placeholder="Вид спорта, достижения, планы..." rows="2"></textarea>
-                    </div>
-                    <div class="extra-field" id="friendsField" style="display: none;">
-                        <label for="friendsText">Друзья — подробности</label>
-                        <textarea id="friendsText" placeholder="Имена, общие занятия, встречи..." rows="2"></textarea>
-                    </div>
-                    <div class="extra-field" id="relationsField" style="display: none;">
-                        <label for="relationsText">Отношения — подробности</label>
-                        <textarea id="relationsText" placeholder="Семейное положение, планы..." rows="2"></textarea>
-                    </div>
+                <div class="field">
+                    <label for="birthDate">Дата рождения <span class="hint">(вводите числа — точки проставятся)</span></label>
+                    <input type="text" id="birthDate" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="location">Место проживания</label>
+                    <input type="text" id="location" placeholder="Город, район">
+                </div>
+                <div class="field">
+                    <label for="phone">Номер телефона</label>
+                    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__">
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="action-bar">
-        <button class="btn btn-primary" id="saveThemeBtn">Сохранить в папку</button>
-        <div class="folder-creation">
-            <div class="fc-field" style="flex: 2;">
-                <label for="newFolderName">Новая папка</label>
-                <input type="text" id="newFolderName" placeholder="Название..." maxlength="40">
+        <div class="form-section">
+            <div class="form-section-title">Описание и разделы</div>
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="description">Общее описание <span class="hint">(необязательно)</span></label>
+                    <textarea id="description" placeholder="Краткая информация..." rows="2"></textarea>
+                </div>
+                <div class="field full">
+                    <label>Дополнительные разделы</label>
+                    <div class="checkbox-row">
+                        <label class="checkbox-item" id="lblSport"><input type="checkbox" id="chkSport"> Спорт</label>
+                        <label class="checkbox-item" id="lblFriends"><input type="checkbox" id="chkFriends"> Друзья</label>
+                        <label class="checkbox-item" id="lblRelations"><input type="checkbox" id="chkRelations"> Отношения</label>
+                    </div>
+                    <div class="extra-inputs" id="extraContainer">
+                        <div class="extra-field" id="sportField" style="display: none;">
+                            <label for="sportText">Спорт — подробности</label>
+                            <textarea id="sportText" placeholder="Вид спорта, достижения, планы..." rows="2"></textarea>
+                        </div>
+                        <div class="extra-field" id="friendsField" style="display: none;">
+                            <label for="friendsText">Друзья — подробности</label>
+                            <textarea id="friendsText" placeholder="Имена, общие занятия, встречи..." rows="2"></textarea>
+                        </div>
+                        <div class="extra-field" id="relationsField" style="display: none;">
+                            <label for="relationsText">Отношения — подробности</label>
+                            <textarea id="relationsText" placeholder="Семейное положение, планы..." rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="fc-field">
-                <label for="newFolderType">Тип</label>
-                <select class="type-select" id="newFolderType">
-                    <option value="private">Приватная</option>
-                    <option value="public">Публичная</option>
-                </select>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" id="saveThemeBtn">Сохранить в папку</button>
+            <div class="folder-creation">
+                <div class="fc-field" style="flex: 2;">
+                    <label for="newFolderName">Новая папка</label>
+                    <input type="text" id="newFolderName" placeholder="Название..." maxlength="40">
+                </div>
+                <div class="fc-field">
+                    <label for="newFolderType">Тип</label>
+                    <select class="type-select" id="newFolderType">
+                        <option value="private">Приватная</option>
+                        <option value="public">Публичная</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" id="createFolderBtn" style="align-self: flex-end;">Создать папку</button>
             </div>
-            <button class="btn btn-secondary" id="createFolderBtn" style="align-self: flex-end;">Создать папку</button>
+        </div>
+
+        <div class="folder-perms hidden" id="publicFolderPerms">
+            <div class="folder-perms-title">Права для публичной папки</div>
+            <label class="checkbox-item" id="lblAllowEdit"><input type="checkbox" id="chkAllowEdit"> Разрешить другим изменять</label>
+            <label class="checkbox-item" id="lblAllowCopy"><input type="checkbox" id="chkAllowCopy"> Разрешить копировать</label>
+        </div>
+
+        <div class="copy-indicator hidden" id="copyIndicator">
+            <div class="copy-indicator-text">
+                <span>📋</span>
+                <span>Скопирована папка: <strong id="copySourceName">—</strong> (<span id="copyThemeCount">0</span> записей). Выберите целевую папку и нажмите «Вставить».</span>
+            </div>
+            <button class="btn btn-sm btn-cancel" id="cancelCopyBtn">Отменить</button>
+        </div>
+
+        <div class="toolbar">
+            <span class="toolbar-label">Сортировка бланков:</span>
+            <div class="sort-dropdown" id="sortDropdown">
+                <button class="sort-trigger" id="sortTrigger" type="button">
+                    <span>
+                        <span class="sort-trigger-label">по</span>
+                        <span class="sort-trigger-value" id="sortTriggerValue">дате изменения (новые)</span>
+                    </span>
+                    <span class="sort-trigger-arrow">&#9660;</span>
+                </button>
+                <div class="sort-menu" id="sortMenu">
+                    <div class="sort-menu-group">Дата изменения</div>
+                    <div class="sort-menu-item" data-key="updated" data-dir="desc"><span>Сначала новые</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-item" data-key="updated" data-dir="asc"><span>Сначала старые</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Дата рождения</div>
+                    <div class="sort-menu-item" data-key="birth" data-dir="asc"><span>Сначала младшие</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="birth" data-dir="desc"><span>Сначала старшие</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Фамилия</div>
+                    <div class="sort-menu-item" data-key="surname" data-dir="asc"><span>Фамилия: А → Я</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="surname" data-dir="desc"><span>Фамилия: Я → А</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Имя</div>
+                    <div class="sort-menu-item" data-key="name" data-dir="asc"><span>Имя: А → Я</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="name" data-dir="desc"><span>Имя: Я → А</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Отчество</div>
+                    <div class="sort-menu-item" data-key="patronymic" data-dir="asc"><span>Отчество: А → Я</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="patronymic" data-dir="desc"><span>Отчество: Я → А</span><span class="dir-badge">↓</span></div>
+                </div>
+            </div>
+            <button class="clear-sort-btn" id="clearSortBtn">Сбросить</button>
+
+            <span class="toolbar-label" style="margin-left: 1rem;">Фильтр папок:</span>
+            <div class="sort-dropdown" id="folderFilterDropdown">
+                <button class="sort-trigger" id="folderFilterTrigger" type="button" style="min-width: 260px;">
+                    <span>
+                        <span class="sort-trigger-label">показывать</span>
+                        <span class="sort-trigger-value" id="folderFilterValue">все папки</span>
+                    </span>
+                    <span class="sort-trigger-arrow">&#9660;</span>
+                </button>
+                <div class="sort-menu" id="folderFilterMenu">
+                    <div class="sort-menu-group">Все</div>
+                    <div class="sort-menu-item" data-filter="all"><span>Все папки</span><span class="dir-badge">★</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Свои папки</div>
+                    <div class="sort-menu-item" data-filter="own-private"><span>Свои приватные</span><span class="dir-badge">🔒</span></div>
+                    <div class="sort-menu-item" data-filter="own-public"><span>Свои публичные</span><span class="dir-badge">🌐</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Чужие</div>
+                    <div class="sort-menu-item" data-filter="foreign-public"><span>Чужие публичные</span><span class="dir-badge">👁</span></div>
+                </div>
+            </div>
+            <button class="clear-sort-btn" id="clearFolderFilterBtn">Сбросить фильтр</button>
+        </div>
+
+        <div class="folders-area">
+            <div class="folders-area-title">Папки и сохранённые записи</div>
+            <div id="foldersContainer">
+                <div class="empty-state">Загрузка данных...</div>
+            </div>
         </div>
     </div>
 
-    <!-- Права для публичной папки -->
-    <div class="folder-perms hidden" id="publicFolderPerms">
-        <div class="folder-perms-title">Права для публичной папки</div>
-        <label class="checkbox-item" id="lblAllowEdit"><input type="checkbox" id="chkAllowEdit"> Разрешить другим изменять</label>
-        <label class="checkbox-item" id="lblAllowCopy"><input type="checkbox" id="chkAllowCopy"> Разрешить копировать</label>
-    </div>
+    <!-- ===================== VIEW: БАЗА ДАННЫХ ===================== -->
+    <div class="view" id="view-database">
+        <div class="form-section-title">Все папки и бланки</div>
 
-    <!-- Индикатор режима вставки -->
-    <div class="copy-indicator hidden" id="copyIndicator">
-        <div class="copy-indicator-text">
-            <span>📋</span>
-            <span>Скопирована папка: <strong id="copySourceName">—</strong> (<span id="copyThemeCount">0</span> записей). Выберите целевую папку и нажмите «Вставить».</span>
+        <div class="db-toolbar">
+            <div class="search-wrap">
+                <input type="text" id="dbFolderSearch" placeholder="Поиск папок по названию..." autocomplete="off">
+            </div>
+            <div class="search-wrap">
+                <input type="text" id="dbThemeSearch" placeholder="Поиск бланков (ФИО, телефон, описание)..." autocomplete="off">
+            </div>
+            <div class="db-stats" id="dbStats">Папок: <b>0</b> · Бланков: <b>0</b></div>
         </div>
-        <button class="btn btn-sm btn-cancel" id="cancelCopyBtn">Отменить</button>
-    </div>
 
-    <div class="toolbar">
-        <span class="toolbar-label">Сортировка бланков:</span>
-        <div class="sort-dropdown" id="sortDropdown">
-            <button class="sort-trigger" id="sortTrigger" type="button">
-                <span>
-                    <span class="sort-trigger-label">по</span>
-                    <span class="sort-trigger-value" id="sortTriggerValue">дате изменения (новые)</span>
-                </span>
-                <span class="sort-trigger-arrow">&#9660;</span>
-            </button>
-            <div class="sort-menu" id="sortMenu">
-                <div class="sort-menu-group">Дата изменения</div>
-                <div class="sort-menu-item" data-key="updated" data-dir="desc"><span>Сначала новые</span><span class="dir-badge">↓</span></div>
-                <div class="sort-menu-item" data-key="updated" data-dir="asc"><span>Сначала старые</span><span class="dir-badge">↑</span></div>
-                <div class="sort-menu-divider"></div>
-                <div class="sort-menu-group">Дата рождения</div>
-                <div class="sort-menu-item" data-key="birth" data-dir="asc"><span>Сначала младшие</span><span class="dir-badge">↑</span></div>
-                <div class="sort-menu-item" data-key="birth" data-dir="desc"><span>Сначала старшие</span><span class="dir-badge">↓</span></div>
-                <div class="sort-menu-divider"></div>
-                <div class="sort-menu-group">Фамилия</div>
-                <div class="sort-menu-item" data-key="surname" data-dir="asc"><span>Фамилия: А → Я</span><span class="dir-badge">↑</span></div>
-                <div class="sort-menu-item" data-key="surname" data-dir="desc"><span>Фамилия: Я → А</span><span class="dir-badge">↓</span></div>
-                <div class="sort-menu-divider"></div>
-                <div class="sort-menu-group">Имя</div>
-                <div class="sort-menu-item" data-key="name" data-dir="asc"><span>Имя: А → Я</span><span class="dir-badge">↑</span></div>
-                <div class="sort-menu-item" data-key="name" data-dir="desc"><span>Имя: Я → А</span><span class="dir-badge">↓</span></div>
-                <div class="sort-menu-divider"></div>
-                <div class="sort-menu-group">Отчество</div>
-                <div class="sort-menu-item" data-key="patronymic" data-dir="asc"><span>Отчество: А → Я</span><span class="dir-badge">↑</span></div>
-                <div class="sort-menu-item" data-key="patronymic" data-dir="desc"><span>Отчество: Я → А</span><span class="dir-badge">↓</span></div>
+        <div class="db-sort-row">
+            <span class="toolbar-label">Сортировка папок:</span>
+            <div class="sort-dropdown" id="dbFolderSortDropdown">
+                <button class="sort-trigger" id="dbFolderSortTrigger" type="button" style="min-width: 240px;">
+                    <span>
+                        <span class="sort-trigger-label">по</span>
+                        <span class="sort-trigger-value" id="dbFolderSortTriggerValue">названию (А → Я)</span>
+                    </span>
+                    <span class="sort-trigger-arrow">&#9660;</span>
+                </button>
+                <div class="sort-menu" id="dbFolderSortMenu">
+                    <div class="sort-menu-group">Название</div>
+                    <div class="sort-menu-item" data-key="name" data-dir="asc"><span>Название: А → Я</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="name" data-dir="desc"><span>Название: Я → А</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Количество бланков</div>
+                    <div class="sort-menu-item" data-key="count" data-dir="desc"><span>Сначала больше</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-item" data-key="count" data-dir="asc"><span>Сначала меньше</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Дата изменения (последний бланк)</div>
+                    <div class="sort-menu-item" data-key="updated" data-dir="desc"><span>Сначала новые</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-item" data-key="updated" data-dir="asc"><span>Сначала старые</span><span class="dir-badge">↑</span></div>
+                </div>
+            </div>
+            <button class="clear-sort-btn" id="dbFolderClearSortBtn">Сбросить</button>
+
+            <span class="toolbar-label" style="margin-left: 1rem;">Сортировка бланков:</span>
+            <div class="sort-dropdown" id="dbSortDropdown">
+                <button class="sort-trigger" id="dbSortTrigger" type="button" style="min-width: 220px;">
+                    <span>
+                        <span class="sort-trigger-label">по</span>
+                        <span class="sort-trigger-value" id="dbSortTriggerValue">дате изменения (новые)</span>
+                    </span>
+                    <span class="sort-trigger-arrow">&#9660;</span>
+                </button>
+                <div class="sort-menu" id="dbSortMenu">
+                    <div class="sort-menu-group">Дата изменения</div>
+                    <div class="sort-menu-item" data-key="updated" data-dir="desc"><span>Сначала новые</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-item" data-key="updated" data-dir="asc"><span>Сначала старые</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Дата рождения</div>
+                    <div class="sort-menu-item" data-key="birth" data-dir="asc"><span>Сначала младшие</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="birth" data-dir="desc"><span>Сначала старшие</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Фамилия</div>
+                    <div class="sort-menu-item" data-key="surname" data-dir="asc"><span>Фамилия: А → Я</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="surname" data-dir="desc"><span>Фамилия: Я → А</span><span class="dir-badge">↓</span></div>
+                    <div class="sort-menu-divider"></div>
+                    <div class="sort-menu-group">Имя</div>
+                    <div class="sort-menu-item" data-key="name" data-dir="asc"><span>Имя: А → Я</span><span class="dir-badge">↑</span></div>
+                    <div class="sort-menu-item" data-key="name" data-dir="desc"><span>Имя: Я → А</span><span class="dir-badge">↓</span></div>
+                </div>
+            </div>
+            <button class="clear-sort-btn" id="dbClearSortBtn">Сбросить</button>
+        </div>
+
+        <div class="folders-area">
+            <div id="dbContainer">
+                <div class="empty-state">Загрузка данных...</div>
             </div>
         </div>
-        <button class="clear-sort-btn" id="clearSortBtn">Сбросить</button>
-
-        <span class="toolbar-label" style="margin-left: 1rem;">Фильтр папок:</span>
-        <div class="sort-dropdown" id="folderFilterDropdown">
-            <button class="sort-trigger" id="folderFilterTrigger" type="button" style="min-width: 260px;">
-                <span>
-                    <span class="sort-trigger-label">показывать</span>
-                    <span class="sort-trigger-value" id="folderFilterValue">все папки</span>
-                </span>
-                <span class="sort-trigger-arrow">&#9660;</span>
-            </button>
-            <div class="sort-menu" id="folderFilterMenu">
-                <div class="sort-menu-group">Все</div>
-                <div class="sort-menu-item" data-filter="all"><span>Все папки</span><span class="dir-badge">★</span></div>
-                <div class="sort-menu-divider"></div>
-                <div class="sort-menu-group">Свои папки</div>
-                <div class="sort-menu-item" data-filter="own-private"><span>Свои приватные</span><span class="dir-badge">🔒</span></div>
-                <div class="sort-menu-item" data-filter="own-public"><span>Свои публичные</span><span class="dir-badge">🌐</span></div>
-                <div class="sort-menu-divider"></div>
-                <div class="sort-menu-group">Чужие</div>
-                <div class="sort-menu-item" data-filter="foreign-public"><span>Чужие публичные</span><span class="dir-badge">👁</span></div>
-            </div>
-        </div>
-        <button class="clear-sort-btn" id="clearFolderFilterBtn">Сбросить фильтр</button>
     </div>
 
-    <div class="folders-area">
-        <div class="folders-area-title">Папки и сохранённые записи</div>
-        <div id="foldersContainer">
-            <div class="empty-state">Загрузка данных...</div>
+    <!-- ===================== VIEW: НАСТРОЙКИ ===================== -->
+    <div class="view" id="view-settings">
+        <div class="form-section-title">Аккаунт</div>
+
+        <div class="auth-card" id="authCard">
+            <h2 id="authTitle">Вход в аккаунт</h2>
+            <p class="desc" id="authDesc">
+                Это устройство ещё не привязано к аккаунту. Введите пароль, чтобы войти,
+                или зарегистрируйте новый аккаунт — достаточно придумать пароль.
+            </p>
+
+            <div id="authLoginForm">
+                <div class="auth-field">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="Введите пароль" autocomplete="current-password">
+                </div>
+                <div class="auth-error" id="loginError"></div>
+                <div class="auth-actions">
+                    <button class="btn btn-primary" id="loginBtn">Войти</button>
+                    <button class="btn btn-cancel" id="showRegisterBtn">Регистрация</button>
+                </div>
+            </div>
+
+            <div id="authRegisterForm" style="display:none;">
+                <div class="auth-field">
+                    <label for="regPassword">Пароль</label>
+                    <input type="password" id="regPassword" placeholder="Придумайте пароль" autocomplete="new-password">
+                </div>
+                <div class="auth-field">
+                    <label for="regPassword2">Повторите пароль</label>
+                    <input type="password" id="regPassword2" placeholder="Повторите пароль" autocomplete="new-password">
+                </div>
+                <div class="auth-error" id="regError"></div>
+                <div class="auth-actions">
+                    <button class="btn btn-primary" id="registerBtn">Зарегистрироваться</button>
+                    <button class="btn btn-cancel" id="showLoginBtn">Назад</button>
+                </div>
+            </div>
+
+            <div class="auth-info">
+                <b>Как это работает:</b> пароль хранится в виде хеша на этом устройстве и в Firebase.
+                При входе с нового устройства введите тот же пароль — вы получите доступ к своим папкам.
+                Регистрация создаёт новый аккаунт.
+            </div>
+        </div>
+
+        <div class="auth-card" id="accountCard" style="display:none;">
+            <h2>Аккаунт</h2>
+            <p class="desc">Вы авторизованы. Данные привязаны к вашему аккаунту.</p>
+            <div class="account-box">
+                <div class="account-row">
+                    <span class="account-label">Статус</span>
+                    <span class="account-value" style="color:var(--emerald-light);">Активен</span>
+                </div>
+                <div class="account-row">
+                    <span class="account-label">ID аккаунта</span>
+                    <span class="account-value" id="accId" style="font-size:0.75rem;">—</span>
+                </div>
+                <div class="account-row">
+                    <span class="account-label">Хеш пароля</span>
+                    <span class="hash-display" id="accHash">—</span>
+                </div>
+                <div class="account-row">
+                    <span class="account-label">Устройство</span>
+                    <span class="account-value" id="accDevice" style="font-size:0.72rem;color:var(--text-muted);">—</span>
+                </div>
+            </div>
+            <div class="auth-actions">
+                <button class="btn btn-cancel" id="logoutBtn">Выйти</button>
+            </div>
+            <div class="auth-info">
+                <b>Смена пароля:</b> выйдите и зарегистрируйте новый аккаунт, либо используйте
+                тот же пароль на других устройствах для доступа к данным.
+            </div>
         </div>
     </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK (CDN) -->
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-    import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js';
+    import { getDatabase, ref, set, onValue, get } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js';
 
-    // ==== ВАША КОНФИГУРАЦИЯ FIREBASE ====
     const firebaseConfig = {
         apiKey: "AIzaSyA0FYjnMg30jS9D2jeJ-EVTKt5_UU5PfCw",
         authDomain: "messenger-c75f6.firebaseapp.com",
@@ -549,23 +898,18 @@
         setSyncStatus('offline', 'Firebase недоступен — работаем локально');
     }
 
-    // =============================================
-    // Приложение
-    // =============================================
     (function() {
-        // ---------- Идентификатор устройства ----------
         let deviceId = localStorage.getItem('app_device_id');
         if (!deviceId) {
             deviceId = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
             localStorage.setItem('app_device_id', deviceId);
         }
-        const rootPath = 'users';
-        const myFoldersPath = 'users/' + deviceId + '/folders';
-        const LOCAL_KEY = 'app_folders_' + deviceId;
 
-        // ---------- Состояние ----------
-        // Папка: { id, name, type: 'private'|'public', ownerId, closed, themes: [],
-        //          allowEdit: bool, allowCopy: bool }
+        const LOCAL_KEY_BASE = 'app_folders_';
+        const AUTH_KEY = 'app_auth';
+        const FAV_KEY_BASE = 'app_favorites_';
+        const rootPath = 'users';
+
         let allFolders = [];
         let folders = [];
         let selectedFolderId = null;
@@ -574,35 +918,40 @@
         let folderFilter = 'all';
         let editingThemeId = null;
         let isRemoteUpdate = false;
-        let firebaseReceivedFirst = false;
 
-        // Состояние копирования (вставки)
-        // { folderId, name, themes: [...] } — исходные данные для вставки
+        let dbSortKey = 'updated';
+        let dbSortDir = 'desc';
+        let dbFolderSortKey = 'name';
+        let dbFolderSortDir = 'asc';
+        let dbFolderQuery = '';
+        let dbThemeQuery = '';
+
+        let favorites = [];
+
         let copyBuffer = null;
 
-        // ---------- DOM ----------
+        let currentAccount = null;
+        let currentUserPath = null;
+        let currentUserFoldersPath = null;
+
+        // DOM
         const fullNameInput = document.getElementById('fullName');
         const birthDateInput = document.getElementById('birthDate');
         const locationInput = document.getElementById('location');
         const phoneInput = document.getElementById('phone');
         const descriptionInput = document.getElementById('description');
-
         const chkSport = document.getElementById('chkSport');
         const chkFriends = document.getElementById('chkFriends');
         const chkRelations = document.getElementById('chkRelations');
-
         const lblSport = document.getElementById('lblSport');
         const lblFriends = document.getElementById('lblFriends');
         const lblRelations = document.getElementById('lblRelations');
-
         const sportField = document.getElementById('sportField');
         const friendsField = document.getElementById('friendsField');
         const relationsField = document.getElementById('relationsField');
-
         const sportText = document.getElementById('sportText');
         const friendsText = document.getElementById('friendsText');
         const relationsText = document.getElementById('relationsText');
-
         const saveThemeBtn = document.getElementById('saveThemeBtn');
         const createFolderBtn = document.getElementById('createFolderBtn');
         const newFolderNameInput = document.getElementById('newFolderName');
@@ -633,31 +982,71 @@
         const folderFilterMenu = document.getElementById('folderFilterMenu');
         const clearFolderFilterBtn = document.getElementById('clearFolderFilterBtn');
 
-        // ---------- Тост ----------
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarFooter = document.getElementById('sidebarFooter');
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const appSubhead = document.getElementById('appSubhead');
+
+        const viewCreate = document.getElementById('view-create');
+        const viewDatabase = document.getElementById('view-database');
+        const viewSettings = document.getElementById('view-settings');
+
+        const dbContainer = document.getElementById('dbContainer');
+        const dbFolderSearch = document.getElementById('dbFolderSearch');
+        const dbThemeSearch = document.getElementById('dbThemeSearch');
+        const dbStats = document.getElementById('dbStats');
+        const dbSortDropdown = document.getElementById('dbSortDropdown');
+        const dbSortTrigger = document.getElementById('dbSortTrigger');
+        const dbSortTriggerValue = document.getElementById('dbSortTriggerValue');
+        const dbSortMenu = document.getElementById('dbSortMenu');
+        const dbClearSortBtn = document.getElementById('dbClearSortBtn');
+
+        const dbFolderSortDropdown = document.getElementById('dbFolderSortDropdown');
+        const dbFolderSortTrigger = document.getElementById('dbFolderSortTrigger');
+        const dbFolderSortTriggerValue = document.getElementById('dbFolderSortTriggerValue');
+        const dbFolderSortMenu = document.getElementById('dbFolderSortMenu');
+        const dbFolderClearSortBtn = document.getElementById('dbFolderClearSortBtn');
+
+        const authCard = document.getElementById('authCard');
+        const accountCard = document.getElementById('accountCard');
+        const authTitle = document.getElementById('authTitle');
+        const authDesc = document.getElementById('authDesc');
+        const authLoginForm = document.getElementById('authLoginForm');
+        const authRegisterForm = document.getElementById('authRegisterForm');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginError = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const regPassword = document.getElementById('regPassword');
+        const regPassword2 = document.getElementById('regPassword2');
+        const regError = document.getElementById('regError');
+        const registerBtn = document.getElementById('registerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const accId = document.getElementById('accId');
+        const accHash = document.getElementById('accHash');
+        const accDevice = document.getElementById('accDevice');
+
         let toastTimer;
         function showToast(msg, isError) {
             clearTimeout(toastTimer);
             toastEl.textContent = msg;
             toastEl.classList.toggle('error', !!isError);
             toastEl.classList.add('show');
-            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
         }
 
-        // ---------- Утилиты ----------
         function uid() {
             return Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 8);
         }
-
         function escapeHtml(unsafe) {
             if (unsafe === null || unsafe === undefined) return '';
             return String(unsafe)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
-
         function formatDate(dateStr) {
             if (!dateStr) return '';
             try {
@@ -671,36 +1060,25 @@
                 return d.toLocaleDateString('ru-RU');
             } catch { return dateStr; }
         }
-
         function formatDateTime(ts) {
             if (!ts) return '';
             try {
                 const d = new Date(ts);
                 if (isNaN(d.getTime())) return '';
-                return d.toLocaleString('ru-RU', {
-                    day: '2-digit', month: '2-digit', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit'
-                });
+                return d.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             } catch { return ''; }
         }
-
         function parseDateRu(str) {
             if (!str) return 0;
             const parts = str.trim().split('.');
             if (parts.length !== 3) return 0;
-            const d = parseInt(parts[0], 10);
-            const m = parseInt(parts[1], 10);
-            const y = parseInt(parts[2], 10);
+            const d = parseInt(parts[0], 10), m = parseInt(parts[1], 10), y = parseInt(parts[2], 10);
             if (isNaN(d) || isNaN(m) || isNaN(y)) return 0;
-            if (y < 1900 || y > 2100) return 0;
-            if (m < 1 || m > 12) return 0;
-            if (d < 1 || d > 31) return 0;
+            if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return 0;
             const date = new Date(y, m - 1, d);
-            if (isNaN(date.getTime())) return 0;
-            return date.getTime();
+            return isNaN(date.getTime()) ? 0 : date.getTime();
         }
 
-        // Работа со своими папками
         function getMyFolderById(id) { return folders.find(f => f.id === id); }
         function findMyFolderWithTheme(themeId) {
             for (let folder of folders) {
@@ -708,42 +1086,25 @@
             }
             return null;
         }
-        function findMyThemeById(themeId) {
-            for (let folder of folders) {
-                const t = (folder.themes || []).find(t => t.id === themeId);
-                if (t) return t;
-            }
-            return null;
-        }
-
-        // Можно ли редактировать чужую публичную папку
         function canEditForeignFolder(folder) {
-            return folder.ownerId !== deviceId
-                && folder.type === 'public'
-                && folder.allowEdit === true;
+            return folder.ownerId !== getOwnerId() && folder.type === 'public' && folder.allowEdit === true;
         }
-
-        // Можно ли копировать чужую публичную папку
         function canCopyForeignFolder(folder) {
-            return folder.ownerId !== deviceId
-                && folder.type === 'public'
-                && folder.allowCopy === true;
+            return folder.ownerId !== getOwnerId() && folder.type === 'public' && folder.allowCopy === true;
         }
 
         function parseFio(fio) {
-            const parts = fio.trim().split(/\s+/);
+            const parts = (fio || '').trim().split(/\s+/);
             return { surname: parts[0] || '', name: parts[1] || '', patronymic: parts[2] || '' };
         }
-
-        function formatFioForDisplay(fio, sortKey) {
+        function formatFioForDisplay(fio, key) {
             const p = parseFio(fio);
-            if (!p.surname && !p.name && !p.patronymic) return fio;
-            if (sortKey === 'name') return [p.name, p.surname, p.patronymic].filter(Boolean).join(' ');
-            if (sortKey === 'patronymic') return [p.patronymic, p.surname, p.name].filter(Boolean).join(' ');
+            if (!p.surname && !p.name && !p.patronymic) return fio || '';
+            if (key === 'name') return [p.name, p.surname, p.patronymic].filter(Boolean).join(' ');
+            if (key === 'patronymic') return [p.patronymic, p.surname, p.name].filter(Boolean).join(' ');
             return [p.surname, p.name, p.patronymic].filter(Boolean).join(' ');
         }
 
-        // ---------- Маски ----------
         function normalizePhone(value) {
             let digits = value.replace(/\D/g, '');
             if (!digits) return '';
@@ -759,7 +1120,6 @@
             if (p.length > 8) result += '-' + p.slice(8, 10);
             return result;
         }
-
         function attachPhoneMask(input) {
             input.addEventListener('input', function() {
                 const start = this.selectionStart;
@@ -771,24 +1131,19 @@
                     this.setSelectionRange(newPos, newPos);
                 } catch (e) {}
             });
-            input.addEventListener('focus', function() {
-                if (!this.value) this.value = '+7 ';
-            });
+            input.addEventListener('focus', function() { if (!this.value) this.value = '+7 '; });
             input.addEventListener('blur', function() {
                 if (this.value.replace(/\D/g, '') === '7' || !this.value.trim()) this.value = '';
             });
         }
-
         function normalizeDate(value) {
-            let digits = value.replace(/\D/g, '');
-            digits = digits.slice(0, 8);
+            let digits = value.replace(/\D/g, '').slice(0, 8);
             let result = '';
             if (digits.length > 0) result += digits.slice(0, 2);
             if (digits.length >= 3) result += '.' + digits.slice(2, 4);
             if (digits.length >= 5) result += '.' + digits.slice(4, 8);
             return result;
         }
-
         function attachDateMask(input) {
             input.addEventListener('input', function() {
                 const start = this.selectionStart;
@@ -802,7 +1157,6 @@
             });
         }
 
-        // ---------- Переключение доп. полей ----------
         function toggleExtraFields() {
             const s = chkSport.checked, f = chkFriends.checked, r = chkRelations.checked;
             sportField.style.display = s ? 'flex' : 'none';
@@ -812,7 +1166,6 @@
             lblFriends.classList.toggle('active', f);
             lblRelations.classList.toggle('active', r);
         }
-
         chkSport.addEventListener('change', toggleExtraFields);
         chkFriends.addEventListener('change', toggleExtraFields);
         chkRelations.addEventListener('change', toggleExtraFields);
@@ -833,71 +1186,327 @@
             fullNameInput.focus();
         }
 
-        // ---------- Публичные права при создании папки ----------
         function updatePublicPermsVisibility() {
             const isPublic = newFolderTypeSelect.value === 'public';
             publicFolderPerms.classList.toggle('hidden', !isPublic);
         }
         newFolderTypeSelect.addEventListener('change', updatePublicPermsVisibility);
         updatePublicPermsVisibility();
+        chkAllowEdit.addEventListener('change', function() { lblAllowEdit.classList.toggle('active', this.checked); });
+        chkAllowCopy.addEventListener('change', function() { lblAllowCopy.classList.toggle('active', this.checked); });
 
-        chkAllowEdit.addEventListener('change', function() {
-            lblAllowEdit.classList.toggle('active', this.checked);
-        });
-        chkAllowCopy.addEventListener('change', function() {
-            lblAllowCopy.classList.toggle('active', this.checked);
-        });
-
-        // ---------- Локальное хранилище ----------
-        function saveLocal() {
+        // ===== Аккаунт =====
+        async function sha256(text) {
+            const enc = new TextEncoder().encode(text);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        function loadAuth() {
             try {
-                localStorage.setItem(LOCAL_KEY, JSON.stringify(folders));
-            } catch (e) {
-                console.warn('localStorage save error:', e);
+                const raw = localStorage.getItem(AUTH_KEY);
+                if (raw) {
+                    const obj = JSON.parse(raw);
+                    if (obj && obj.accountId && obj.passwordHash) return obj;
+                }
+            } catch {}
+            return null;
+        }
+        function saveAuth(obj) {
+            if (obj) localStorage.setItem(AUTH_KEY, JSON.stringify(obj));
+            else localStorage.removeItem(AUTH_KEY);
+        }
+        function getOwnerId() { return currentAccount ? currentAccount.accountId : deviceId; }
+        function getLocalKey() { return LOCAL_KEY_BASE + getOwnerId(); }
+        function getFavKey() { return FAV_KEY_BASE + getOwnerId(); }
+
+        function updateSidebarFooter() {
+            sidebarFooter.textContent = currentAccount
+                ? 'Аккаунт: ' + currentAccount.accountId.substring(0, 14) + '…'
+                : 'Локальный режим';
+        }
+
+        function loadFavorites() {
+            try {
+                const raw = localStorage.getItem(getFavKey());
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (Array.isArray(data)) return data.filter(x => typeof x === 'string');
+                }
+            } catch {}
+            return [];
+        }
+        function saveFavorites() {
+            try {
+                localStorage.setItem(getFavKey(), JSON.stringify(favorites));
+            } catch {}
+        }
+        function isFavorite(folderId) { return favorites.includes(folderId); }
+        function toggleFavorite(folderId) {
+            if (isFavorite(folderId)) {
+                favorites = favorites.filter(x => x !== folderId);
+                showToast('Удалено из избранного');
+            } else {
+                favorites.push(folderId);
+                showToast('Добавлено в избранное');
+            }
+            saveFavorites();
+            if (viewDatabase.classList.contains('active')) renderDatabase();
+        }
+
+        async function registerAccount(password) {
+            const hash = await sha256(password);
+            const accountId = 'acc_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 8);
+            const acc = { accountId, passwordHash: hash, createdAt: Date.now() };
+            if (firebaseReady) {
+                try {
+                    await set(ref(db, 'accounts/' + hash), { accountId, createdAt: Date.now() });
+                } catch (e) { console.warn('Firebase register error:', e); }
+            }
+            const oldLocalKey = LOCAL_KEY_BASE + deviceId;
+            let migrated = [];
+            try {
+                const raw = localStorage.getItem(oldLocalKey);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (Array.isArray(data)) migrated = data;
+                }
+            } catch {}
+            saveAuth(acc);
+            currentAccount = acc;
+            switchAccount(acc, migrated);
+            showToast('Аккаунт зарегистрирован');
+            renderAuthUI();
+        }
+
+        async function loginAccount(password) {
+            const hash = await sha256(password);
+            if (!firebaseReady) {
+                const acc = loadAuth();
+                if (acc && acc.passwordHash === hash) {
+                    currentAccount = acc;
+                    switchAccount(acc, null);
+                    showToast('Вход выполнен (локально)');
+                    renderAuthUI();
+                    return true;
+                }
+                return false;
+            }
+            try {
+                const snap = await get(ref(db, 'accounts/' + hash));
+                if (snap.exists()) {
+                    const data = snap.val();
+                    if (data && data.accountId) {
+                        const acc = { accountId: data.accountId, passwordHash: hash };
+                        saveAuth(acc);
+                        currentAccount = acc;
+                        switchAccount(acc, null);
+                        showToast('Вход выполнен');
+                        renderAuthUI();
+                        return true;
+                    }
+                }
+            } catch (e) { console.warn('Login error:', e); }
+            return false;
+        }
+
+        function logoutAccount() {
+            currentAccount = null;
+            saveAuth(null);
+            currentUserPath = null;
+            currentUserFoldersPath = null;
+            folders = [];
+            allFolders = [];
+            selectedFolderId = null;
+            favorites = [];
+            renderAuthUI();
+            switchToDeviceMode();
+            showToast('Вы вышли из аккаунта');
+        }
+
+        function switchAccount(acc, migratedFolders) {
+            const ownerId = acc.accountId;
+            currentUserPath = rootPath + '/' + ownerId;
+            currentUserFoldersPath = currentUserPath + '/folders';
+            let local = [];
+            try {
+                const raw = localStorage.getItem(LOCAL_KEY_BASE + ownerId);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (Array.isArray(data)) local = data;
+                }
+            } catch {}
+            if (migratedFolders && migratedFolders.length > 0 && local.length === 0) {
+                local = migratedFolders.map(f => ({ ...f, ownerId }));
+            }
+            folders = local;
+            allFolders = local.slice();
+            favorites = loadFavorites();
+            if (!selectedFolderId && folders.length) selectedFolderId = folders[0].id;
+            renderFolders();
+            renderAuthUI();
+            if (firebaseReady) {
+                setSyncStatus('syncing', 'Подключение к Firebase...');
+                subscribeToFirebase();
             }
         }
 
-        function loadLocal() {
+        function switchToDeviceMode() {
+            currentUserPath = rootPath + '/' + deviceId;
+            currentUserFoldersPath = currentUserPath + '/folders';
+            let local = [];
             try {
-                const raw = localStorage.getItem(LOCAL_KEY);
+                const raw = localStorage.getItem(LOCAL_KEY_BASE + deviceId);
                 if (raw) {
                     const data = JSON.parse(raw);
-                    if (Array.isArray(data) && data.length > 0) {
+                    if (Array.isArray(data)) local = data;
+                }
+            } catch {}
+            folders = local;
+            allFolders = local.slice();
+            favorites = loadFavorites();
+            if (!selectedFolderId && folders.length) selectedFolderId = folders[0].id;
+            renderFolders();
+            if (firebaseReady) subscribeToFirebase();
+        }
+
+        function renderAuthUI() {
+            updateSidebarFooter();
+            if (currentAccount) {
+                authCard.style.display = 'none';
+                accountCard.style.display = 'block';
+                accId.textContent = currentAccount.accountId;
+                accHash.textContent = currentAccount.passwordHash;
+                accDevice.textContent = deviceId;
+            } else {
+                authCard.style.display = 'block';
+                accountCard.style.display = 'none';
+                authTitle.textContent = 'Вход в аккаунт';
+                authDesc.textContent = 'Это устройство ещё не привязано к аккаунту. Введите пароль, чтобы войти, или зарегистрируйте новый аккаунт — достаточно придумать пароль.';
+                authLoginForm.style.display = 'block';
+                authRegisterForm.style.display = 'none';
+                loginPassword.value = '';
+                regPassword.value = '';
+                regPassword2.value = '';
+                loginError.textContent = '';
+                regError.textContent = '';
+            }
+        }
+
+        showRegisterBtn.addEventListener('click', () => {
+            authTitle.textContent = 'Регистрация';
+            authDesc.textContent = 'Придумайте пароль. Он будет использоваться для входа на других устройствах.';
+            authLoginForm.style.display = 'none';
+            authRegisterForm.style.display = 'block';
+            regError.textContent = '';
+        });
+        showLoginBtn.addEventListener('click', () => {
+            authTitle.textContent = 'Вход в аккаунт';
+            authDesc.textContent = 'Введите пароль, чтобы войти в аккаунт.';
+            authRegisterForm.style.display = 'none';
+            authLoginForm.style.display = 'block';
+            loginError.textContent = '';
+        });
+        loginBtn.addEventListener('click', async () => {
+            const pwd = loginPassword.value;
+            if (!pwd) { loginError.textContent = 'Введите пароль'; return; }
+            loginBtn.disabled = true;
+            loginError.textContent = '';
+            const ok = await loginAccount(pwd);
+            loginBtn.disabled = false;
+            if (!ok) loginError.textContent = 'Неверный пароль или аккаунт не найден';
+        });
+        loginPassword.addEventListener('keypress', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+        registerBtn.addEventListener('click', async () => {
+            const p1 = regPassword.value, p2 = regPassword2.value;
+            if (!p1) { regError.textContent = 'Введите пароль'; return; }
+            if (p1.length < 4) { regError.textContent = 'Пароль должен быть не короче 4 символов'; return; }
+            if (p1 !== p2) { regError.textContent = 'Пароли не совпадают'; return; }
+            registerBtn.disabled = true;
+            regError.textContent = '';
+            await registerAccount(p1);
+            registerBtn.disabled = false;
+        });
+        regPassword2.addEventListener('keypress', (e) => { if (e.key === 'Enter') registerBtn.click(); });
+        logoutBtn.addEventListener('click', logoutAccount);
+
+        // ===== Боковая панель =====
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('show');
+            hamburger.classList.add('open');
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('show');
+            hamburger.classList.remove('open');
+        }
+        function toggleSidebar() {
+            if (sidebar.classList.contains('open')) closeSidebar();
+            else openSidebar();
+        }
+        hamburger.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        function switchView(viewName) {
+            viewCreate.classList.toggle('active', viewName === 'create');
+            viewDatabase.classList.toggle('active', viewName === 'database');
+            viewSettings.classList.toggle('active', viewName === 'settings');
+            sidebarItems.forEach(item => item.classList.toggle('active', item.getAttribute('data-view') === viewName));
+            if (viewName === 'database') renderDatabase();
+            if (viewName === 'settings') renderAuthUI();
+            const subheads = {
+                create: 'Заполните поля, отметьте разделы и сохраните в нужную папку',
+                database: 'Просмотр всех папок и бланков',
+                settings: 'Управление аккаунтом и паролем'
+            };
+            appSubhead.textContent = subheads[viewName] || '';
+            closeSidebar();
+        }
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => switchView(item.getAttribute('data-view')));
+        });
+
+        // ===== Локальное хранилище =====
+        function saveLocal() {
+            try {
+                localStorage.setItem(getLocalKey(), JSON.stringify(folders));
+            } catch (e) {}
+        }
+        function loadLocalForOwner() {
+            try {
+                const raw = localStorage.getItem(getLocalKey());
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (Array.isArray(data)) {
                         return data.map(f => ({
                             ...f,
                             type: f.type === 'public' ? 'public' : 'private',
-                            ownerId: f.ownerId || deviceId,
+                            ownerId: f.ownerId || getOwnerId(),
                             themes: f.themes || [],
                             allowEdit: !!f.allowEdit,
                             allowCopy: !!f.allowCopy
                         }));
                     }
                 }
-            } catch (e) {
-                console.warn('localStorage load error:', e);
-            }
+            } catch (e) {}
             return null;
         }
 
-        // ---------- Firebase: чтение всех пользователей ----------
+        // ===== Firebase =====
         function buildAllFoldersFromSnapshot(snapshot) {
             const data = snapshot.val();
             const list = [];
             if (!data) return list;
-
-            Object.keys(data).forEach(uid => {
-                const userNode = data[uid];
+            Object.keys(data).forEach(uidKey => {
+                const userNode = data[uidKey];
                 if (!userNode || !userNode.folders) return;
                 const userFoldersRaw = userNode.folders;
                 if (!Array.isArray(userFoldersRaw)) return;
-
                 userFoldersRaw.forEach(rawFolder => {
                     if (!rawFolder) return;
                     const folderType = rawFolder.type === 'public' ? 'public' : 'private';
-                    const ownerId = rawFolder.ownerId || uid;
-                    // Приватные папки чужих пользователей не показываем
-                    if (folderType === 'private' && ownerId !== deviceId) return;
-
+                    const ownerId = rawFolder.ownerId || uidKey;
+                    if (folderType === 'private' && ownerId !== getOwnerId()) return;
                     list.push({
                         id: rawFolder.id,
                         name: rawFolder.name || 'Без названия',
@@ -910,80 +1519,59 @@
                     });
                 });
             });
-
-            // Свои папки — те, где ownerId === deviceId
-            folders = list.filter(f => f.ownerId === deviceId);
+            folders = list.filter(f => f.ownerId === getOwnerId());
             return list;
         }
 
-        // ---------- Синхронизация с Firebase ----------
         function pushToFirebase() {
             saveLocal();
-
-            if (!firebaseReady || isRemoteUpdate) return;
-
+            if (!firebaseReady || !currentUserFoldersPath || isRemoteUpdate) return;
             setSyncStatus('syncing', 'Сохранение...');
-
-            const foldersRef = ref(db, myFoldersPath);
-            set(foldersRef, folders)
-                .then(() => {
-                    setSyncStatus('online', 'Синхронизировано');
-                })
+            set(ref(db, currentUserFoldersPath), folders)
+                .then(() => setSyncStatus('online', 'Синхронизировано'))
                 .catch(err => {
                     console.error('Firebase write error:', err);
-                    setSyncStatus('offline', 'Ошибка синхронизации — данные сохранены локально');
-                    showToast('Ошибка Firebase: ' + err.message + ' (сохранено локально)', true);
+                    setSyncStatus('offline', 'Ошибка синхронизации');
+                    showToast('Ошибка Firebase: ' + err.message, true);
                 });
         }
 
+        let unsubscribeUsers = null;
         function subscribeToFirebase() {
             if (!firebaseReady) return;
-
-            const usersRef = ref(db, rootPath);
-            onValue(usersRef, (snapshot) => {
+            if (unsubscribeUsers) { try { unsubscribeUsers(); } catch {} }
+            unsubscribeUsers = onValue(ref(db, rootPath), (snapshot) => {
                 const data = snapshot.val();
-
                 if (data === null || data === undefined) {
-                    firebaseReceivedFirst = true;
                     if (folders.length > 0) pushToFirebase();
                     return;
                 }
-
                 isRemoteUpdate = true;
-                firebaseReceivedFirst = true;
-
                 allFolders = buildAllFoldersFromSnapshot(snapshot);
                 saveLocal();
-
                 if (selectedFolderId) {
                     const my = folders.find(f => f.id === selectedFolderId);
                     if (!my) selectedFolderId = folders.length ? folders[0].id : null;
                 } else if (folders.length) {
                     selectedFolderId = folders[0].id;
                 }
-
                 renderFolders();
+                if (viewDatabase.classList.contains('active')) renderDatabase();
                 isRemoteUpdate = false;
                 setSyncStatus('online', 'Синхронизировано');
             }, (err) => {
-                console.error('Firebase subscribe error:', err);
-                setSyncStatus('offline', 'Нет связи с Firebase — работаем локально');
-                showToast('Не удалось подключиться к Firebase: ' + err.message, true);
+                setSyncStatus('offline', 'Нет связи с Firebase');
             });
         }
 
-        // ---------- Создание папки ----------
+        // ===== Папки =====
         function createFolder(name, type, allowEdit, allowCopy) {
             const trimmed = name.trim();
             if (!trimmed) { showToast('Введите название папки'); return false; }
             const folderType = type === 'public' ? 'public' : 'private';
             const newFolder = {
-                id: uid(),
-                name: trimmed,
-                type: folderType,
-                ownerId: deviceId,
-                closed: false,
-                themes: [],
+                id: uid(), name: trimmed, type: folderType, ownerId: getOwnerId(),
+                closed: false, themes: [],
                 allowEdit: folderType === 'public' ? !!allowEdit : false,
                 allowCopy: folderType === 'public' ? !!allowCopy : false
             };
@@ -997,51 +1585,42 @@
             lblAllowEdit.classList.remove('active');
             lblAllowCopy.classList.remove('active');
             updatePublicPermsVisibility();
-            const perms = folderType === 'public'
-                ? ` (изменять: ${allowEdit ? 'да' : 'нет'}, копировать: ${allowCopy ? 'да' : 'нет'})`
-                : '';
-            showToast('Папка «' + trimmed + '» создана' + (folderType === 'public' ? ' — публичная' : ' — приватная') + perms);
+            showToast('Папка «' + trimmed + '» создана');
             pushToFirebase();
             return true;
         }
-
         function changeFolderType(folderId, newType) {
             const folder = getMyFolderById(folderId);
             if (!folder) return;
-            if (folder.ownerId !== deviceId) { showToast('Только владелец может менять тип папки', true); return; }
             const t = newType === 'public' ? 'public' : 'private';
             if (folder.type === t) return;
             folder.type = t;
-            if (t === 'private') {
-                folder.allowEdit = false;
-                folder.allowCopy = false;
-            }
+            if (t === 'private') { folder.allowEdit = false; folder.allowCopy = false; }
             renderFolders();
-            showToast('Тип папки изменён на «' + (t === 'public' ? 'публичная' : 'приватная') + '»');
+            showToast('Тип папки изменён');
             pushToFirebase();
         }
-
         function toggleFolderPermission(folderId, permission) {
             const folder = getMyFolderById(folderId);
-            if (!folder || folder.ownerId !== deviceId) return;
+            if (!folder) return;
             if (permission === 'allowEdit') folder.allowEdit = !folder.allowEdit;
             if (permission === 'allowCopy') folder.allowCopy = !folder.allowCopy;
             renderFolders();
             showToast('Права папки обновлены');
             pushToFirebase();
         }
-
         function deleteFolder(folderId) {
             const folder = getMyFolderById(folderId);
-            if (!folder) { showToast('Эту папку удалить нельзя — вы не владелец', true); return; }
+            if (!folder) return;
             if (!confirm('Удалить папку «' + folder.name + '» и все её записи?')) return;
             folders = folders.filter(f => f.id !== folderId);
             if (selectedFolderId === folderId) selectedFolderId = folders.length ? folders[0].id : null;
+            favorites = favorites.filter(id => id !== folderId);
+            saveFavorites();
             renderFolders();
             showToast('Папка удалена');
             pushToFirebase();
         }
-
         function toggleFolder(folderId) {
             const own = getMyFolderById(folderId);
             if (own) {
@@ -1053,7 +1632,6 @@
             }
             renderFolders();
         }
-
         function selectFolder(folderId) {
             const folder = getMyFolderById(folderId);
             if (!folder) { showToast('Выбрать можно только свою папку', true); return; }
@@ -1062,88 +1640,58 @@
             showToast('Записи будут сохраняться в «' + folder.name + '»');
         }
 
-        // ---------- Копирование папки (создание локальной копии) ----------
+        // ===== Копирование =====
         function copyForeignFolderToMine(folderId) {
             const src = allFolders.find(f => f.id === folderId);
             if (!src) { showToast('Папка не найдена', true); return; }
-            if (src.ownerId === deviceId) { showToast('Это ваша папка — её не нужно копировать', true); return; }
-            if (!canCopyForeignFolder(src)) { showToast('Владелец запретил копирование этой папки', true); return; }
-
+            if (src.ownerId === getOwnerId()) { showToast('Это ваша папка', true); return; }
+            if (!canCopyForeignFolder(src)) { showToast('Владелец запретил копирование', true); return; }
             const copyThemes = (src.themes || []).map(t => ({
-                ...JSON.parse(JSON.stringify(t)),
-                id: uid(),
-                createdAt: Date.now(),
-                updatedAt: Date.now()
+                ...JSON.parse(JSON.stringify(t)), id: uid(), createdAt: Date.now(), updatedAt: Date.now()
             }));
-
             const newFolder = {
-                id: uid(),
-                name: src.name + ' (копия)',
-                type: 'private',
-                ownerId: deviceId,
-                closed: false,
-                themes: copyThemes,
-                allowEdit: false,
-                allowCopy: false
+                id: uid(), name: src.name + ' (копия)', type: 'private', ownerId: getOwnerId(),
+                closed: false, themes: copyThemes, allowEdit: false, allowCopy: false
             };
-
             folders.push(newFolder);
             selectedFolderId = newFolder.id;
-
-            // Автоматически запускаем режим вставки этой копии в другую папку
-            copyBuffer = {
-                sourceFolderId: newFolder.id,
-                sourceName: newFolder.name,
-                themeIds: copyThemes.map(t => t.id)
-            };
-
+            copyBuffer = { sourceFolderId: newFolder.id, sourceName: newFolder.name, themeIds: copyThemes.map(t => t.id) };
             renderFolders();
             updateCopyIndicator();
-            showToast('Папка «' + src.name + '» скопирована как приватная (' + copyThemes.length + ' записей)');
+            showToast('Папка скопирована (' + copyThemes.length + ' записей)');
             pushToFirebase();
         }
-
-        // ---------- Вставка скопированной папки в целевую ----------
         function pasteCopyIntoFolder(targetFolderId) {
             if (!copyBuffer) { showToast('Нет скопированной папки', true); return; }
             const source = getMyFolderById(copyBuffer.sourceFolderId);
-            if (!source) { showToast('Исходная папка не найдена', true); copyBuffer = null; updateCopyIndicator(); renderFolders(); return; }
-
+            if (!source) { copyBuffer = null; updateCopyIndicator(); renderFolders(); return; }
             const target = getMyFolderById(targetFolderId);
-            if (!target) { showToast('Целевая папка не найдена', true); return; }
+            if (!target) return;
             if (target.id === source.id) { showToast('Нельзя вставить папку в саму себя', true); return; }
-
             const themesToMove = source.themes.filter(t => copyBuffer.themeIds.includes(t.id));
-            if (themesToMove.length === 0) { showToast('В скопированной папке нет записей для вставки', true); return; }
-
-            // Переносим записи в целевую папку
+            if (themesToMove.length === 0) { showToast('Нет записей для вставки', true); return; }
             target.themes = target.themes || [];
             target.themes.push(...themesToMove);
             source.themes = source.themes.filter(t => !copyBuffer.themeIds.includes(t.id));
-
             showToast('Вставлено ' + themesToMove.length + ' записей в «' + target.name + '»');
-
-            // Очищаем буфер
             copyBuffer = null;
             updateCopyIndicator();
             renderFolders();
             pushToFirebase();
         }
-
         function startPasteMode(folderId) {
             const folder = getMyFolderById(folderId);
-            if (!folder) { showToast('Можно вставлять только в свои папки', true); return; }
+            if (!folder) { showToast('Вставлять можно только в свои папки', true); return; }
             if (!copyBuffer) { showToast('Сначала скопируйте чужую папку', true); return; }
             pasteCopyIntoFolder(folderId);
         }
-
         function cancelCopy() {
             copyBuffer = null;
             updateCopyIndicator();
             renderFolders();
             showToast('Режим вставки отменён');
         }
-
+        cancelCopyBtn.addEventListener('click', cancelCopy);
         function updateCopyIndicator() {
             if (copyBuffer) {
                 const source = getMyFolderById(copyBuffer.sourceFolderId);
@@ -1156,17 +1704,14 @@
             }
         }
 
-        cancelCopyBtn.addEventListener('click', cancelCopy);
-
-        // ---------- Темы (только в своих папках или в чужих с правом редактирования) ----------
+        // ===== Темы =====
         function deleteTheme(themeId, folderId) {
             const own = getMyFolderById(folderId);
             if (own) {
-                if (!own.themes) return;
-                own.themes = own.themes.filter(t => t.id !== themeId);
+                own.themes = (own.themes || []).filter(t => t.id !== themeId);
             } else {
                 const foreign = allFolders.find(f => f.id === folderId);
-                if (!foreign || !canEditForeignFolder(foreign)) { showToast('Нет прав на удаление', true); return; }
+                if (!foreign || !canEditForeignFolder(foreign)) { showToast('Нет прав', true); return; }
                 foreign.themes = (foreign.themes || []).filter(t => t.id !== themeId);
             }
             if (editingThemeId === themeId) editingThemeId = null;
@@ -1174,10 +1719,9 @@
             showToast('Запись удалена');
             pushToFirebase();
         }
-
         function moveTheme(themeId, targetFolderId) {
             const sourceFolder = findMyFolderWithTheme(themeId);
-            if (!sourceFolder) { showToast('Нельзя переместить эту запись', true); return; }
+            if (!sourceFolder) { showToast('Нельзя переместить', true); return; }
             const targetFolder = getMyFolderById(targetFolderId);
             if (!targetFolder || sourceFolder.id === targetFolderId) return;
             const idx = sourceFolder.themes.findIndex(t => t.id === themeId);
@@ -1185,32 +1729,24 @@
             const [theme] = sourceFolder.themes.splice(idx, 1);
             targetFolder.themes.push(theme);
             renderFolders();
-            showToast('Запись перемещена в «' + targetFolder.name + '»');
+            showToast('Запись перемещена');
             pushToFirebase();
         }
-
         function saveTheme() {
             const fullName = fullNameInput.value.trim();
             if (!fullName) { showToast('Введите ФИО'); fullNameInput.focus(); return; }
-
             if (folders.length === 0) {
                 folders.push({
-                    id: uid(), name: 'Основное', type: 'private',
-                    ownerId: deviceId, closed: false, themes: [],
-                    allowEdit: false, allowCopy: false
+                    id: uid(), name: 'Основное', type: 'private', ownerId: getOwnerId(),
+                    closed: false, themes: [], allowEdit: false, allowCopy: false
                 });
                 selectedFolderId = folders[0].id;
             }
             let targetFolder = selectedFolderId ? getMyFolderById(selectedFolderId) : null;
-            if (!targetFolder) {
-                targetFolder = folders[0];
-                selectedFolderId = targetFolder.id;
-            }
-
+            if (!targetFolder) { targetFolder = folders[0]; selectedFolderId = targetFolder.id; }
             const now = Date.now();
             const record = {
-                id: uid(),
-                fullName,
+                id: uid(), fullName,
                 birthDate: birthDateInput.value || '',
                 location: locationInput.value.trim(),
                 phone: phoneInput.value.trim(),
@@ -1218,54 +1754,37 @@
                 sport: { checked: chkSport.checked, text: sportText.value.trim() },
                 friends: { checked: chkFriends.checked, text: friendsText.value.trim() },
                 relations: { checked: chkRelations.checked, text: relationsText.value.trim() },
-                createdAt: now,
-                updatedAt: now
+                createdAt: now, updatedAt: now
             };
             targetFolder.themes = targetFolder.themes || [];
             targetFolder.themes.push(record);
             renderFolders();
             clearForm();
-            showToast('Запись «' + fullName + '» сохранена в «' + targetFolder.name + '»');
+            showToast('Запись сохранена в «' + targetFolder.name + '»');
             pushToFirebase();
         }
-
         function startEditing(themeId, folderId) {
             const own = getMyFolderById(folderId);
             const foreign = allFolders.find(f => f.id === folderId);
-            if (own) {
-                if (!own.themes || !own.themes.find(t => t.id === themeId)) { showToast('Запись не найдена', true); return; }
-            } else if (foreign) {
-                if (!canEditForeignFolder(foreign)) { showToast('Владелец запретил изменять эту папку', true); return; }
-                if (!(foreign.themes || []).find(t => t.id === themeId)) { showToast('Запись не найдена', true); return; }
-            } else {
-                showToast('Папка не найдена', true); return;
-            }
+            if (!own && (!foreign || !canEditForeignFolder(foreign))) { showToast('Нет прав', true); return; }
             editingThemeId = themeId;
             renderFolders();
         }
-
-        function cancelEditing() {
-            editingThemeId = null;
-            renderFolders();
-        }
-
+        function cancelEditing() { editingThemeId = null; renderFolders(); }
         function saveEdit(themeId, folderId) {
             const own = getMyFolderById(folderId);
             const foreign = allFolders.find(f => f.id === folderId);
-            let folder = own || foreign;
-            if (!folder) { showToast('Папка не найдена', true); return; }
-            if (!own && !canEditForeignFolder(foreign)) { showToast('Владелец запретил изменять эту папку', true); return; }
-
+            const folder = own || foreign;
+            if (!folder) return;
+            if (!own && !canEditForeignFolder(foreign)) { showToast('Нет прав', true); return; }
             const theme = (folder.themes || []).find(t => t.id === themeId);
-            if (!theme) { showToast('Запись не найдена', true); return; }
-
+            if (!theme) return;
             const card = document.querySelector('[data-theme-id="' + themeId + '"]');
             if (!card) return;
             const getVal = (sel) => { const el = card.querySelector(sel); return el ? el.value : ''; };
             const getChk = (sel) => { const el = card.querySelector(sel); return el ? el.checked : false; };
             const fullName = getVal('.edit-fullName').trim();
             if (!fullName) { showToast('Введите ФИО'); return; }
-
             theme.fullName = fullName;
             theme.birthDate = getVal('.edit-birthDate');
             theme.location = getVal('.edit-location').trim();
@@ -1275,19 +1794,17 @@
             theme.friends = { checked: getChk('.edit-chkFriends'), text: getVal('.edit-friendsText').trim() };
             theme.relations = { checked: getChk('.edit-chkRelations'), text: getVal('.edit-relationsText').trim() };
             theme.updatedAt = Date.now();
-
             editingThemeId = null;
             renderFolders();
             showToast('Изменения сохранены');
             pushToFirebase();
         }
 
-        // ---------- Сортировка ----------
+        // ===== Сортировки =====
         function compareThemes(a, b, key, dir) {
             const mult = dir === 'asc' ? 1 : -1;
             if (key === 'updated' || key === 'created') {
-                const av = a[key] || 0, bv = b[key] || 0;
-                return (av - bv) * mult;
+                return ((a[key] || 0) - (b[key] || 0)) * mult;
             }
             if (key === 'birth') {
                 const av = parseDateRu(a.birthDate), bv = parseDateRu(b.birthDate);
@@ -1306,9 +1823,20 @@
             }
             return 0;
         }
+        function sortThemesArray(themes, key, dir) {
+            return (themes || []).slice().sort((a, b) => compareThemes(a, b, key, dir));
+        }
 
-        function sortThemesArray(themes) {
-            return (themes || []).slice().sort((a, b) => compareThemes(a, b, sortKey, sortDir));
+        function compareFolders(a, b, key, dir) {
+            const mult = dir === 'asc' ? 1 : -1;
+            if (key === 'name') return (a.name || '').localeCompare(b.name || '', 'ru') * mult;
+            if (key === 'count') return (((a.themes || []).length) - ((b.themes || []).length)) * mult;
+            if (key === 'updated') {
+                const au = Math.max(0, ...(a.themes || []).map(t => t.updatedAt || 0));
+                const bu = Math.max(0, ...(b.themes || []).map(t => t.updatedAt || 0));
+                return (au - bu) * mult;
+            }
+            return 0;
         }
 
         const SORT_LABELS = {
@@ -1318,121 +1846,115 @@
             'name-asc': 'имени (А → Я)', 'name-desc': 'имени (Я → А)',
             'patronymic-asc': 'отчеству (А → Я)', 'patronymic-desc': 'отчеству (Я → А)'
         };
+        const FOLDER_SORT_LABELS = {
+            'name-asc': 'названию (А → Я)', 'name-desc': 'названию (Я → А)',
+            'count-desc': 'количеству (больше)', 'count-asc': 'количеству (меньше)',
+            'updated-desc': 'дате изменения (новые)', 'updated-asc': 'дате изменения (старые)'
+        };
 
         function updateSortUI() {
-            const key = sortKey + '-' + sortDir;
-            sortTriggerValue.textContent = SORT_LABELS[key] || 'дате изменения (новые)';
+            sortTriggerValue.textContent = SORT_LABELS[sortKey + '-' + sortDir] || 'дате изменения (новые)';
             sortMenu.querySelectorAll('.sort-menu-item').forEach(el => {
                 el.classList.toggle('active', el.getAttribute('data-key') === sortKey && el.getAttribute('data-dir') === sortDir);
             });
         }
+        function setSort(key, dir) { sortKey = key; sortDir = dir; updateSortUI(); renderFolders(); }
 
-        function setSort(key, dir) {
-            sortKey = key; sortDir = dir;
-            updateSortUI();
-            renderFolders();
+        function updateDbSortUI() {
+            dbSortTriggerValue.textContent = SORT_LABELS[dbSortKey + '-' + dbSortDir] || 'дате изменения (новые)';
+            dbSortMenu.querySelectorAll('.sort-menu-item').forEach(el => {
+                el.classList.toggle('active', el.getAttribute('data-key') === dbSortKey && el.getAttribute('data-dir') === dbSortDir);
+            });
+        }
+        function updateDbFolderSortUI() {
+            dbFolderSortTriggerValue.textContent = FOLDER_SORT_LABELS[dbFolderSortKey + '-' + dbFolderSortDir] || 'названию (А → Я)';
+            dbFolderSortMenu.querySelectorAll('.sort-menu-item').forEach(el => {
+                el.classList.toggle('active', el.getAttribute('data-key') === dbFolderSortKey && el.getAttribute('data-dir') === dbFolderSortDir);
+            });
         }
 
-        // ---------- Фильтр папок ----------
         const FILTER_LABELS = {
-            'all': 'все папки',
-            'own-private': 'свои приватные',
-            'own-public': 'свои публичные',
-            'foreign-public': 'чужие публичные'
+            'all': 'все папки', 'own-private': 'свои приватные',
+            'own-public': 'свои публичные', 'foreign-public': 'чужие публичные'
         };
-
         function updateFolderFilterUI() {
             folderFilterValue.textContent = FILTER_LABELS[folderFilter] || 'все папки';
             folderFilterMenu.querySelectorAll('.sort-menu-item').forEach(el => {
                 el.classList.toggle('active', el.getAttribute('data-filter') === folderFilter);
             });
         }
-
-        function setFolderFilter(f) {
-            folderFilter = f;
-            updateFolderFilterUI();
-            renderFolders();
-        }
-
+        function setFolderFilter(f) { folderFilter = f; updateFolderFilterUI(); renderFolders(); }
         function getFilteredFolders() {
             return allFolders.filter(f => {
-                const own = f.ownerId === deviceId;
+                const own = f.ownerId === getOwnerId();
                 switch (folderFilter) {
-                    case 'own-private':  return own && f.type === 'private';
-                    case 'own-public':   return own && f.type === 'public';
+                    case 'own-private': return own && f.type === 'private';
+                    case 'own-public': return own && f.type === 'public';
                     case 'foreign-public': return !own && f.type === 'public';
-                    case 'all':
-                    default:
-                        return f.type === 'public' || own;
+                    default: return f.type === 'public' || own;
                 }
             });
         }
 
-        // ---------- Обработчики сортировки и фильтра ----------
-        sortTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            sortDropdown.classList.toggle('open');
-            sortTrigger.classList.toggle('open');
-            folderFilterDropdown.classList.remove('open');
-            folderFilterTrigger.classList.remove('open');
-        });
+        function bindDropdown(dropdown, trigger, menu, onSelect, onClear, clearBtn) {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.sort-dropdown.open').forEach(d => {
+                    if (d !== dropdown) { d.classList.remove('open'); const t = d.querySelector('.sort-trigger'); if (t) t.classList.remove('open'); }
+                });
+                dropdown.classList.toggle('open');
+                trigger.classList.toggle('open');
+            });
+            if (menu) {
+                menu.addEventListener('click', (e) => {
+                    const item = e.target.closest('.sort-menu-item');
+                    if (!item) return;
+                    onSelect(item);
+                    dropdown.classList.remove('open');
+                    trigger.classList.remove('open');
+                });
+            }
+            if (clearBtn) clearBtn.addEventListener('click', onClear);
+        }
 
-        sortMenu.addEventListener('click', (e) => {
-            const item = e.target.closest('.sort-menu-item');
-            if (!item) return;
-            setSort(item.getAttribute('data-key'), item.getAttribute('data-dir'));
-            sortDropdown.classList.remove('open');
-            sortTrigger.classList.remove('open');
-        });
-
-        folderFilterTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            folderFilterDropdown.classList.toggle('open');
-            folderFilterTrigger.classList.toggle('open');
-            sortDropdown.classList.remove('open');
-            sortTrigger.classList.remove('open');
-        });
-
-        folderFilterMenu.addEventListener('click', (e) => {
-            const item = e.target.closest('.sort-menu-item');
-            if (!item) return;
-            setFolderFilter(item.getAttribute('data-filter'));
-            folderFilterDropdown.classList.remove('open');
-            folderFilterTrigger.classList.remove('open');
-        });
+        bindDropdown(sortDropdown, sortTrigger, sortMenu,
+            (item) => setSort(item.getAttribute('data-key'), item.getAttribute('data-dir')),
+            () => setSort('updated', 'desc'), clearSortBtn);
+        bindDropdown(folderFilterDropdown, folderFilterTrigger, folderFilterMenu,
+            (item) => setFolderFilter(item.getAttribute('data-filter')),
+            () => setFolderFilter('all'), clearFolderFilterBtn);
+        bindDropdown(dbSortDropdown, dbSortTrigger, dbSortMenu,
+            (item) => { dbSortKey = item.getAttribute('data-key'); dbSortDir = item.getAttribute('data-dir'); updateDbSortUI(); renderDatabase(); },
+            () => { dbSortKey = 'updated'; dbSortDir = 'desc'; updateDbSortUI(); renderDatabase(); }, dbClearSortBtn);
+        bindDropdown(dbFolderSortDropdown, dbFolderSortTrigger, dbFolderSortMenu,
+            (item) => { dbFolderSortKey = item.getAttribute('data-key'); dbFolderSortDir = item.getAttribute('data-dir'); updateDbFolderSortUI(); renderDatabase(); },
+            () => { dbFolderSortKey = 'name'; dbFolderSortDir = 'asc'; updateDbFolderSortUI(); renderDatabase(); }, dbFolderClearSortBtn);
 
         document.addEventListener('click', (e) => {
-            if (!sortDropdown.contains(e.target)) {
-                sortDropdown.classList.remove('open');
-                sortTrigger.classList.remove('open');
-            }
-            if (!folderFilterDropdown.contains(e.target)) {
-                folderFilterDropdown.classList.remove('open');
-                folderFilterTrigger.classList.remove('open');
-            }
+            document.querySelectorAll('.sort-dropdown.open').forEach(d => {
+                if (!d.contains(e.target)) {
+                    d.classList.remove('open');
+                    const t = d.querySelector('.sort-trigger');
+                    if (t) t.classList.remove('open');
+                }
+            });
         });
 
-        clearSortBtn.addEventListener('click', () => setSort('updated', 'desc'));
-        clearFolderFilterBtn.addEventListener('click', () => setFolderFilter('all'));
-
-        // ---------- Рендер ----------
+        // ===== Рендер: создание =====
         function renderFolders() {
             const filtered = getFilteredFolders();
-
             if (filtered.length === 0) {
-                foldersContainer.innerHTML = '<div class="empty-state">По текущему фильтру папок нет. Создайте новую папку или смените фильтр.</div>';
+                foldersContainer.innerHTML = '<div class="empty-state">По текущему фильтру папок нет.</div>';
                 updateCopyIndicator();
                 return;
             }
-
             let html = '';
             filtered.forEach(folder => {
-                const own = folder.ownerId === deviceId;
+                const own = folder.ownerId === getOwnerId();
                 const isClosed = folder.closed;
                 const isSelected = own && folder.id === selectedFolderId;
                 const themes = folder.themes || [];
-                const sortedThemes = sortThemesArray(themes);
-
+                const sortedThemes = sortThemesArray(themes, sortKey, sortDir);
                 const foreignEditable = !own && canEditForeignFolder(folder);
                 const foreignCopyable = !own && canCopyForeignFolder(folder);
                 const canEdit = own || foreignEditable;
@@ -1446,7 +1968,6 @@
                 if (isSelected) folderClass += ' selected';
                 if (isCopySource) folderClass += ' copy-source';
 
-                // Бейджи
                 let badges = '';
                 if (isSelected) badges += '<span class="folder-badge badge-default">по умолчанию</span>';
                 if (own) {
@@ -1456,33 +1977,23 @@
                         if (folder.allowEdit) badges += '<span class="folder-badge badge-editable">изменяемая</span>';
                         if (folder.allowCopy) badges += '<span class="folder-badge badge-copyable">копируемая</span>';
                     }
-                } else {
-                    badges += '<span class="folder-badge badge-foreign">чужая · публичная</span>';
-                    if (folder.allowEdit) badges += '<span class="folder-badge badge-editable">можно изменять</span>';
-                    if (folder.allowCopy) badges += '<span class="folder-badge badge-copyable">можно копировать</span>';
                 }
 
-                // Кнопки
                 let actionButtons = '';
                 if (own) {
-                    actionButtons += `<button class="btn btn-sm btn-secondary" data-select-folder="${folder.id}" title="Сохранять сюда">Выбрать</button>`;
+                    actionButtons += `<button class="btn btn-sm btn-secondary" data-select-folder="${folder.id}">Выбрать</button>`;
                     const typeLabel = folder.type === 'public' ? 'Сделать приватной' : 'Сделать публичной';
-                    actionButtons += `<button class="btn btn-sm btn-cancel" data-toggle-type="${folder.id}" title="${typeLabel}">${typeLabel}</button>`;
+                    actionButtons += `<button class="btn btn-sm btn-cancel" data-toggle-type="${folder.id}">${typeLabel}</button>`;
                     if (folder.type === 'public') {
-                        actionButtons += `<button class="btn btn-sm ${folder.allowEdit ? 'btn-primary' : 'btn-cancel'}" data-toggle-perm="allowEdit" data-folder-id="${folder.id}" title="Разрешить/запретить другим изменять">${folder.allowEdit ? '✎' : '✎'}</button>`;
-                        actionButtons += `<button class="btn btn-sm ${folder.allowCopy ? 'btn-primary' : 'btn-cancel'}" data-toggle-perm="allowCopy" data-folder-id="${folder.id}" title="Разрешить/запретить копировать">${folder.allowCopy ? '📋' : '📋'}</button>`;
+                        actionButtons += `<button class="btn btn-sm ${folder.allowEdit ? 'btn-primary' : 'btn-cancel'}" data-toggle-perm="allowEdit" data-folder-id="${folder.id}" title="Изменять">✎</button>`;
+                        actionButtons += `<button class="btn btn-sm ${folder.allowCopy ? 'btn-primary' : 'btn-cancel'}" data-toggle-perm="allowCopy" data-folder-id="${folder.id}" title="Копировать">📋</button>`;
                     }
                     if (copyBuffer && copyBuffer.sourceFolderId !== folder.id) {
-                        actionButtons += `<button class="btn btn-sm btn-paste" data-paste-into="${folder.id}" title="Вставить сюда скопированные записи">Вставить</button>`;
+                        actionButtons += `<button class="btn btn-sm btn-paste" data-paste-into="${folder.id}">Вставить</button>`;
                     }
-                    actionButtons += `<button class="btn btn-sm btn-danger" data-delete-folder="${folder.id}" title="Удалить папку">Удалить</button>`;
+                    actionButtons += `<button class="btn btn-sm btn-danger" data-delete-folder="${folder.id}">Удалить</button>`;
                 } else {
-                    if (foreignCopyable) {
-                        actionButtons += `<button class="btn btn-sm btn-copy" data-copy-folder="${folder.id}" title="Скопировать папку себе">Копировать</button>`;
-                    }
-                    if (foreignEditable) {
-                        actionButtons += `<span style="font-size:0.72rem;color:var(--amber);">можно изменять</span>`;
-                    }
+                    if (foreignCopyable) actionButtons += `<button class="btn btn-sm btn-copy" data-copy-folder="${folder.id}">Копировать</button>`;
                 }
 
                 html += `
@@ -1500,117 +2011,127 @@
                         </div>
                         <div class="folder-body">
                 `;
-
                 if (sortedThemes.length === 0) {
                     html += '<div class="empty-folder">В папке пока нет записей.</div>';
                 } else {
+                    html += '<div class="theme-list">';
                     sortedThemes.forEach(theme => {
-                        const sportChecked = theme.sport && theme.sport.checked;
-                        const friendsChecked = theme.friends && theme.friends.checked;
-                        const relationsChecked = theme.relations && theme.relations.checked;
-
-                        const tags = [];
-                        if (sportChecked) tags.push('Спорт');
-                        if (friendsChecked) tags.push('Друзья');
-                        if (relationsChecked) tags.push('Отношения');
-
-                        const metaParts = [];
-                        if (theme.birthDate) metaParts.push(`<span>ДР: ${formatDate(theme.birthDate)}</span>`);
-                        if (theme.phone) metaParts.push(`<span>${escapeHtml(theme.phone)}</span>`);
-                        if (theme.updatedAt) metaParts.push(`<span class="updated-at">изм.: ${formatDateTime(theme.updatedAt)}</span>`);
-
-                        const displayFio = formatFioForDisplay(theme.fullName, sortKey);
-                        const isEditing = canEdit && editingThemeId === theme.id;
-
-                        // Перемещение — только для своих
-                        const moveOptions = own
-                            ? folders.filter(f => f.id !== folder.id).map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('')
-                            : '';
-
-                        html += `
-                            <div class="theme-card ${isEditing ? 'open' : ''}" data-theme-id="${theme.id}">
-                                <div class="theme-summary" data-theme-toggle="${theme.id}">
-                                    <div class="theme-info">
-                                        <span class="theme-title">${escapeHtml(displayFio)}</span>
-                                        ${metaParts.length ? `<span class="theme-meta">${metaParts.join('')}</span>` : ''}
-                                        ${tags.length ? `<span class="theme-tags">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</span>` : ''}
-                                    </div>
-                                    <div class="theme-controls">
-                                        ${own && folders.length > 1 ? `<select class="move-select" data-move-theme="${theme.id}" title="Переместить в другую папку">
-                                            <option value="">Переместить...</option>${moveOptions}
-                                        </select>` : ''}
-                                        <span class="theme-expand-icon">&#9654;</span>
-                                    </div>
-                                </div>
-                                <div class="theme-details">
-                        `;
-
-                        if (isEditing) {
-                            html += `
-                                <div class="edit-form">
-                                    <div class="form-grid">
-                                        <div class="field"><label>ФИО</label><input type="text" class="edit-fullName" value="${escapeHtml(theme.fullName)}" maxlength="80"></div>
-                                        <div class="field"><label>Дата рождения</label><input type="text" class="edit-birthDate" value="${escapeHtml(theme.birthDate || '')}" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric" autocomplete="off"></div>
-                                        <div class="field"><label>Место проживания</label><input type="text" class="edit-location" value="${escapeHtml(theme.location || '')}"></div>
-                                        <div class="field"><label>Номер телефона</label><input type="tel" class="edit-phone" value="${escapeHtml(theme.phone || '')}"></div>
-                                        <div class="field full"><label>Описание</label><textarea class="edit-description" rows="2">${escapeHtml(theme.description || '')}</textarea></div>
-                                        <div class="field full">
-                                            <label>Разделы</label>
-                                            <div class="checkbox-row">
-                                                <label class="checkbox-item ${sportChecked ? 'active' : ''}"><input type="checkbox" class="edit-chkSport" ${sportChecked ? 'checked' : ''}> Спорт</label>
-                                                <label class="checkbox-item ${friendsChecked ? 'active' : ''}"><input type="checkbox" class="edit-chkFriends" ${friendsChecked ? 'checked' : ''}> Друзья</label>
-                                                <label class="checkbox-item ${relationsChecked ? 'active' : ''}"><input type="checkbox" class="edit-chkRelations" ${relationsChecked ? 'checked' : ''}> Отношения</label>
-                                            </div>
-                                            <div class="extra-inputs">
-                                                <div class="extra-field" style="display: ${sportChecked ? 'flex' : 'none'};"><label>Спорт — подробности</label><textarea class="edit-sportText" rows="2">${escapeHtml(theme.sport ? theme.sport.text : '')}</textarea></div>
-                                                <div class="extra-field" style="display: ${friendsChecked ? 'flex' : 'none'};"><label>Друзья — подробности</label><textarea class="edit-friendsText" rows="2">${escapeHtml(theme.friends ? theme.friends.text : '')}</textarea></div>
-                                                <div class="extra-field" style="display: ${relationsChecked ? 'flex' : 'none'};"><label>Отношения — подробности</label><textarea class="edit-relationsText" rows="2">${escapeHtml(theme.relations ? theme.relations.text : '')}</textarea></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="theme-edit-actions">
-                                        <button class="btn btn-sm btn-cancel" data-cancel-edit="${theme.id}">Отмена</button>
-                                        <button class="btn btn-sm btn-primary" data-save-edit="${theme.id}" data-folder-id="${folder.id}">Сохранить</button>
-                                    </div>
-                                </div>
-                            `;
-                        } else {
-                            html += `
-                                <div class="detail-row"><span class="detail-label">ФИО</span><span class="detail-value">${escapeHtml(theme.fullName)}</span></div>
-                                <div class="detail-row"><span class="detail-label">Дата рождения</span><span class="detail-value">${theme.birthDate ? formatDate(theme.birthDate) : '<span class="muted">не указана</span>'}</span></div>
-                                <div class="detail-row"><span class="detail-label">Проживание</span><span class="detail-value">${theme.location ? escapeHtml(theme.location) : '<span class="muted">не указано</span>'}</span></div>
-                                <div class="detail-row"><span class="detail-label">Телефон</span><span class="detail-value">${theme.phone ? escapeHtml(theme.phone) : '<span class="muted">не указан</span>'}</span></div>
-                                <div class="detail-row"><span class="detail-label">Описание</span><span class="detail-value">${theme.description ? escapeHtml(theme.description) : '<span class="muted">нет</span>'}</span></div>
-                                ${sportChecked ? `<div class="detail-sub"><span class="detail-sub-label">Спорт</span><span class="detail-value">${theme.sport.text ? escapeHtml(theme.sport.text) : '<span class="muted">без подробностей</span>'}</span></div>` : ''}
-                                ${friendsChecked ? `<div class="detail-sub"><span class="detail-sub-label">Друзья</span><span class="detail-value">${theme.friends.text ? escapeHtml(theme.friends.text) : '<span class="muted">без подробностей</span>'}</span></div>` : ''}
-                                ${relationsChecked ? `<div class="detail-sub"><span class="detail-sub-label">Отношения</span><span class="detail-value">${theme.relations.text ? escapeHtml(theme.relations.text) : '<span class="muted">без подробностей</span>'}</span></div>` : ''}
-                                <div class="detail-row" style="margin-top:0.3rem; border-top:1px dashed var(--border-light); padding-top:0.6rem;">
-                                    <span class="detail-label">Создано</span><span class="detail-value" style="color:var(--text-muted); font-size:0.78rem;">${formatDateTime(theme.createdAt)}</span>
-                                </div>
-                                <div class="detail-row"><span class="detail-label">Изменено</span><span class="detail-value" style="color:var(--emerald-light); font-size:0.78rem;">${formatDateTime(theme.updatedAt)}</span></div>
-                                ${canEdit ? `
-                                <div class="theme-edit-actions">
-                                    <button class="btn btn-sm btn-danger" data-delete-theme="${theme.id}" data-folder-id="${folder.id}">Удалить</button>
-                                    <button class="btn btn-sm btn-secondary" data-edit-theme="${theme.id}" data-folder-id="${folder.id}">Редактировать</button>
-                                </div>` : ''}
-                            `;
-                        }
-                        html += `</div></div>`;
+                        html += buildThemeCardHtml(theme, folder, own, canEdit, true);
                     });
+                    html += '</div>';
                 }
                 html += '</div></div>';
             });
-
             foldersContainer.innerHTML = html;
+            attachThemeCardHandlers(foldersContainer);
+            updateCopyIndicator();
+        }
 
-            // Обработчики
-            document.querySelectorAll('[data-folder-toggle]').forEach(el => {
-                el.addEventListener('click', (e) => { if (e.target.closest('button') || e.target.closest('select')) return; toggleFolder(el.getAttribute('data-folder-toggle')); });
+        // ===== Построитель карточки бланка =====
+        function buildThemeCardHtml(theme, folder, own, canEdit, interactive) {
+            const sportChecked = theme.sport && theme.sport.checked;
+            const friendsChecked = theme.friends && theme.friends.checked;
+            const relationsChecked = theme.relations && theme.relations.checked;
+            const tags = [];
+            if (sportChecked) tags.push('Спорт');
+            if (friendsChecked) tags.push('Друзья');
+            if (relationsChecked) tags.push('Отношения');
+
+            const metaParts = [];
+            if (theme.birthDate) metaParts.push(`<span>ДР: ${formatDate(theme.birthDate)}</span>`);
+            if (theme.phone) metaParts.push(`<span>${escapeHtml(theme.phone)}</span>`);
+            if (theme.updatedAt) metaParts.push(`<span class="updated-at">изм.: ${formatDateTime(theme.updatedAt)}</span>`);
+
+            const curSortKey = interactive ? sortKey : dbSortKey;
+            const displayFio = formatFioForDisplay(theme.fullName, curSortKey);
+            const isEditing = interactive && canEdit && editingThemeId === theme.id;
+
+            const moveOptions = interactive && own
+                ? folders.filter(f => f.id !== folder.id).map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('')
+                : '';
+
+            let html = `
+                <div class="theme-card ${isEditing ? 'open' : ''}" data-theme-id="${theme.id}">
+                    <div class="theme-summary" data-theme-toggle="${theme.id}">
+                        <div class="theme-info">
+                            <span class="theme-title">${escapeHtml(displayFio)}</span>
+                            ${metaParts.length ? `<span class="theme-meta">${metaParts.join('')}</span>` : ''}
+                            ${tags.length ? `<span class="theme-tags">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</span>` : ''}
+                        </div>
+                        <div class="theme-controls">
+                            ${interactive && own && folders.length > 1 ? `<select class="move-select" data-move-theme="${theme.id}">
+                                <option value="">Переместить...</option>${moveOptions}
+                            </select>` : ''}
+                            <span class="theme-expand-icon">&#9654;</span>
+                        </div>
+                    </div>
+                    <div class="theme-details">
+            `;
+            if (isEditing) {
+                html += `
+                    <div class="edit-form">
+                        <div class="form-grid">
+                            <div class="field"><label>ФИО</label><input type="text" class="edit-fullName" value="${escapeHtml(theme.fullName)}" maxlength="80"></div>
+                            <div class="field"><label>Дата рождения</label><input type="text" class="edit-birthDate" value="${escapeHtml(theme.birthDate || '')}" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric" autocomplete="off"></div>
+                            <div class="field"><label>Место проживания</label><input type="text" class="edit-location" value="${escapeHtml(theme.location || '')}"></div>
+                            <div class="field"><label>Номер телефона</label><input type="tel" class="edit-phone" value="${escapeHtml(theme.phone || '')}"></div>
+                            <div class="field full"><label>Описание</label><textarea class="edit-description" rows="2">${escapeHtml(theme.description || '')}</textarea></div>
+                            <div class="field full">
+                                <label>Разделы</label>
+                                <div class="checkbox-row">
+                                    <label class="checkbox-item ${sportChecked ? 'active' : ''}"><input type="checkbox" class="edit-chkSport" ${sportChecked ? 'checked' : ''}> Спорт</label>
+                                    <label class="checkbox-item ${friendsChecked ? 'active' : ''}"><input type="checkbox" class="edit-chkFriends" ${friendsChecked ? 'checked' : ''}> Друзья</label>
+                                    <label class="checkbox-item ${relationsChecked ? 'active' : ''}"><input type="checkbox" class="edit-chkRelations" ${relationsChecked ? 'checked' : ''}> Отношения</label>
+                                </div>
+                                <div class="extra-inputs">
+                                    <div class="extra-field" style="display: ${sportChecked ? 'flex' : 'none'};"><label>Спорт</label><textarea class="edit-sportText" rows="2">${escapeHtml(theme.sport ? theme.sport.text : '')}</textarea></div>
+                                    <div class="extra-field" style="display: ${friendsChecked ? 'flex' : 'none'};"><label>Друзья</label><textarea class="edit-friendsText" rows="2">${escapeHtml(theme.friends ? theme.friends.text : '')}</textarea></div>
+                                    <div class="extra-field" style="display: ${relationsChecked ? 'flex' : 'none'};"><label>Отношения</label><textarea class="edit-relationsText" rows="2">${escapeHtml(theme.relations ? theme.relations.text : '')}</textarea></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="theme-edit-actions">
+                            <button class="btn btn-sm btn-cancel" data-cancel-edit="${theme.id}">Отмена</button>
+                            <button class="btn btn-sm btn-primary" data-save-edit="${theme.id}" data-folder-id="${folder.id}">Сохранить</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="detail-row"><span class="detail-label">ФИО</span><span class="detail-value">${escapeHtml(theme.fullName)}</span></div>
+                    <div class="detail-row"><span class="detail-label">Дата рождения</span><span class="detail-value">${theme.birthDate ? formatDate(theme.birthDate) : '<span class="muted">не указана</span>'}</span></div>
+                    <div class="detail-row"><span class="detail-label">Проживание</span><span class="detail-value">${theme.location ? escapeHtml(theme.location) : '<span class="muted">не указано</span>'}</span></div>
+                    <div class="detail-row"><span class="detail-label">Телефон</span><span class="detail-value">${theme.phone ? escapeHtml(theme.phone) : '<span class="muted">не указан</span>'}</span></div>
+                    <div class="detail-row"><span class="detail-label">Описание</span><span class="detail-value">${theme.description ? escapeHtml(theme.description) : '<span class="muted">нет</span>'}</span></div>
+                    ${sportChecked ? `<div class="detail-sub"><span class="detail-sub-label">Спорт</span><span class="detail-value">${theme.sport.text ? escapeHtml(theme.sport.text) : '<span class="muted">без подробностей</span>'}</span></div>` : ''}
+                    ${friendsChecked ? `<div class="detail-sub"><span class="detail-sub-label">Друзья</span><span class="detail-value">${theme.friends.text ? escapeHtml(theme.friends.text) : '<span class="muted">без подробностей</span>'}</span></div>` : ''}
+                    ${relationsChecked ? `<div class="detail-sub"><span class="detail-sub-label">Отношения</span><span class="detail-value">${theme.relations.text ? escapeHtml(theme.relations.text) : '<span class="muted">без подробностей</span>'}</span></div>` : ''}
+                    <div class="detail-row" style="margin-top:0.3rem; border-top:1px dashed var(--border-light); padding-top:0.6rem;">
+                        <span class="detail-label">Создано</span><span class="detail-value" style="color:var(--text-muted); font-size:0.78rem;">${formatDateTime(theme.createdAt)}</span>
+                    </div>
+                    <div class="detail-row"><span class="detail-label">Изменено</span><span class="detail-value" style="color:var(--emerald-light); font-size:0.78rem;">${formatDateTime(theme.updatedAt)}</span></div>
+                    ${interactive && canEdit ? `
+                    <div class="theme-edit-actions">
+                        <button class="btn btn-sm btn-danger" data-delete-theme="${theme.id}" data-folder-id="${folder.id}">Удалить</button>
+                        <button class="btn btn-sm btn-secondary" data-edit-theme="${theme.id}" data-folder-id="${folder.id}">Редактировать</button>
+                    </div>` : ''}
+                `;
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        function attachThemeCardHandlers(container) {
+            container.querySelectorAll('[data-folder-toggle]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.closest('button') || e.target.closest('select')) return;
+                    toggleFolder(el.getAttribute('data-folder-toggle'));
+                });
             });
-            document.querySelectorAll('[data-select-folder]').forEach(btn => {
+            container.querySelectorAll('[data-select-folder]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); selectFolder(btn.getAttribute('data-select-folder')); });
             });
-            document.querySelectorAll('[data-toggle-type]').forEach(btn => {
+            container.querySelectorAll('[data-toggle-type]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const id = btn.getAttribute('data-toggle-type');
@@ -1619,22 +2140,22 @@
                     changeFolderType(id, f.type === 'public' ? 'private' : 'public');
                 });
             });
-            document.querySelectorAll('[data-toggle-perm]').forEach(btn => {
+            container.querySelectorAll('[data-toggle-perm]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     toggleFolderPermission(btn.getAttribute('data-folder-id'), btn.getAttribute('data-toggle-perm'));
                 });
             });
-            document.querySelectorAll('[data-delete-folder]').forEach(btn => {
+            container.querySelectorAll('[data-delete-folder]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); deleteFolder(btn.getAttribute('data-delete-folder')); });
             });
-            document.querySelectorAll('[data-copy-folder]').forEach(btn => {
+            container.querySelectorAll('[data-copy-folder]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); copyForeignFolderToMine(btn.getAttribute('data-copy-folder')); });
             });
-            document.querySelectorAll('[data-paste-into]').forEach(btn => {
+            container.querySelectorAll('[data-paste-into]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); startPasteMode(btn.getAttribute('data-paste-into')); });
             });
-            document.querySelectorAll('[data-theme-toggle]').forEach(el => {
+            container.querySelectorAll('[data-theme-toggle]').forEach(el => {
                 el.addEventListener('click', (e) => {
                     if (e.target.closest('button') || e.target.closest('select') || e.target.closest('input') || e.target.closest('textarea')) return;
                     const card = el.closest('.theme-card');
@@ -1642,28 +2163,28 @@
                     card.classList.toggle('open');
                 });
             });
-            document.querySelectorAll('[data-edit-theme]').forEach(btn => {
+            container.querySelectorAll('[data-edit-theme]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     startEditing(btn.getAttribute('data-edit-theme'), btn.getAttribute('data-folder-id'));
                 });
             });
-            document.querySelectorAll('[data-cancel-edit]').forEach(btn => {
+            container.querySelectorAll('[data-cancel-edit]').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); cancelEditing(); });
             });
-            document.querySelectorAll('[data-save-edit]').forEach(btn => {
+            container.querySelectorAll('[data-save-edit]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     saveEdit(btn.getAttribute('data-save-edit'), btn.getAttribute('data-folder-id'));
                 });
             });
-            document.querySelectorAll('[data-delete-theme]').forEach(btn => {
+            container.querySelectorAll('[data-delete-theme]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     deleteTheme(btn.getAttribute('data-delete-theme'), btn.getAttribute('data-folder-id'));
                 });
             });
-            document.querySelectorAll('[data-move-theme]').forEach(select => {
+            container.querySelectorAll('[data-move-theme]').forEach(select => {
                 select.addEventListener('change', () => {
                     const themeId = select.getAttribute('data-move-theme');
                     const targetId = select.value;
@@ -1672,44 +2193,224 @@
                 });
                 select.addEventListener('click', (e) => e.stopPropagation());
             });
-            document.querySelectorAll('.edit-chkSport').forEach(chk => {
+            container.querySelectorAll('.edit-chkSport').forEach(chk => {
                 chk.addEventListener('change', function() {
                     const extra = this.closest('.checkbox-row').nextElementSibling;
                     if (extra) extra.children[0].style.display = this.checked ? 'flex' : 'none';
                     this.closest('.checkbox-item').classList.toggle('active', this.checked);
                 });
             });
-            document.querySelectorAll('.edit-chkFriends').forEach(chk => {
+            container.querySelectorAll('.edit-chkFriends').forEach(chk => {
                 chk.addEventListener('change', function() {
                     const extra = this.closest('.checkbox-row').nextElementSibling;
                     if (extra) extra.children[1].style.display = this.checked ? 'flex' : 'none';
                     this.closest('.checkbox-item').classList.toggle('active', this.checked);
                 });
             });
-            document.querySelectorAll('.edit-chkRelations').forEach(chk => {
+            container.querySelectorAll('.edit-chkRelations').forEach(chk => {
                 chk.addEventListener('change', function() {
                     const extra = this.closest('.checkbox-row').nextElementSibling;
                     if (extra) extra.children[2].style.display = this.checked ? 'flex' : 'none';
                     this.closest('.checkbox-item').classList.toggle('active', this.checked);
                 });
             });
-            document.querySelectorAll('.edit-phone').forEach(inp => attachPhoneMask(inp));
-            document.querySelectorAll('.edit-birthDate').forEach(inp => attachDateMask(inp));
-
-            updateCopyIndicator();
+            container.querySelectorAll('.edit-phone').forEach(inp => attachPhoneMask(inp));
+            container.querySelectorAll('.edit-birthDate').forEach(inp => attachDateMask(inp));
         }
 
-        // ---------- Инициализация ----------
+        // ===== Рендер: база данных =====
+        function themeMatchesQuery(theme, q) {
+            if (!q) return true;
+            const fields = [
+                theme.fullName, theme.location, theme.phone, theme.description,
+                theme.sport && theme.sport.text,
+                theme.friends && theme.friends.text,
+                theme.relations && theme.relations.text
+            ].filter(Boolean).join(' ').toLowerCase();
+            return fields.includes(q);
+        }
+
+        // Блок папки в базе данных: карточки бланков (слитные, с раскрытием)
+        function buildDbFolderBlock(folder, opts) {
+            opts = opts || {};
+            const favorite = isFavorite(folder.id);
+            const themes = opts.themes || [];
+            const closed = opts.closed !== undefined ? opts.closed : true;
+            const showFavToggle = !!opts.showFavToggle;
+            const showRemoveFav = !!opts.showRemoveFav;
+
+            let themesHtml = '';
+            if (themes.length === 0) {
+                themesHtml = '<div class="empty-folder">Нет бланков.</div>';
+            } else {
+                themesHtml = '<div class="theme-list">';
+                themes.forEach(theme => {
+                    // В базе данных own=false, canEdit=false, interactive=false → без кнопок
+                    themesHtml += buildThemeCardHtml(theme, folder, false, false, false);
+                });
+                themesHtml += '</div>';
+            }
+
+            let favBtn = '';
+            if (showFavToggle) {
+                favBtn = favorite
+                    ? `<button class="btn btn-sm btn-fav active" data-fav-toggle="${folder.id}" title="Убрать из избранного">В избранном</button>`
+                    : `<button class="btn btn-sm btn-fav" data-fav-toggle="${folder.id}" title="Добавить в избранное">В избранное</button>`;
+            } else if (showRemoveFav && favorite) {
+                favBtn = `<button class="btn btn-sm btn-fav active" data-fav-toggle="${folder.id}" title="Убрать из избранного">Убрать</button>`;
+            }
+
+            return `
+                <div class="db-folder ${closed ? 'closed' : ''}" data-db-folder-id="${folder.id}">
+                    <div class="db-folder-header" data-db-folder-toggle="${folder.id}">
+                        <div class="db-folder-name">
+                            <span class="db-folder-name-text">${escapeHtml(folder.name)}</span>
+                            <span class="db-folder-count">${themes.length}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            ${favBtn}
+                            <span class="db-folder-chevron">&#9660;</span>
+                        </div>
+                    </div>
+                    <div class="db-folder-body">
+                        ${themesHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDatabase() {
+            let list = allFolders.slice();
+
+            if (dbFolderQuery) {
+                list = list.filter(f => (f.name || '').toLowerCase().includes(dbFolderQuery));
+            }
+
+            const ownList = list.filter(f => f.ownerId === getOwnerId());
+            const foreignList = list.filter(f => f.ownerId !== getOwnerId());
+            const favList = list.filter(f => favorites.includes(f.id));
+
+            function sortFolders(arr) {
+                return arr.slice().sort((a, b) => compareFolders(a, b, dbFolderSortKey, dbFolderSortDir));
+            }
+            const ownSorted = sortFolders(ownList);
+            const foreignSorted = sortFolders(foreignList);
+            const favSorted = sortFolders(favList);
+
+            function prepareThemes(folder) {
+                let themes = folder.themes || [];
+                if (dbThemeQuery) {
+                    themes = themes.filter(t => themeMatchesQuery(t, dbThemeQuery));
+                }
+                return sortThemesArray(themes, dbSortKey, dbSortDir);
+            }
+            function filterEmpty(arr) {
+                if (!dbThemeQuery) return arr;
+                return arr.filter(f => prepareThemes(f).length > 0);
+            }
+            const ownFinal = filterEmpty(ownSorted);
+            const foreignFinal = filterEmpty(foreignSorted);
+            const favFinal = filterEmpty(favSorted);
+
+            let totalThemes = 0;
+            list.forEach(f => { totalThemes += (f.themes || []).length; });
+            dbStats.innerHTML = `Папок: <b>${list.length}</b> · Бланков: <b>${totalThemes}</b>`;
+
+            let html = '';
+
+            if (favFinal.length > 0) {
+                html += `<div class="db-section">
+                    <div class="db-section-title favorites">★ Избранные <span class="count-pill">${favFinal.length}</span></div>`;
+                favFinal.forEach(folder => {
+                    html += buildDbFolderBlock(folder, {
+                        themes: prepareThemes(folder),
+                        closed: true,
+                        showFavToggle: false,
+                        showRemoveFav: true
+                    });
+                });
+                html += `</div>`;
+            }
+
+            if (ownFinal.length > 0) {
+                html += `<div class="db-section">
+                    <div class="db-section-title">Мои папки <span class="count-pill">${ownFinal.length}</span></div>`;
+                ownFinal.forEach(folder => {
+                    html += buildDbFolderBlock(folder, {
+                        themes: prepareThemes(folder),
+                        closed: true,
+                        showFavToggle: true,
+                        showRemoveFav: false
+                    });
+                });
+                html += `</div>`;
+            }
+
+            if (foreignFinal.length > 0) {
+                html += `<div class="db-section">
+                    <div class="db-section-title foreign">Чужие папки <span class="count-pill">${foreignFinal.length}</span></div>`;
+                foreignFinal.forEach(folder => {
+                    html += buildDbFolderBlock(folder, {
+                        themes: prepareThemes(folder),
+                        closed: true,
+                        showFavToggle: true,
+                        showRemoveFav: false
+                    });
+                });
+                html += `</div>`;
+            }
+
+            if (!html) {
+                dbContainer.innerHTML = '<div class="empty-state">Нет папок по текущим условиям.</div>';
+                return;
+            }
+
+            dbContainer.innerHTML = html;
+
+            // Раскрытие папок
+            dbContainer.querySelectorAll('[data-db-folder-toggle]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.closest('button')) return;
+                    const folderEl = el.closest('.db-folder');
+                    if (folderEl) folderEl.classList.toggle('closed');
+                });
+            });
+
+            // Избранное
+            dbContainer.querySelectorAll('[data-fav-toggle]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(btn.getAttribute('data-fav-toggle'));
+                });
+            });
+
+            // Раскрытие карточек бланков (подробности)
+            dbContainer.querySelectorAll('[data-theme-toggle]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.closest('button') || e.target.closest('select') || e.target.closest('input') || e.target.closest('textarea')) return;
+                    const card = el.closest('.theme-card');
+                    if (!card) return;
+                    card.classList.toggle('open');
+                });
+            });
+        }
+
+        dbFolderSearch.addEventListener('input', () => {
+            dbFolderQuery = dbFolderSearch.value.trim().toLowerCase();
+            renderDatabase();
+        });
+        dbThemeSearch.addEventListener('input', () => {
+            dbThemeQuery = dbThemeSearch.value.trim().toLowerCase();
+            renderDatabase();
+        });
+
+        // ===== Инициализация =====
         saveThemeBtn.addEventListener('click', saveTheme);
         createFolderBtn.addEventListener('click', () => {
             const name = newFolderNameInput.value.trim();
             const type = newFolderTypeSelect.value;
-            if (name) {
-                createFolder(name, type, chkAllowEdit.checked, chkAllowCopy.checked);
-            } else {
-                showToast('Введите название папки');
-                newFolderNameInput.focus();
-            }
+            if (name) createFolder(name, type, chkAllowEdit.checked, chkAllowCopy.checked);
+            else { showToast('Введите название папки'); newFolderNameInput.focus(); }
         });
         newFolderNameInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); createFolderBtn.click(); }
@@ -1724,31 +2425,56 @@
         attachDateMask(birthDateInput);
         updateSortUI();
         updateFolderFilterUI();
+        updateDbSortUI();
+        updateDbFolderSortUI();
 
-        // 1. Локальные данные
-        const localData = loadLocal();
-        if (localData && localData.length > 0) {
-            folders = localData;
-            allFolders = localData.slice();
-            if (!selectedFolderId && folders.length) selectedFolderId = folders[0].id;
+        const savedAcc = loadAuth();
+        if (savedAcc) {
+            currentAccount = savedAcc;
+            currentUserPath = rootPath + '/' + savedAcc.accountId;
+            currentUserFoldersPath = currentUserPath + '/folders';
+            const local = loadLocalForOwner();
+            if (local && local.length > 0) {
+                folders = local;
+                allFolders = local.slice();
+                if (!selectedFolderId && folders.length) selectedFolderId = folders[0].id;
+            } else {
+                folders = [{
+                    id: uid(), name: 'Основное', type: 'private', ownerId: getOwnerId(),
+                    closed: false, themes: [], allowEdit: false, allowCopy: false
+                }];
+                allFolders = folders.slice();
+                selectedFolderId = folders[0].id;
+            }
+            favorites = loadFavorites();
         } else {
-            folders = [{
-                id: uid(), name: 'Основное', type: 'private',
-                ownerId: deviceId, closed: false, themes: [],
-                allowEdit: false, allowCopy: false
-            }];
-            allFolders = folders.slice();
-            selectedFolderId = folders[0].id;
+            currentUserPath = rootPath + '/' + deviceId;
+            currentUserFoldersPath = currentUserPath + '/folders';
+            const local = loadLocalForOwner();
+            if (local && local.length > 0) {
+                folders = local;
+                allFolders = local.slice();
+                if (!selectedFolderId && folders.length) selectedFolderId = folders[0].id;
+            } else {
+                folders = [{
+                    id: uid(), name: 'Основное', type: 'private', ownerId: getOwnerId(),
+                    closed: false, themes: [], allowEdit: false, allowCopy: false
+                }];
+                allFolders = folders.slice();
+                selectedFolderId = folders[0].id;
+            }
+            favorites = loadFavorites();
         }
+
         renderFolders();
         toggleExtraFields();
+        renderAuthUI();
 
-        // 2. Firebase
         if (firebaseReady) {
             setSyncStatus('syncing', 'Подключение к Firebase...');
             subscribeToFirebase();
         } else {
-            setSyncStatus('offline', 'Работаем локально (Firebase не настроен)');
+            setSyncStatus('offline', 'Работаем локально');
         }
 
         window.addEventListener('beforeunload', saveLocal);
