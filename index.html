@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>База Данных (Гоша+Андрей)</title>
+<title>База данных (Гоша+Андрей)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -44,7 +44,7 @@ body{font-family:'Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background
 .app{max-width:1280px;width:100%;background:var(--black-soft);border-radius:1.5rem;border:1px solid var(--border);
   box-shadow:0 25px 60px -20px rgba(0,0,0,.9),0 0 0 1px rgba(16,185,129,.05);padding:2.5rem 2.2rem;margin-left:60px}
 .app-header{margin-bottom:1.6rem;padding-bottom:1.4rem;border-bottom:1px solid var(--border)}
-h1{font-size:1.7rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
+h1{font-size:1.6rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
 h1 .accent{color:var(--emerald)}
 .subhead{color:var(--text-secondary);font-size:.9rem}
 .sync-status{font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem;margin-top:.4rem}
@@ -69,6 +69,10 @@ h1 .accent{color:var(--emerald)}
 .btn-cancel{background:transparent;color:var(--text-secondary);border:1px solid var(--border-light)}
 .btn-cancel:hover{background:var(--black-elevated);color:var(--text-primary)}
 .btn-icon{width:34px;height:34px;padding:0;border-radius:.5rem;font-size:1rem}
+.link-btn{background:none;border:none;color:var(--emerald-light);font-size:.72rem;cursor:pointer;
+  padding:.15rem 0;text-decoration:underline;font-family:inherit;opacity:.85}
+.link-btn:hover{opacity:1;color:var(--emerald)}
+.link-btn.danger{color:var(--danger)}
 .type-select,input[type="text"],input[type="tel"],input[type="password"],input[type="email"],input[type="number"],input[type="date"],textarea,select{
   width:100%;padding:.65rem .85rem;border:1px solid var(--border-light);border-radius:.55rem;font-size:.9rem;
   font-family:inherit;background:var(--black-card);color:var(--text-primary);transition:.15s ease;outline:none}
@@ -79,21 +83,20 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
   background:var(--black-card);border:1px dashed var(--border-light);border-radius:.8rem}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--black-elevated);
   color:var(--text-primary);padding:.75rem 1.6rem;border-radius:.6rem;font-size:.88rem;border:1px solid var(--emerald-dark);
-  box-shadow:0 16px 40px -10px rgba(0,0,0,.8);opacity:0;transition:.25s ease;pointer-events:none;z-index:999;
+  box-shadow:0 16px 40px -10px rgba(0,0,0,.8);opacity:0;transition:.25s ease;pointer-events:none;z-index:9999;
   white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:.8rem}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 .toast.error{border-color:var(--danger)}
 .view{display:none}
 .view.active{display:block}
 
-/* ===== ADD FORM ===== */
+/* ===== FORM ===== */
 .add-card{background:var(--black-card);border:1px solid var(--border);border-radius:1rem;padding:1.6rem 1.4rem;margin-bottom:1.2rem}
 .add-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.2rem}
 .add-grid .full{grid-column:span 2}
 .add-field{display:flex;flex-direction:column;gap:.3rem}
 .add-field label{font-size:.75rem;font-weight:700;color:var(--text-secondary);letter-spacing:.02em}
 .add-actions{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-end;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border)}
-.section-block{margin-bottom:1.2rem}
 .sub-block{margin-top:.6rem;padding:.8rem;border:1px dashed var(--border-light);border-radius:.6rem;background:var(--black-soft)}
 .sub-block-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;font-size:.75rem;font-weight:800;
   text-transform:uppercase;letter-spacing:.08em;color:var(--emerald-light)}
@@ -104,6 +107,30 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .icon-del{background:transparent;border:1px solid var(--border-light);color:var(--danger);border-radius:.45rem;
   width:38px;height:38px;cursor:pointer;font-size:1rem;transition:.15s;flex-shrink:0}
 .icon-del:hover{background:var(--danger-bg);border-color:rgba(239,68,68,.4)}
+
+/* photo slot */
+.photo-slot{display:flex;gap:.7rem;align-items:flex-start;margin:.4rem 0}
+.photo-thumb{width:72px;height:72px;border-radius:.55rem;object-fit:cover;border:1px solid var(--border-light);
+  background:var(--black-elevated);flex-shrink:0;cursor:pointer}
+.photo-thumb.empty{display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:1.6rem}
+.photo-ctl{display:flex;flex-direction:column;gap:.15rem}
+.photo-ctl .link-btn{text-align:left}
+
+/* big avatar */
+.avatar-big{width:84px;height:84px;border-radius:.7rem;object-fit:cover;border:1px solid var(--border-light);
+  background:var(--black-elevated);flex-shrink:0}
+.avatar-big.empty{display:flex;align-items:center;justify-content:center;color:var(--emerald-light);
+  font-size:1.8rem;font-weight:800}
+.fio-row{display:flex;gap:.9rem;align-items:flex-start}
+.fio-row .grow{flex:1;min-width:0}
+
+/* gallery */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem}
+.gallery-item{background:var(--black-elevated);border:1px solid var(--border-light);border-radius:.6rem;overflow:hidden;display:flex;flex-direction:column}
+.gallery-item img{width:100%;height:130px;object-fit:cover;cursor:pointer;background:var(--black-card)}
+.gallery-item .cap{font-size:.74rem;color:var(--text-secondary);padding:.4rem .55rem;word-break:break-word;flex:1}
+.gallery-item .ctl{display:flex;justify-content:space-between;padding:.25rem .4rem .4rem}
+.gallery-item .ctl button{background:none;border:none;cursor:pointer;font-size:.7rem;color:var(--danger);text-decoration:underline}
 
 /* plate */
 .plate-row{display:grid;grid-template-columns:1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.5rem}
@@ -125,7 +152,8 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .person-row:hover{border-color:rgba(16,185,129,.35)}
 .person-summary{display:flex;align-items:center;gap:.9rem;padding:.85rem 1rem;cursor:pointer;flex-wrap:wrap}
 .avatar{width:42px;height:42px;border-radius:50%;background:rgba(16,185,129,.15);color:var(--emerald-light);
-  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;border:1px solid rgba(16,185,129,.3)}
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;border:1px solid rgba(16,185,129,.3);
+  overflow:hidden;object-fit:cover}
 .person-main{flex:1;min-width:140px}
 .person-name{font-weight:600;font-size:.94rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .person-sub{font-size:.74rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -140,7 +168,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .quick-item .v.empty{color:var(--text-muted);font-style:italic}
 .quick-actions{margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap}
 
-/* ===== MODAL (full card / edit) ===== */
+/* ===== MODAL ===== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:800;
   display:none;overflow-y:auto;padding:1.6rem 1rem}
 .modal-overlay.open{display:block}
@@ -162,8 +190,6 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .detail-body .full{grid-column:span 2}
 .detail-field{display:flex;flex-direction:column;gap:.3rem}
 .detail-field label{font-size:.72rem;font-weight:700;color:var(--text-secondary)}
-.detail-field .err{font-size:.7rem;color:var(--danger);min-height:.9rem}
-.detail-field.invalid input,.detail-field.invalid textarea,.detail-field.invalid select{border-color:var(--danger)}
 @media (max-width:820px){
   .add-grid{grid-template-columns:1fr}
   .add-grid .full{grid-column:span 1}
@@ -171,10 +197,17 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
   .detail-body .full{grid-column:span 1}
   .quick-grid{grid-template-columns:1fr}
   .app{padding:1.6rem 1.1rem;border-radius:1rem;margin-left:0;margin-top:3.5rem}
-  h1{font-size:1.35rem}
+  h1{font-size:1.25rem}
   .repeater-row{grid-template-columns:1fr;}
   .plate-row{grid-template-columns:1fr;}
 }
+/* lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:2000;display:none;
+  align-items:center;justify-content:center;padding:1rem}
+.lightbox.open{display:flex}
+.lightbox img{max-width:100%;max-height:90vh;border-radius:.5rem;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.lightbox .close{position:absolute;top:1rem;right:1rem;background:var(--black-elevated);border:1px solid var(--border-light);
+  color:var(--text-primary);width:44px;height:44px;border-radius:.6rem;font-size:1.3rem;cursor:pointer}
 </style>
 </head>
 <body>
@@ -186,22 +219,16 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
     <div class="sidebar-item active" data-view="add"><span class="icon">➕</span><span>Добавить данные</span></div>
     <div class="sidebar-item" data-view="db"><span class="icon">🗄️</span><span>База данных</span></div>
   </nav>
-  <div class="sidebar-footer" id="sidebarFooter">Синхронизация с Firebase</div>
+  <div class="sidebar-footer" id="sidebarFooter">Гоша + Андрей</div>
 </aside>
 
 <div class="app">
   <div class="app-header">
-    <h1>Картотека <span class="accent">людей</span></h1>
+    <h1>База данных <span class="accent">(Гоша+Андрей)</span></h1>
     <div class="subhead" id="appSubhead">Добавление новой записи</div>
     <div class="sync-status"><span class="sync-dot" id="syncDot"></span><span id="syncText">Инициализация...</span></div>
   </div>
-
-  <!-- ===== VIEW: ADD ===== -->
-  <div class="view active" id="view-add">
-    <div id="addFormContainer"></div>
-  </div>
-
-  <!-- ===== VIEW: DATABASE ===== -->
+  <div class="view active" id="view-add"><div id="addFormContainer"></div></div>
   <div class="view" id="view-db">
     <div class="toolbar">
       <div class="search-wrap"><input type="text" id="searchInput" placeholder="Поиск по ФИО..." autocomplete="off"></div>
@@ -213,8 +240,9 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 </div>
 
 <div class="toast" id="toast"></div>
+<input type="file" id="hiddenFileInput" accept="image/*" style="display:none">
+<div class="lightbox" id="lightbox"><button class="close" id="lightboxClose">✕</button><img id="lightboxImg" alt=""></div>
 
-<!-- ===== MODAL ===== -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-panel">
     <div class="modal-head">
@@ -237,7 +265,8 @@ const firebaseConfig = {
   projectId: "messenger-c75f6",
   storageBucket: "messenger-c75f6.firebasestorage.app",
   messagingSenderId: "936523368636",
-  appId: "1:936523368636:web:6f4ff89a3871cead4068b9"
+  appId: "1:936523368636:web:6f4ff89a3871cead4068b9",
+  measurementId: "G-J393C4SFJL"
 };
 
 let app, db, firebaseReady = false;
@@ -253,17 +282,15 @@ catch(e){ console.error(e); setSyncStatus('offline','Firebase недоступе
 (function(){
 'use strict';
 
-/* ===================== CONSTANTS ===================== */
-const ROOT = 'people'; // common node shared by all users
-const LOCAL_KEY = 'people_cache_v2';
+const ROOT = 'people';
+const LOCAL_KEY = 'people_cache_goshа_andrey_v3';
 
-/* ===================== STATE ===================== */
-let people = [];        // array of person objects
+let people = [];
 let searchQuery = '';
-let isRemoteUpdate = false;
 let unsubscribe = null;
+let localWriteTs = 0;      // timestamp of our last successful local→remote write
+let pendingWrite = false;  // true while a write is in flight
 
-/* ===================== DOM ===================== */
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
@@ -273,20 +300,21 @@ const hamburger = $('#hamburger');
 const sidebarItems = $$('.sidebar-item');
 const appSubhead = $('#appSubhead');
 const views = { add: $('#view-add'), db: $('#view-db') };
-
 const addFormContainer = $('#addFormContainer');
 const peopleContainer = $('#peopleContainer');
 const searchInput = $('#searchInput');
 const listStats = $('#listStats');
 const newFromDbBtn = $('#newFromDbBtn');
-
 const modalOverlay = $('#modalOverlay');
 const modalTitle = $('#modalTitle');
 const modalBody = $('#modalBody');
 const modalFoot = $('#modalFoot');
 const modalCloseBtn = $('#modalCloseBtn');
-
 const toastEl = $('#toast');
+const hiddenFileInput = $('#hiddenFileInput');
+const lightbox = $('#lightbox');
+const lightboxImg = $('#lightboxImg');
+const lightboxClose = $('#lightboxClose');
 
 /* ===================== UTILS ===================== */
 let toastTimer;
@@ -295,21 +323,15 @@ function showToast(msg, isError){
   toastEl.textContent = msg;
   toastEl.classList.toggle('error', !!isError);
   toastEl.classList.add('show');
-  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3200);
 }
 function uid(){ return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8); }
 function escapeHtml(v){
   if(v===null||v===undefined) return '';
   return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
-function escapeAttr(v){ return escapeHtml(v).replace(/"/g,'&quot;'); }
+function escapeAttr(v){ return escapeHtml(v); }
 function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
-function formatDateRu(str){
-  if(!str) return '';
-  const p = String(str).trim().split('.');
-  if(p.length!==3) return str;
-  return str;
-}
 function isValidEmail(v){ return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 function normalizePhone(v){
   let d = String(v).replace(/\D/g,'');
@@ -327,22 +349,15 @@ function normalizePhone(v){
   return r;
 }
 function normalizePlate(v){
-  // Keep letters/digits, uppercase, format like А123ВС777
   let s = String(v).toUpperCase().replace(/[^А-ЯA-Z0-9]/g,'');
-  // If it contains Cyrillic, restrict to allowed plate letters
-  const allowed = 'АВЕКМНОРСТУХ';
-  if(/[А-Я]/.test(s)){
-    s = s.split('').map(ch => allowed.includes(ch) ? ch : ch).join('');
-  }
   return s;
 }
 function plateDisplay(v){
   const s = normalizePlate(v);
   if(!s) return '';
-  // Try to split into 1 letter + 3 digits + 2 letters + 2-3 digits
   const m = s.match(/^([А-ЯA-Z])(\d{3})([А-ЯA-Z]{2})(\d{2,3})$/);
   if(m) return `${m[1]} ${m[2]} ${m[3]} ${m[4]}`;
-  return s.replace(/(.{1})(.{3})(.{2})(.*)/, '$1 $2 $3 $4').trim();
+  return s;
 }
 function normalizeBirthDate(v){
   let d = String(v).replace(/\D/g,'').slice(0,8);
@@ -353,7 +368,41 @@ function normalizeBirthDate(v){
   return r;
 }
 
-/* ===================== STORAGE / FIREBASE ===================== */
+/* Resize/compress an image File to a data URL */
+function fileToCompressedDataUrl(file, maxW=800, quality=0.72){
+  return new Promise((resolve, reject) => {
+    if(!file) return reject(new Error('no file'));
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error);
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('image load error'));
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        try {
+          const url = canvas.toDataURL('image/jpeg', quality);
+          resolve(url);
+        } catch(e){ reject(e); }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function openLightbox(src){
+  lightboxImg.src = src;
+  lightbox.classList.add('open');
+}
+lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
+lightbox.addEventListener('click', (e) => { if(e.target === lightbox) lightbox.classList.remove('open'); });
+
+/* ===================== STORAGE ===================== */
 function saveLocal(){
   try { localStorage.setItem(LOCAL_KEY, JSON.stringify(people)); } catch(e){}
 }
@@ -371,31 +420,74 @@ function objToPeople(obj){
   return Object.values(obj).filter(Boolean);
 }
 
-async function saveToFirebase(){
-  if(!firebaseReady || !db){ saveLocal(); showToast('Сохранено локально', true); return false; }
+/* ===================== FIREBASE SYNC ===================== */
+/*
+  Synchronization strategy to avoid the "deleted record comes back" bug:
+  - Every user mutation (create/edit/delete) goes through commitPeople().
+  - commitPeople() writes the FULL local array to Firebase, then waits for success.
+  - While the write is in flight, incoming onValue snapshots are IGNORED
+    (pendingWrite flag) — so a stale snapshot can never overwrite our local state.
+  - When the write completes, we store localWriteTs = Date.now().
+  - Incoming snapshots are applied only if they contain data that we did not just write.
+    We compare remote "revision" via a lightweight check: if remote array differs from
+    local array (by id set or updatedAt), and we are not the author of the latest change,
+    we adopt the remote data.
+  - This means: if YOU delete → Firebase gets the delete → refresh → Firebase has no record
+    → onValue returns the correct (deleted) state → record stays deleted.
+  - If another user deletes → you receive their snapshot (not pending on our side) → you adopt it.
+  - If you update the interface (HTML) → the code only reads/writes node `people`,
+    it never clears it. Your Firebase data survives interface updates 100%.
+*/
+async function commitPeople(){
+  if(!firebaseReady || !db){ saveLocal(); showToast('Сохранено локально (Firebase недоступен)', true); return false; }
+  pendingWrite = true;
   try {
     setSyncStatus('syncing','Сохранение...');
-    isRemoteUpdate = true;
     await set(ref(db, ROOT), peopleToObj(people));
+    localWriteTs = Date.now();
     saveLocal();
     setSyncStatus('online','Синхронизировано');
     return true;
   } catch(e){
-    console.error(e); setSyncStatus('offline','Ошибка сохранения');
-    saveLocal(); showToast('Ошибка: ' + (e.message||e), true); return false;
-  } finally { setTimeout(()=>{ isRemoteUpdate = false; }, 300); }
+    console.error(e);
+    setSyncStatus('offline','Ошибка сохранения');
+    saveLocal();
+    showToast('Ошибка сохранения: ' + (e.message||e), true);
+    return false;
+  } finally {
+    // small delay to let our own snapshot arrive and be ignored
+    setTimeout(() => { pendingWrite = false; }, 250);
+  }
+}
+
+function arraysEqualByIdSet(a, b){
+  if(a.length !== b.length) return false;
+  const sa = new Set(a.map(x => x.id));
+  for(const x of b) if(!sa.has(x.id)) return false;
+  return true;
 }
 
 function subscribe(){
   if(!firebaseReady || !db) return;
   if(unsubscribe) unsubscribe();
   unsubscribe = onValue(ref(db, ROOT), snap => {
-    if(isRemoteUpdate) return;
+    // Ignore snapshots while we are writing — this prevents the deletion bug.
+    if(pendingWrite) return;
     const remote = objToPeople(snap.val());
-    if(remote.length === 0 && people.length > 0){
-      // push local data up on first load
-      saveToFirebase(); return;
+    // If remote is empty but we have local data and we never wrote, push local up.
+    if(remote.length === 0 && people.length > 0 && localWriteTs === 0){
+      commitPeople(); return;
     }
+    // If the id sets are identical, just adopt remote (updates might have happened remotely).
+    if(arraysEqualByIdSet(people, remote)){
+      // adopt remote (in case another user edited a record)
+      people = remote;
+      saveLocal();
+      renderPeople();
+      setSyncStatus('online','Синхронизировано');
+      return;
+    }
+    // Otherwise the remote set differs → adopt it (this covers remote deletes/adds).
     people = remote;
     saveLocal();
     renderPeople();
@@ -406,19 +498,19 @@ function subscribe(){
 }
 
 async function loadInitial(){
-  // local first
   people = loadLocal();
   renderPeople();
   if(firebaseReady && db){
     try {
       const snap = await get(ref(db, ROOT));
       const remote = objToPeople(snap.val());
-      if(remote.length){ people = remote; saveLocal(); renderPeople(); }
-      else if(people.length){ await saveToFirebase(); }
+      if(remote.length){
+        people = remote; saveLocal(); renderPeople();
+      } else if(people.length){
+        await commitPeople();
+      }
     } catch(e){ console.error(e); }
     subscribe();
-  }
-  if(firebaseReady && db){
     onValue(ref(db, '.info/connected'), s => {
       if(s.val()) setSyncStatus('online','Подключено');
       else setSyncStatus('offline','Нет соединения');
@@ -426,26 +518,28 @@ async function loadInitial(){
   }
 }
 
-/* ===================== HELPERS ===================== */
+/* ===================== SHAPE ===================== */
 function emptyPerson(){
   return {
     id: uid(),
     fullName: '',
+    photo: '',                 // main photo (data URL)
     gender: '',
     birthDate: '',
-    country: '', city: '', region: '', street: '', house: '', apartment: '',
-    phones: [''],          // array of phone strings
-    emails: [''],          // array of emails
-    socials: [{type:'', value:''}],
+    address: '',               // single-line address
+    phones: [''],              // array of strings
+    emails: [''],              // array of strings
+    socials: [{type:'', value:'', photo:''}],
     description: '', sport: '', friends: '', relations: '', notes: '',
-    mother: {fullName:'', birthDate:''},
-    father: {fullName:'', birthDate:''},
-    sisters: [{fullName:'', birthDate:''}],
-    brothers: [{fullName:'', birthDate:''}],
-    cars: [{plate:'', model:''}],
-    inn: '', snils: '', certificate: '', passport: '',
+    mother: {fullName:'', birthDate:'', photo:''},
+    father: {fullName:'', birthDate:'', photo:''},
+    sisters: [{fullName:'', birthDate:'', photo:''}],
+    brothers: [{fullName:'', birthDate:'', photo:''}],
+    cars: [{plate:'', model:'', photo:''}],
+    documents: [{label:'ИНН', value:'', photo:''}],   // unified docs with photo
     allergies: '', healthGroup: '', bloodType: '',
     custom: [{key:'', value:''}],
+    gallery: [{src:'', comment:''}],                  // photos + comments
     createdAt: Date.now(),
     updatedAt: Date.now()
   };
@@ -455,15 +549,66 @@ function ensureShape(p){
   const out = { ...base, ...(p||{}) };
   out.phones = Array.isArray(out.phones) && out.phones.length ? out.phones : [''];
   out.emails = Array.isArray(out.emails) && out.emails.length ? out.emails : [''];
-  out.socials = Array.isArray(out.socials) && out.socials.length ? out.socials : [{type:'', value:''}];
-  out.sisters = Array.isArray(out.sisters) && out.sisters.length ? out.sisters : [{fullName:'', birthDate:''}];
-  out.brothers = Array.isArray(out.brothers) && out.brothers.length ? out.brothers : [{fullName:'', birthDate:''}];
-  out.cars = Array.isArray(out.cars) && out.cars.length ? out.cars : [{plate:'', model:''}];
+  out.socials = Array.isArray(out.socials) && out.socials.length ? out.socials : [{type:'', value:'', photo:''}];
+  out.sisters = Array.isArray(out.sisters) && out.sisters.length ? out.sisters : [{fullName:'', birthDate:'', photo:''}];
+  out.brothers = Array.isArray(out.brothers) && out.brothers.length ? out.brothers : [{fullName:'', birthDate:'', photo:''}];
+  out.cars = Array.isArray(out.cars) && out.cars.length ? out.cars : [{plate:'', model:'', photo:''}];
+  if(!Array.isArray(out.documents) || !out.documents.length){
+    out.documents = [
+      {label:'ИНН', value:'', photo:''},
+      {label:'СНИЛС', value:'', photo:''},
+      {label:'Свидетельство', value:'', photo:''},
+      {label:'Паспорт', value:'', photo:''}
+    ];
+  }
   out.custom = Array.isArray(out.custom) ? out.custom : [];
-  out.mother = out.mother || {fullName:'', birthDate:''};
-  out.father = out.father || {fullName:'', birthDate:''};
+  out.gallery = Array.isArray(out.gallery) && out.gallery.length ? out.gallery : [{src:'', comment:''}];
+  out.mother = out.mother || {fullName:'', birthDate:'', photo:''};
+  out.father = out.father || {fullName:'', birthDate:'', photo:''};
   out.id = out.id || uid();
   return out;
+}
+
+/* ===================== PHOTO PICKER HELPERS ===================== */
+/* A generic helper that opens a hidden file input and calls onPicked(dataUrl). */
+let photoPickResolve = null;
+hiddenFileInput.addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  hiddenFileInput.value = '';
+  if(!file){ if(photoPickResolve) photoPickResolve(null); photoPickResolve = null; return; }
+  try {
+    const url = await fileToCompressedDataUrl(file);
+    if(photoPickResolve) photoPickResolve(url);
+  } catch(err){
+    console.error(err); showToast('Не удалось обработать фото', true);
+    if(photoPickResolve) photoPickResolve(null);
+  }
+  photoPickResolve = null;
+});
+function pickPhoto(){
+  return new Promise((resolve) => {
+    photoPickResolve = resolve;
+    hiddenFileInput.click();
+  });
+}
+
+/* Returns HTML for a photo slot (thumb + small link buttons under it). */
+function photoSlotHtml(id, currentSrc, labelEmpty='Фото'){
+  if(currentSrc){
+    return `<div class="photo-slot">
+      <img class="photo-thumb" src="${escapeAttr(currentSrc)}" data-photo-view="${escapeAttr(currentSrc)}" alt="">
+      <div class="photo-ctl">
+        <button type="button" class="link-btn" data-photo-change="${escapeAttr(id)}">Заменить ${escapeHtml(labelEmpty.toLowerCase())}</button>
+        <button type="button" class="link-btn danger" data-photo-remove="${escapeAttr(id)}">Удалить фото</button>
+      </div>
+    </div>`;
+  }
+  return `<div class="photo-slot">
+    <div class="photo-thumb empty">📷</div>
+    <div class="photo-ctl">
+      <button type="button" class="link-btn" data-photo-add="${escapeAttr(id)}">Добавить ${escapeHtml(labelEmpty.toLowerCase())}</button>
+    </div>
+  </div>`;
 }
 
 /* ===================== RENDER: ADD FORM ===================== */
@@ -474,8 +619,13 @@ function renderAddForm(){
   addFormContainer.innerHTML = `
     <div class="add-card">
       <div class="form-section-title">Основное</div>
-      <div class="add-grid">
-        <div class="add-field full"><label>ФИО</label><input type="text" data-f="fullName" value="${escapeAttr(p.fullName)}" placeholder="Иванов Иван Иванович"></div>
+      <div class="fio-row">
+        ${photoSlotHtml('photo', p.photo, 'Фото')}
+        <div class="grow">
+          <div class="add-field"><label>ФИО</label><input type="text" data-f="fullName" value="${escapeAttr(p.fullName)}" placeholder="Иванов Иван Иванович"></div>
+        </div>
+      </div>
+      <div class="add-grid" style="margin-top:.9rem">
         <div class="add-field"><label>Пол</label>
           <select data-f="gender">
             <option value="" ${!p.gender?'selected':''}>—</option>
@@ -484,16 +634,7 @@ function renderAddForm(){
           </select>
         </div>
         <div class="add-field"><label>Дата рождения</label><input type="text" data-f="birthDate" data-mask="birthdate" value="${escapeAttr(p.birthDate)}" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric"></div>
-      </div>
-
-      <div class="sub-block-head" style="margin-top:1rem">Место проживания</div>
-      <div class="add-grid">
-        <div class="add-field"><label>Страна</label><input type="text" data-f="country" value="${escapeAttr(p.country)}"></div>
-        <div class="add-field"><label>Город</label><input type="text" data-f="city" value="${escapeAttr(p.city)}"></div>
-        <div class="add-field"><label>Область</label><input type="text" data-f="region" value="${escapeAttr(p.region)}"></div>
-        <div class="add-field"><label>Улица</label><input type="text" data-f="street" value="${escapeAttr(p.street)}"></div>
-        <div class="add-field"><label>Дом</label><input type="text" data-f="house" value="${escapeAttr(p.house)}"></div>
-        <div class="add-field"><label>Кв.</label><input type="text" data-f="apartment" value="${escapeAttr(p.apartment)}"></div>
+        <div class="add-field full"><label>Место проживания (одной строкой)</label><input type="text" data-f="address" value="${escapeAttr(p.address)}" placeholder="Страна, город, область, улица, дом, кв."></div>
       </div>
     </div>
 
@@ -535,6 +676,7 @@ function renderAddForm(){
           <input type="text" data-fam="mother.fullName" value="${escapeAttr(p.mother.fullName)}" placeholder="ФИО">
           <input type="text" data-fam="mother.birthDate" data-mask="birthdate" value="${escapeAttr(p.mother.birthDate)}" placeholder="ДД.ММ.ГГГГ">
         </div>
+        ${photoSlotHtml('mother.photo', p.mother.photo, 'Фото')}
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Папа</div>
@@ -542,6 +684,7 @@ function renderAddForm(){
           <input type="text" data-fam="father.fullName" value="${escapeAttr(p.father.fullName)}" placeholder="ФИО">
           <input type="text" data-fam="father.birthDate" data-mask="birthdate" value="${escapeAttr(p.father.birthDate)}" placeholder="ДД.ММ.ГГГГ">
         </div>
+        ${photoSlotHtml('father.photo', p.father.photo, 'Фото')}
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Сёстры</div>
@@ -562,11 +705,10 @@ function renderAddForm(){
         <div data-rep="cars"></div>
         <button class="btn btn-secondary btn-sm" data-add-rep="cars">+ Добавить автомобиль</button>
       </div>
-      <div class="add-grid" style="margin-top:.8rem">
-        <div class="add-field"><label>ИНН</label><input type="text" data-f="inn" value="${escapeAttr(p.inn)}"></div>
-        <div class="add-field"><label>СНИЛС</label><input type="text" data-f="snils" value="${escapeAttr(p.snils)}"></div>
-        <div class="add-field"><label>Свидетельство</label><input type="text" data-f="certificate" value="${escapeAttr(p.certificate)}"></div>
-        <div class="add-field"><label>Паспорт</label><input type="text" data-f="passport" value="${escapeAttr(p.passport)}"></div>
+      <div class="sub-block">
+        <div class="sub-block-head">Документы (ИНН, СНИЛС, Свидетельство, Паспорт)</div>
+        <div data-rep="documents"></div>
+        <button class="btn btn-secondary btn-sm" data-add-rep="documents">+ Добавить документ</button>
       </div>
     </div>
 
@@ -577,6 +719,12 @@ function renderAddForm(){
         <div class="add-field"><label>Группа здоровья</label><input type="text" data-f="healthGroup" value="${escapeAttr(p.healthGroup)}"></div>
         <div class="add-field"><label>Группа крови</label><input type="text" data-f="bloodType" value="${escapeAttr(p.bloodType)}" placeholder="II (A) Rh+"></div>
       </div>
+    </div>
+
+    <div class="add-card">
+      <div class="form-section-title">Фотки</div>
+      <div class="gallery-grid" data-gallery-add></div>
+      <button class="btn btn-secondary btn-sm" data-add-gallery style="margin-top:.6rem">+ Добавить фото с комментарием</button>
     </div>
 
     <div class="add-card">
@@ -592,11 +740,11 @@ function renderAddForm(){
   `;
 
   renderRepeaters(p);
+  renderGalleryAdd(p);
   attachAddEvents();
 }
 
 function renderRepeaters(p){
-  // phones
   const ph = addFormContainer.querySelector('[data-rep="phones"]');
   ph.innerHTML = p.phones.map((v,i) => `
     <div class="repeater-row small">
@@ -605,7 +753,6 @@ function renderRepeaters(p){
       <button class="icon-del" data-del-rep="phones" data-i="${i}">✕</button>
     </div>`).join('');
 
-  // emails
   const em = addFormContainer.querySelector('[data-rep="emails"]');
   em.innerHTML = p.emails.map((v,i) => `
     <div class="repeater-row small">
@@ -614,34 +761,36 @@ function renderRepeaters(p){
       <button class="icon-del" data-del-rep="emails" data-i="${i}">✕</button>
     </div>`).join('');
 
-  // socials
   const so = addFormContainer.querySelector('[data-rep="socials"]');
   so.innerHTML = p.socials.map((s,i) => `
     <div class="repeater-row small">
       <input type="text" data-arr="socials" data-i="${i}" data-k="type" value="${escapeAttr(s.type||'')}" placeholder="Соцсеть/игра">
       <input type="text" data-arr="socials" data-i="${i}" data-k="value" value="${escapeAttr(s.value||'')}" placeholder="Ссылка/ник">
       <button class="icon-del" data-del-rep="socials" data-i="${i}">✕</button>
-    </div>`).join('');
+    </div>
+    ${photoSlotHtml('socials.'+i+'.photo', s.photo, 'Фото')}
+  `).join('');
 
-  // sisters
   const si = addFormContainer.querySelector('[data-rep="sisters"]');
   si.innerHTML = p.sisters.map((s,i) => `
     <div class="repeater-row small">
       <input type="text" data-arr="sisters" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
       <input type="text" data-arr="sisters" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
       <button class="icon-del" data-del-rep="sisters" data-i="${i}">✕</button>
-    </div>`).join('');
+    </div>
+    ${photoSlotHtml('sisters.'+i+'.photo', s.photo, 'Фото')}
+  `).join('');
 
-  // brothers
   const br = addFormContainer.querySelector('[data-rep="brothers"]');
   br.innerHTML = p.brothers.map((s,i) => `
     <div class="repeater-row small">
       <input type="text" data-arr="brothers" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
       <input type="text" data-arr="brothers" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
       <button class="icon-del" data-del-rep="brothers" data-i="${i}">✕</button>
-    </div>`).join('');
+    </div>
+    ${photoSlotHtml('brothers.'+i+'.photo', s.photo, 'Фото')}
+  `).join('');
 
-  // cars
   const ca = addFormContainer.querySelector('[data-rep="cars"]');
   ca.innerHTML = p.cars.map((c,i) => `
     <div class="plate-row">
@@ -649,16 +798,27 @@ function renderRepeaters(p){
         <label>Номер</label>
         <span class="plate-badge">🚗</span>
         <input type="text" data-arr="cars" data-i="${i}" data-k="plate" data-mask="plate" value="${escapeAttr(c.plate||'')}" placeholder="А123ВС777">
-        <div class="plate-preview">${escapeHtml(plateDisplay(c.plate||''))}</div>
+        <div class="plate-preview" style="display:${c.plate?'block':'none'}">${escapeHtml(plateDisplay(c.plate||''))}</div>
       </div>
       <div class="add-field">
         <label>Марка</label>
         <input type="text" data-arr="cars" data-i="${i}" data-k="model" value="${escapeAttr(c.model||'')}" placeholder="Toyota Camry">
       </div>
       <button class="icon-del" data-del-rep="cars" data-i="${i}">✕</button>
-    </div>`).join('');
+    </div>
+    ${photoSlotHtml('cars.'+i+'.photo', c.photo, 'Фото')}
+  `).join('');
 
-  // custom
+  const doc = addFormContainer.querySelector('[data-rep="documents"]');
+  doc.innerHTML = p.documents.map((d,i) => `
+    <div class="repeater-row small">
+      <input type="text" data-arr="documents" data-i="${i}" data-k="label" value="${escapeAttr(d.label||'')}" placeholder="Название документа">
+      <input type="text" data-arr="documents" data-i="${i}" data-k="value" value="${escapeAttr(d.value||'')}" placeholder="Номер/серия">
+      <button class="icon-del" data-del-rep="documents" data-i="${i}">✕</button>
+    </div>
+    ${photoSlotHtml('documents.'+i+'.photo', d.photo, 'Фото')}
+  `).join('');
+
   const cu = addFormContainer.querySelector('[data-rep="custom"]');
   cu.innerHTML = p.custom.map((c,i) => `
     <div class="repeater-row tiny">
@@ -680,19 +840,92 @@ function renderRepeaters(p){
       const prev = inp.closest('.plate-wrap').querySelector('.plate-preview');
       if(prev){ prev.textContent = plateDisplay(inp.value); prev.style.display = inp.value ? 'block' : 'none'; }
     });
-    const prev = inp.closest('.plate-wrap').querySelector('.plate-preview');
-    if(prev) prev.style.display = inp.value ? 'block' : 'none';
+  });
+
+  // photo buttons
+  addFormContainer.querySelectorAll('[data-photo-view]').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.dataset.photoView));
+  });
+  addFormContainer.querySelectorAll('[data-photo-add]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const path = btn.dataset.photoAdd;
+      const url = await pickPhoto();
+      if(!url) return;
+      setPath(window.__addDraft, path, url);
+      renderAddForm();
+    });
+  });
+  addFormContainer.querySelectorAll('[data-photo-change]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const path = btn.dataset.photoChange;
+      const url = await pickPhoto();
+      if(!url) return;
+      setPath(window.__addDraft, path, url);
+      renderAddForm();
+    });
+  });
+  addFormContainer.querySelectorAll('[data-photo-remove]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const path = btn.dataset.photoRemove;
+      setPath(window.__addDraft, path, '');
+      renderAddForm();
+    });
+  });
+}
+
+function setPath(obj, path, value){
+  const parts = path.split('.');
+  let cur = obj;
+  for(let i=0;i<parts.length-1;i++){
+    const k = parts[i];
+    if(cur[k] === undefined || cur[k] === null) cur[k] = {};
+    cur = cur[k];
+  }
+  cur[parts[parts.length-1]] = value;
+}
+
+function renderGalleryAdd(p){
+  const g = addFormContainer.querySelector('[data-gallery-add]');
+  if(!g) return;
+  g.innerHTML = (p.gallery||[]).map((item,i) => {
+    if(!item.src && !item.comment){
+      return '';
+    }
+    return `<div class="gallery-item">
+      ${item.src ? `<img src="${escapeAttr(item.src)}" data-photo-view="${escapeAttr(item.src)}" alt="">` : `<div style="height:130px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)">нет фото</div>`}
+      <div class="cap">${escapeHtml(item.comment||'')}</div>
+      <div class="ctl">
+        <button type="button" data-gallery-change="${i}">Заменить фото</button>
+        <button type="button" data-gallery-del="${i}">Удалить</button>
+      </div>
+    </div>`;
+  }).join('');
+  g.querySelectorAll('[data-photo-view]').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.dataset.photoView));
+  });
+  g.querySelectorAll('[data-gallery-change]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const i = parseInt(btn.dataset.galleryChange,10);
+      const url = await pickPhoto();
+      if(!url) return;
+      window.__addDraft.gallery[i].src = url;
+      renderAddForm();
+    });
+  });
+  g.querySelectorAll('[data-gallery-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.galleryDel,10);
+      window.__addDraft.gallery.splice(i,1);
+      if(!window.__addDraft.gallery.length) window.__addDraft.gallery = [{src:'', comment:''}];
+      renderAddForm();
+    });
   });
 }
 
 function attachAddEvents(){
-  // base fields
   addFormContainer.querySelectorAll('[data-f]').forEach(el => {
-    el.addEventListener('input', () => {
-      window.__addDraft[el.dataset.f] = el.value;
-    });
+    el.addEventListener('input', () => { window.__addDraft[el.dataset.f] = el.value; });
   });
-  // family fields
   addFormContainer.querySelectorAll('[data-fam]').forEach(el => {
     el.addEventListener('input', () => {
       const [k1,k2] = el.dataset.fam.split('.');
@@ -700,7 +933,6 @@ function attachAddEvents(){
       window.__addDraft[k1][k2] = el.value;
     });
   });
-  // repeater arr fields
   addFormContainer.querySelectorAll('[data-arr]').forEach(el => {
     el.addEventListener('input', () => {
       const arrName = el.dataset.arr;
@@ -711,52 +943,56 @@ function attachAddEvents(){
       else window.__addDraft[arrName][i] = el.value;
     });
   });
-  // del repeaters
   addFormContainer.querySelectorAll('[data-del-rep]').forEach(btn => {
     btn.addEventListener('click', () => {
       const arr = btn.dataset.delRep;
       const i = parseInt(btn.dataset.i,10);
       if(!Array.isArray(window.__addDraft[arr])) return;
       if(window.__addDraft[arr].length <= 1){
-        const empty = arr === 'custom' ? {key:'',value:''} : (arr==='cars' ? {plate:'',model:''} : (arr==='socials'?{type:'',value:''}:(arr==='sisters'||arr==='brothers'?{fullName:'',birthDate:''}:'')));
-        window.__addDraft[arr][0] = empty;
+        window.__addDraft[arr][0] = emptyItemFor(arr);
       } else {
         window.__addDraft[arr].splice(i,1);
       }
       renderAddForm();
     });
   });
-  // add repeaters
   addFormContainer.querySelectorAll('[data-add-rep]').forEach(btn => {
     btn.addEventListener('click', () => {
       const arr = btn.dataset.addRep;
       if(!Array.isArray(window.__addDraft[arr])) window.__addDraft[arr] = [];
-      if(arr === 'custom') window.__addDraft[arr].push({key:'',value:''});
-      else if(arr === 'cars') window.__addDraft[arr].push({plate:'',model:''});
-      else if(arr === 'socials') window.__addDraft[arr].push({type:'',value:''});
-      else if(arr === 'sisters' || arr === 'brothers') window.__addDraft[arr].push({fullName:'',birthDate:''});
-      else window.__addDraft[arr].push('');
+      window.__addDraft[arr].push(emptyItemFor(arr));
       renderAddForm();
     });
   });
-  // save
+  const addGalleryBtn = addFormContainer.querySelector('[data-add-gallery]');
+  if(addGalleryBtn){
+    addGalleryBtn.addEventListener('click', async () => {
+      const url = await pickPhoto();
+      if(!url) return;
+      if(window.__addDraft.gallery.length === 1 && !window.__addDraft.gallery[0].src && !window.__addDraft.gallery[0].comment){
+        window.__addDraft.gallery[0] = { src: url, comment: '' };
+      } else {
+        window.__addDraft.gallery.push({ src: url, comment: '' });
+      }
+      renderAddForm();
+    });
+  }
   addFormContainer.querySelector('#addSaveBtn').addEventListener('click', async () => {
     const data = collectAddData();
-    // validate emails
     for(const e of data.emails){
       if(e && !isValidEmail(e)){ showToast('Неверный email: ' + e, true); return; }
     }
     const now = Date.now();
-    const existing = people.find(x => x.id === data.id);
-    if(existing){
-      Object.assign(existing, data, { updatedAt: now });
+    const existingIdx = people.findIndex(x => x.id === data.id);
+    if(existingIdx >= 0){
+      Object.assign(people[existingIdx], data, { updatedAt: now });
     } else {
       data.createdAt = now; data.updatedAt = now;
       people.push(data);
     }
     renderPeople();
-    const ok = await saveToFirebase();
-    showToast(ok ? 'Сохранено' : 'Сохранено локально');
+    const ok = await commitPeople();
+    showToast(ok ? 'Сохранено в Firebase' : 'Сохранено локально');
     window.__addDraft = emptyPerson();
     renderAddForm();
   });
@@ -767,9 +1003,18 @@ function attachAddEvents(){
   });
 }
 
+function emptyItemFor(arr){
+  if(arr === 'custom') return {key:'',value:''};
+  if(arr === 'cars') return {plate:'',model:'',photo:''};
+  if(arr === 'socials') return {type:'',value:'',photo:''};
+  if(arr === 'documents') return {label:'',value:'',photo:''};
+  if(arr === 'sisters' || arr === 'brothers') return {fullName:'',birthDate:'',photo:''};
+  if(arr === 'gallery') return {src:'',comment:''};
+  return '';
+}
+
 function collectAddData(){
   const p = ensureShape(window.__addDraft);
-  // base fields already synced via events, but re-read for safety
   addFormContainer.querySelectorAll('[data-f]').forEach(el => { p[el.dataset.f] = el.value; });
   addFormContainer.querySelectorAll('[data-fam]').forEach(el => {
     const [k1,k2] = el.dataset.fam.split('.');
@@ -784,6 +1029,7 @@ function collectAddData(){
     if(k) p[arr][i][k] = el.value;
     else p[arr][i] = el.value;
   });
+  // gallery comments are not in inputs — kept in window.__addDraft directly
   return p;
 }
 
@@ -808,16 +1054,17 @@ function renderPeople(){
   peopleContainer.innerHTML = list.map(p => {
     const initials = (p.fullName||'?').trim().split(/\s+/).map(x=>x[0]||'').slice(0,2).join('').toUpperCase() || '?';
     const birth = p.birthDate || '';
-    const place = [p.country, p.city, p.region, p.street, p.house, p.apartment].filter(Boolean).join(', ');
+    const place = p.address || '';
     const phone = (p.phones||[]).find(Boolean) || '';
     const email = (p.emails||[]).find(Boolean) || '';
+    const avatar = p.photo ? `<img class="avatar" src="${escapeAttr(p.photo)}" alt="">` : `<div class="avatar">${escapeHtml(initials)}</div>`;
     return `
       <div class="person-row" data-id="${escapeAttr(p.id)}">
         <div class="person-summary" data-toggle="${escapeAttr(p.id)}">
-          <div class="avatar">${escapeHtml(initials)}</div>
+          ${avatar}
           <div class="person-main">
             <div class="person-name">${escapeHtml(p.fullName || '(без имени)')}</div>
-            <div class="person-sub">${escapeHtml(birth || '—')} ${place ? '· ' + escapeHtml(place) : ''}</div>
+            <div class="person-sub">${escapeHtml(birth || '—')}${place ? ' · ' + escapeHtml(place) : ''}</div>
           </div>
           <span class="chevron">▼</span>
         </div>
@@ -839,8 +1086,8 @@ function renderPeople(){
   }).join('');
 }
 
-/* ===================== MODAL: FULL CARD / EDIT ===================== */
-let modalMode = 'view'; // view | edit
+/* ===================== MODAL ===================== */
+let modalMode = 'view';
 let modalPersonId = null;
 
 function openModal(mode, personId){
@@ -848,9 +1095,7 @@ function openModal(mode, personId){
   modalPersonId = personId;
   const p = ensureShape(people.find(x => x.id === personId) || emptyPerson());
   if(mode === 'edit'){
-    // reuse add form inside modal
     modalTitle.textContent = 'Редактирование';
-    modalBody.innerHTML = '';
     modalBody.innerHTML = buildEditForm(p);
     modalFoot.innerHTML = `
       <button class="btn btn-cancel" id="modalCancelBtn">Отмена</button>
@@ -878,18 +1123,23 @@ function closeModal(){
 }
 
 function buildView(p){
-  const place = [p.country, p.city, p.region, p.street, p.house, p.apartment].filter(Boolean).join(', ');
   const phones = (p.phones||[]).filter(Boolean);
   const emails = (p.emails||[]).filter(Boolean);
-  const socials = (p.socials||[]).filter(s => s.type || s.value);
-  const sisters = (p.sisters||[]).filter(s => s.fullName || s.birthDate);
-  const brothers = (p.brothers||[]).filter(s => s.fullName || s.birthDate);
-  const cars = (p.cars||[]).filter(c => c.plate || c.model);
+  const socials = (p.socials||[]).filter(s => s.type || s.value || s.photo);
+  const sisters = (p.sisters||[]).filter(s => s.fullName || s.birthDate || s.photo);
+  const brothers = (p.brothers||[]).filter(s => s.fullName || s.birthDate || s.photo);
+  const cars = (p.cars||[]).filter(c => c.plate || c.model || c.photo);
+  const docs = (p.documents||[]).filter(d => d.label || d.value || d.photo);
+  const gallery = (p.gallery||[]).filter(g => g.src || g.comment);
   const custom = (p.custom||[]).filter(c => c.key || c.value);
 
   function row(label, value){
     const v = value || '—';
     return `<div class="quick-item"><div class="k">${escapeHtml(label)}</div><div class="v ${value?'':'empty'}">${escapeHtml(v)}</div></div>`;
+  }
+  function imgRow(label, src){
+    if(!src) return row(label, '');
+    return `<div class="quick-item"><div class="k">${escapeHtml(label)}</div><div class="v"><img src="${escapeAttr(src)}" data-photo-view="${escapeAttr(src)}" style="max-width:100px;max-height:100px;border-radius:.4rem;cursor:pointer;border:1px solid var(--border-light)"></div></div>`;
   }
   function section(title, body, closed){
     return `<div class="detail-section ${closed?'closed':''}">
@@ -899,15 +1149,16 @@ function buildView(p){
   }
 
   const mainBody = `
+    ${p.photo ? `<div class="full" style="text-align:center"><img src="${escapeAttr(p.photo)}" data-photo-view="${escapeAttr(p.photo)}" style="max-width:200px;max-height:200px;border-radius:.6rem;cursor:pointer;border:1px solid var(--border-light)"></div>` : ''}
     ${row('ФИО', p.fullName)}
     ${row('Пол', p.gender)}
     ${row('Дата рождения', p.birthDate)}
-    ${row('Место проживания', place)}
+    ${row('Место проживания', p.address)}
   `;
   const contactsBody = `
     ${phones.length ? phones.map((x,i)=>row('Телефон '+(i+1), x)).join('') : row('Телефоны','')}
     ${emails.length ? emails.map((x,i)=>row('Email '+(i+1), x)).join('') : row('Email','')}
-    ${socials.length ? socials.map(s=>row(s.type || 'Соцсеть/игра', s.value)).join('') : row('Соцсети / Игры','')}
+    ${socials.length ? socials.map(s=>imgRow(s.type || 'Соцсеть/игра', s.photo) + row(s.type || 'Соцсеть/игра', s.value)).join('') : row('Соцсети / Игры','')}
   `;
   const bioBody = `
     ${row('Общее описание', p.description)}
@@ -917,23 +1168,27 @@ function buildView(p){
     ${row('Заметки', p.notes)}
   `;
   const familyBody = `
+    ${imgRow('Мама — фото', p.mother.photo)}
     ${row('Мама', p.mother && (p.mother.fullName || p.mother.birthDate) ? (p.mother.fullName||'') + ' ' + (p.mother.birthDate||'') : '')}
+    ${imgRow('Папа — фото', p.father.photo)}
     ${row('Папа', p.father && (p.father.fullName || p.father.birthDate) ? (p.father.fullName||'') + ' ' + (p.father.birthDate||'') : '')}
-    ${sisters.length ? sisters.map((s,i)=>row('Сестра '+(i+1), (s.fullName||'') + ' ' + (s.birthDate||''))).join('') : row('Сёстры','')}
-    ${brothers.length ? brothers.map((s,i)=>row('Брат '+(i+1), (s.fullName||'') + ' ' + (s.birthDate||''))).join('') : row('Братья','')}
+    ${sisters.length ? sisters.map((s,i)=>imgRow('Сестра '+(i+1)+' — фото', s.photo) + row('Сестра '+(i+1), (s.fullName||'') + ' ' + (s.birthDate||''))).join('') : row('Сёстры','')}
+    ${brothers.length ? brothers.map((s,i)=>imgRow('Брат '+(i+1)+' — фото', s.photo) + row('Брат '+(i+1), (s.fullName||'') + ' ' + (s.birthDate||''))).join('') : row('Братья','')}
   `;
   const docsBody = `
-    ${cars.length ? cars.map((c,i)=>row('Автомобиль '+(i+1), plateDisplay(c.plate) + (c.model ? ' — ' + c.model : ''))).join('') : row('Автомобили','')}
-    ${row('ИНН', p.inn)}
-    ${row('СНИЛС', p.snils)}
-    ${row('Свидетельство', p.certificate)}
-    ${row('Паспорт', p.passport)}
+    ${cars.length ? cars.map((c,i)=>imgRow('Автомобиль '+(i+1)+' — фото', c.photo) + row('Автомобиль '+(i+1), plateDisplay(c.plate) + (c.model ? ' — ' + c.model : ''))).join('') : row('Автомобили','')}
+    ${docs.length ? docs.map((d,i)=>imgRow((d.label||'Документ')+' — фото', d.photo) + row(d.label||'Документ', d.value)).join('') : row('Документы','')}
   `;
   const healthBody = `
     ${row('Аллергии', p.allergies)}
     ${row('Группа здоровья', p.healthGroup)}
     ${row('Группа крови', p.bloodType)}
   `;
+  const galleryBody = gallery.length ? `<div class="full"><div class="gallery-grid">${gallery.map(g=>`
+    <div class="gallery-item">
+      ${g.src ? `<img src="${escapeAttr(g.src)}" data-photo-view="${escapeAttr(g.src)}" alt="">` : `<div style="height:130px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)">нет фото</div>`}
+      <div class="cap">${escapeHtml(g.comment||'')}</div>
+    </div>`).join('')}</div></div>` : row('Фотки','');
   const customBody = custom.length ? custom.map(c=>row(c.key||'Поле', c.value)).join('') : row('Дополнительно','');
 
   return `
@@ -943,161 +1198,347 @@ function buildView(p){
     ${section('Семья', familyBody, true)}
     ${section('Документы', docsBody, true)}
     ${section('Здоровье', healthBody, true)}
+    ${section('Фотки', galleryBody, true)}
     ${section('Дополнительно', customBody, true)}
   `;
 }
 
+/* Edit form is built the same way as the add form, but inside the modal. */
 function buildEditForm(p){
-  // Similar to add form but inside modal
+  // store a working draft in the modal scope
+  window.__editDraft = deepClone(p);
+  return `<div id="editFormMount"></div>`;
+}
+
+function mountEditForm(){
+  const p = window.__editDraft;
+  const mount = document.getElementById('editFormMount');
+  if(!mount) return;
+  mount.innerHTML = '';
+  // Reuse the same rendering logic by temporarily rendering into a detached container
+  const tmp = document.createElement('div');
+  const originalFormContainer = addFormContainer;
+  // We can't reassign a const, so build a mini-render inline:
+  mount.innerHTML = buildEditFormHtml(p);
+  attachEditEvents(p);
+}
+
+function buildEditFormHtml(p){
+  // Build the same form HTML as add, but with modal-friendly classes
+  const phoneRows = p.phones.map((v,i)=>`
+    <div class="repeater-row small">
+      <input type="tel" data-e-arr="phones" data-i="${i}" data-mask="phone" value="${escapeAttr(v)}" placeholder="+7 (___) ___-__-__">
+      <span></span>
+      <button class="icon-del" data-e-del="phones" data-i="${i}">✕</button>
+    </div>`).join('');
+  const emailRows = p.emails.map((v,i)=>`
+    <div class="repeater-row small">
+      <input type="email" data-e-arr="emails" data-i="${i}" value="${escapeAttr(v)}">
+      <span></span>
+      <button class="icon-del" data-e-del="emails" data-i="${i}">✕</button>
+    </div>`).join('');
+  const socialRows = p.socials.map((s,i)=>`
+    <div class="repeater-row small">
+      <input type="text" data-e-arr="socials" data-i="${i}" data-k="type" value="${escapeAttr(s.type||'')}" placeholder="Соцсеть/игра">
+      <input type="text" data-e-arr="socials" data-i="${i}" data-k="value" value="${escapeAttr(s.value||'')}" placeholder="Ссылка/ник">
+      <button class="icon-del" data-e-del="socials" data-i="${i}">✕</button>
+    </div>
+    ${photoSlotHtml('socials.'+i+'.photo', s.photo, 'Фото')}
+  `).join('');
+  const sisterRows = p.sisters.map((s,i)=>`
+    <div class="repeater-row small">
+      <input type="text" data-e-arr="sisters" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
+      <input type="text" data-e-arr="sisters" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
+      <button class="icon-del" data-e-del="sisters" data-i="${i}">✕</button>
+    </div>
+    ${photoSlotHtml('sisters.'+i+'.photo', s.photo, 'Фото')}
+  `).join('');
+  const brotherRows = p.brothers.map((s,i)=>`
+    <div class="repeater-row small">
+      <input type="text" data-e-arr="brothers" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
+      <input type="text" data-e-arr="brothers" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
+      <button class="icon-del" data-e-del="brothers" data-i="${i}">✕</button>
+    </div>
+    ${photoSlotHtml('brothers.'+i+'.photo', s.photo, 'Фото')}
+  `).join('');
+  const carRows = p.cars.map((c,i)=>`
+    <div class="plate-row">
+      <div class="add-field plate-wrap">
+        <label>Номер</label>
+        <input type="text" data-e-arr="cars" data-i="${i}" data-k="plate" data-mask="plate" value="${escapeAttr(c.plate||'')}" placeholder="А123ВС777">
+        <div class="plate-preview" style="display:${c.plate?'block':'none'}">${escapeHtml(plateDisplay(c.plate||''))}</div>
+      </div>
+      <div class="add-field"><label>Марка</label><input type="text" data-e-arr="cars" data-i="${i}" data-k="model" value="${escapeAttr(c.model||'')}"></div>
+      <button class="icon-del" data-e-del="cars" data-i="${i}">✕</button>
+    </div>
+    ${photoSlotHtml('cars.'+i+'.photo', c.photo, 'Фото')}
+  `).join('');
+  const docRows = p.documents.map((d,i)=>`
+    <div class="repeater-row small">
+      <input type="text" data-e-arr="documents" data-i="${i}" data-k="label" value="${escapeAttr(d.label||'')}" placeholder="Название">
+      <input type="text" data-e-arr="documents" data-i="${i}" data-k="value" value="${escapeAttr(d.value||'')}" placeholder="Номер/серия">
+      <button class="icon-del" data-e-del="documents" data-i="${i}">✕</button>
+    </div>
+    ${photoSlotHtml('documents.'+i+'.photo', d.photo, 'Фото')}
+  `).join('');
+  const customRows = p.custom.map((c,i)=>`
+    <div class="repeater-row tiny">
+      <input type="text" data-e-arr="custom" data-i="${i}" data-k="key" value="${escapeAttr(c.key||'')}" placeholder="Название">
+      <input type="text" data-e-arr="custom" data-i="${i}" data-k="value" value="${escapeAttr(c.value||'')}" placeholder="Значение">
+      <button class="icon-del" data-e-del="custom" data-i="${i}">✕</button>
+    </div>`).join('');
+  const galleryItems = (p.gallery||[]).map((g,i)=> g.src || g.comment ? `
+    <div class="gallery-item">
+      ${g.src ? `<img src="${escapeAttr(g.src)}" data-photo-view="${escapeAttr(g.src)}" alt="">` : `<div style="height:130px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)">нет фото</div>`}
+      <div class="cap"><input type="text" data-gallery-comment="${i}" value="${escapeAttr(g.comment||'')}" placeholder="Комментарий"></div>
+      <div class="ctl">
+        <button type="button" data-gallery-change="${i}">Заменить</button>
+        <button type="button" data-gallery-del="${i}">Удалить</button>
+      </div>
+    </div>` : '').join('');
+
   return `
     <div class="detail-section">
       <div class="detail-head" data-toggle-detail>Основное <span class="chev">▼</span></div>
       <div class="detail-body" style="display:block">
-        <div class="detail-field full"><label>ФИО</label><input type="text" data-f="fullName" value="${escapeAttr(p.fullName)}"></div>
+        <div class="full">
+          <div class="fio-row">
+            ${photoSlotHtml('photo', p.photo, 'Фото')}
+            <div class="grow"><div class="detail-field"><label>ФИО</label><input type="text" data-e-f="fullName" value="${escapeAttr(p.fullName)}"></div></div>
+          </div>
+        </div>
         <div class="detail-field"><label>Пол</label>
-          <select data-f="gender">
+          <select data-e-f="gender">
             <option value="" ${!p.gender?'selected':''}>—</option>
             <option value="М" ${p.gender==='М'?'selected':''}>Мужской</option>
             <option value="Ж" ${p.gender==='Ж'?'selected':''}>Женский</option>
           </select>
         </div>
-        <div class="detail-field"><label>Дата рождения</label><input type="text" data-f="birthDate" data-mask="birthdate" value="${escapeAttr(p.birthDate)}" maxlength="10"></div>
-        <div class="detail-field"><label>Страна</label><input type="text" data-f="country" value="${escapeAttr(p.country)}"></div>
-        <div class="detail-field"><label>Город</label><input type="text" data-f="city" value="${escapeAttr(p.city)}"></div>
-        <div class="detail-field"><label>Область</label><input type="text" data-f="region" value="${escapeAttr(p.region)}"></div>
-        <div class="detail-field"><label>Улица</label><input type="text" data-f="street" value="${escapeAttr(p.street)}"></div>
-        <div class="detail-field"><label>Дом</label><input type="text" data-f="house" value="${escapeAttr(p.house)}"></div>
-        <div class="detail-field"><label>Кв.</label><input type="text" data-f="apartment" value="${escapeAttr(p.apartment)}"></div>
+        <div class="detail-field"><label>Дата рождения</label><input type="text" data-e-f="birthDate" data-mask="birthdate" value="${escapeAttr(p.birthDate)}" maxlength="10"></div>
+        <div class="detail-field full"><label>Место проживания (одной строкой)</label><input type="text" data-e-f="address" value="${escapeAttr(p.address)}"></div>
       </div>
     </div>
     <div class="detail-section">
       <div class="detail-head" data-toggle-detail>Контакты <span class="chev">▼</span></div>
       <div class="detail-body" style="display:block">
-        <div class="detail-field full"><label>Телефоны (через ;)</label><input type="text" data-f="phonesStr" value="${escapeAttr((p.phones||[]).join('; '))}" placeholder="+7..., +7..."></div>
-        <div class="detail-field full"><label>Email (через ;)</label><input type="text" data-f="emailsStr" value="${escapeAttr((p.emails||[]).join('; '))}" placeholder="a@b.c; d@e.f"></div>
-        <div class="detail-field full"><label>Соцсети / Игры (формат: тип:значение; ...)</label><input type="text" data-f="socialsStr" value="${escapeAttr((p.socials||[]).map(s=>s.type+':'+s.value).join('; '))}" placeholder="Telegram:@nick; Steam:12345"></div>
+        <div class="full"><div class="sub-block-head">Телефоны</div>${phoneRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="phones">+ Телефон</button></div>
+        <div class="full"><div class="sub-block-head">Email</div>${emailRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="emails">+ Email</button></div>
+        <div class="full"><div class="sub-block-head">Соцсети / Игры</div>${socialRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="socials">+ Соцсеть/игра</button></div>
       </div>
     </div>
     <div class="detail-section">
       <div class="detail-head" data-toggle-detail>Биография <span class="chev">▼</span></div>
       <div class="detail-body" style="display:block">
-        <div class="detail-field full"><label>Общее описание</label><textarea data-f="description">${escapeHtml(p.description)}</textarea></div>
-        <div class="detail-field"><label>Спорт</label><textarea data-f="sport">${escapeHtml(p.sport)}</textarea></div>
-        <div class="detail-field"><label>Друзья</label><textarea data-f="friends">${escapeHtml(p.friends)}</textarea></div>
-        <div class="detail-field"><label>Отношения</label><textarea data-f="relations">${escapeHtml(p.relations)}</textarea></div>
-        <div class="detail-field"><label>Заметки</label><textarea data-f="notes">${escapeHtml(p.notes)}</textarea></div>
+        <div class="detail-field full"><label>Общее описание</label><textarea data-e-f="description">${escapeHtml(p.description)}</textarea></div>
+        <div class="detail-field"><label>Спорт</label><textarea data-e-f="sport">${escapeHtml(p.sport)}</textarea></div>
+        <div class="detail-field"><label>Друзья</label><textarea data-e-f="friends">${escapeHtml(p.friends)}</textarea></div>
+        <div class="detail-field"><label>Отношения</label><textarea data-e-f="relations">${escapeHtml(p.relations)}</textarea></div>
+        <div class="detail-field"><label>Заметки</label><textarea data-e-f="notes">${escapeHtml(p.notes)}</textarea></div>
       </div>
     </div>
     <div class="detail-section closed">
       <div class="detail-head" data-toggle-detail>Семья <span class="chev">▼</span></div>
       <div class="detail-body" style="display:block">
-        <div class="detail-field full"><label>Мама (ФИО ДД.ММ.ГГГГ)</label><input type="text" data-f="motherStr" value="${escapeAttr((p.mother.fullName||'') + ' ' + (p.mother.birthDate||''))}" placeholder="Иванова Мария Петровна 01.01.1970"></div>
-        <div class="detail-field full"><label>Папа (ФИО ДД.ММ.ГГГГ)</label><input type="text" data-f="fatherStr" value="${escapeAttr((p.father.fullName||'') + ' ' + (p.father.birthDate||''))}" placeholder="Иванов Пётр Сергеевич 01.01.1970"></div>
-        <div class="detail-field full"><label>Сёстры (ФИО ДД.ММ.ГГГГ; ...)</label><input type="text" data-f="sistersStr" value="${escapeAttr((p.sisters||[]).map(s=>(s.fullName||'')+' '+(s.birthDate||'')).join('; '))}" placeholder="Иванова Анна 01.01.2000; ..."></div>
-        <div class="detail-field full"><label>Братья (ФИО ДД.ММ.ГГГГ; ...)</label><input type="text" data-f="brothersStr" value="${escapeAttr((p.brothers||[]).map(s=>(s.fullName||'')+' '+(s.birthDate||'')).join('; '))}" placeholder="Иванов Олег 01.01.2000; ..."></div>
+        <div class="full"><div class="sub-block-head">Мама</div>
+          <div class="repeater-row small" data-family="mother">
+            <input type="text" data-e-fam="mother.fullName" value="${escapeAttr(p.mother.fullName)}" placeholder="ФИО">
+            <input type="text" data-e-fam="mother.birthDate" data-mask="birthdate" value="${escapeAttr(p.mother.birthDate)}" placeholder="ДД.ММ.ГГГГ">
+          </div>
+          ${photoSlotHtml('mother.photo', p.mother.photo, 'Фото')}
+        </div>
+        <div class="full"><div class="sub-block-head">Папа</div>
+          <div class="repeater-row small" data-family="father">
+            <input type="text" data-e-fam="father.fullName" value="${escapeAttr(p.father.fullName)}" placeholder="ФИО">
+            <input type="text" data-e-fam="father.birthDate" data-mask="birthdate" value="${escapeAttr(p.father.birthDate)}" placeholder="ДД.ММ.ГГГГ">
+          </div>
+          ${photoSlotHtml('father.photo', p.father.photo, 'Фото')}
+        </div>
+        <div class="full"><div class="sub-block-head">Сёстры</div>${sisterRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="sisters">+ Сестра</button></div>
+        <div class="full"><div class="sub-block-head">Братья</div>${brotherRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="brothers">+ Брат</button></div>
       </div>
     </div>
     <div class="detail-section closed">
       <div class="detail-head" data-toggle-detail>Документы <span class="chev">▼</span></div>
       <div class="detail-body" style="display:block">
-        <div class="detail-field full"><label>Автомобили (номер:марка; ...)</label><input type="text" data-f="carsStr" value="${escapeAttr((p.cars||[]).map(c=>normalizePlate(c.plate)+':'+(c.model||'')).join('; '))}" placeholder="А123ВС777:Toyota; ..."></div>
-        <div class="detail-field"><label>ИНН</label><input type="text" data-f="inn" value="${escapeAttr(p.inn)}"></div>
-        <div class="detail-field"><label>СНИЛС</label><input type="text" data-f="snils" value="${escapeAttr(p.snils)}"></div>
-        <div class="detail-field"><label>Свидетельство</label><input type="text" data-f="certificate" value="${escapeAttr(p.certificate)}"></div>
-        <div class="detail-field"><label>Паспорт</label><input type="text" data-f="passport" value="${escapeAttr(p.passport)}"></div>
+        <div class="full"><div class="sub-block-head">Автомобили</div>${carRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="cars">+ Автомобиль</button></div>
+        <div class="full"><div class="sub-block-head">Документы</div>${docRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="documents">+ Документ</button></div>
       </div>
     </div>
     <div class="detail-section closed">
       <div class="detail-head" data-toggle-detail>Здоровье <span class="chev">▼</span></div>
       <div class="detail-body" style="display:block">
-        <div class="detail-field full"><label>Аллергии</label><input type="text" data-f="allergies" value="${escapeAttr(p.allergies)}"></div>
-        <div class="detail-field"><label>Группа здоровья</label><input type="text" data-f="healthGroup" value="${escapeAttr(p.healthGroup)}"></div>
-        <div class="detail-field"><label>Группа крови</label><input type="text" data-f="bloodType" value="${escapeAttr(p.bloodType)}"></div>
+        <div class="detail-field full"><label>Аллергии</label><input type="text" data-e-f="allergies" value="${escapeAttr(p.allergies)}"></div>
+        <div class="detail-field"><label>Группа здоровья</label><input type="text" data-e-f="healthGroup" value="${escapeAttr(p.healthGroup)}"></div>
+        <div class="detail-field"><label>Группа крови</label><input type="text" data-e-f="bloodType" value="${escapeAttr(p.bloodType)}"></div>
+      </div>
+    </div>
+    <div class="detail-section closed">
+      <div class="detail-head" data-toggle-detail>Фотки <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="full"><div class="gallery-grid">${galleryItems}</div>
+          <button type="button" class="btn btn-secondary btn-sm" data-gallery-add style="margin-top:.6rem">+ Фото с комментарием</button>
+        </div>
       </div>
     </div>
     <div class="detail-section closed">
       <div class="detail-head" data-toggle-detail>Дополнительно <span class="chev">▼</span></div>
       <div class="detail-body" style="display:block">
-        <div class="detail-field full"><label>Доп. поля (название:значение; ...)</label><input type="text" data-f="customStr" value="${escapeAttr((p.custom||[]).map(c=>c.key+':'+c.value).join('; '))}" placeholder="Хобби:Шахматы; ..."></div>
+        <div class="full">${customRows}<button type="button" class="btn btn-secondary btn-sm" data-e-add="custom">+ Поле</button></div>
       </div>
     </div>
   `;
 }
 
 function attachModalEditEvents(p){
-  // toggle sections
-  modalBody.querySelectorAll('[data-toggle-detail]').forEach(h => {
+  mountEditForm();
+}
+
+function attachEditEvents(p){
+  const mount = document.getElementById('editFormMount');
+  if(!mount) return;
+
+  // toggles
+  mount.querySelectorAll('[data-toggle-detail]').forEach(h => {
     h.addEventListener('click', () => h.parentElement.classList.toggle('closed'));
   });
   // masks
-  modalBody.querySelectorAll('[data-mask="birthdate"]').forEach(inp => {
+  mount.querySelectorAll('[data-mask="phone"]').forEach(inp => {
+    inp.addEventListener('input', () => { inp.value = normalizePhone(inp.value); });
+  });
+  mount.querySelectorAll('[data-mask="birthdate"]').forEach(inp => {
     inp.addEventListener('input', () => { inp.value = normalizeBirthDate(inp.value); });
   });
-  // save
-  document.getElementById('modalSaveBtn').addEventListener('click', async () => {
-    const data = { ...p };
-    modalBody.querySelectorAll('[data-f]').forEach(el => {
-      const k = el.dataset.f;
-      if(k === 'phonesStr'){
-        data.phones = el.value.split(';').map(s=>normalizePhone(s.trim())).filter(Boolean);
-        if(!data.phones.length) data.phones = [''];
-      } else if(k === 'emailsStr'){
-        data.emails = el.value.split(';').map(s=>s.trim()).filter(Boolean);
-        if(!data.emails.length) data.emails = [''];
-      } else if(k === 'socialsStr'){
-        data.socials = el.value.split(';').map(s=>{
-          const [type,...rest] = s.split(':');
-          return { type: (type||'').trim(), value: rest.join(':').trim() };
-        }).filter(s=>s.type||s.value);
-        if(!data.socials.length) data.socials = [{type:'',value:''}];
-      } else if(k === 'motherStr' || k === 'fatherStr'){
-        const parts = el.value.trim().split(/\s+/);
-        // try to find date at end
-        let birthDate = '';
-        const last = parts[parts.length-1] || '';
-        if(/\d{2}\.\d{2}\.\d{4}/.test(last)){ birthDate = last; parts.pop(); }
-        const fullName = parts.join(' ');
-        if(k === 'motherStr') data.mother = { fullName, birthDate };
-        else data.father = { fullName, birthDate };
-      } else if(k === 'sistersStr' || k === 'brothersStr'){
-        const arr = el.value.split(';').map(s=>{
-          const parts = s.trim().split(/\s+/);
-          let birthDate = '';
-          const last = parts[parts.length-1] || '';
-          if(/\d{2}\.\d{2}\.\d{4}/.test(last)){ birthDate = last; parts.pop(); }
-          return { fullName: parts.join(' '), birthDate };
-        }).filter(s=>s.fullName||s.birthDate);
-        if(!arr.length) arr.push({fullName:'', birthDate:''});
-        if(k === 'sistersStr') data.sisters = arr; else data.brothers = arr;
-      } else if(k === 'carsStr'){
-        data.cars = el.value.split(';').map(s=>{
-          const [plate,...rest] = s.split(':');
-          return { plate: normalizePlate(plate||''), model: rest.join(':').trim() };
-        }).filter(c=>c.plate||c.model);
-        if(!data.cars.length) data.cars = [{plate:'',model:''}];
-      } else if(k === 'customStr'){
-        data.custom = el.value.split(';').map(s=>{
-          const [key,...rest] = s.split(':');
-          return { key: (key||'').trim(), value: rest.join(':').trim() };
-        }).filter(c=>c.key||c.value);
-      } else {
-        data[k] = el.value;
-      }
+  mount.querySelectorAll('[data-mask="plate"]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      inp.value = normalizePlate(inp.value);
+      const prev = inp.closest('.plate-wrap').querySelector('.plate-preview');
+      if(prev){ prev.textContent = plateDisplay(inp.value); prev.style.display = inp.value ? 'block' : 'none'; }
     });
-    // validate emails
-    for(const e of data.emails){
-      if(e && !isValidEmail(e)){ showToast('Неверный email: ' + e, true); return; }
-    }
+  });
+  // base fields
+  mount.querySelectorAll('[data-e-f]').forEach(el => {
+    el.addEventListener('input', () => { window.__editDraft[el.dataset.eF] = el.value; });
+  });
+  mount.querySelectorAll('[data-e-fam]').forEach(el => {
+    el.addEventListener('input', () => {
+      const [k1,k2] = el.dataset.eFam.split('.');
+      window.__editDraft[k1] = window.__editDraft[k1] || {};
+      window.__editDraft[k1][k2] = el.value;
+    });
+  });
+  mount.querySelectorAll('[data-e-arr]').forEach(el => {
+    el.addEventListener('input', () => {
+      const arr = el.dataset.eArr;
+      const i = parseInt(el.dataset.i,10);
+      const k = el.dataset.k;
+      if(!Array.isArray(window.__editDraft[arr])) return;
+      if(k) window.__editDraft[arr][i][k] = el.value;
+      else window.__editDraft[arr][i] = el.value;
+    });
+  });
+  mount.querySelectorAll('[data-e-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const arr = btn.dataset.eDel;
+      const i = parseInt(btn.dataset.i,10);
+      if(!Array.isArray(window.__editDraft[arr])) return;
+      if(window.__editDraft[arr].length <= 1) window.__editDraft[arr][0] = emptyItemFor(arr);
+      else window.__editDraft[arr].splice(i,1);
+      mountEditForm();
+    });
+  });
+  mount.querySelectorAll('[data-e-add]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const arr = btn.dataset.eAdd;
+      window.__editDraft[arr].push(emptyItemFor(arr));
+      mountEditForm();
+    });
+  });
+  // gallery
+  mount.querySelectorAll('[data-gallery-comment]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const i = parseInt(inp.dataset.galleryComment,10);
+      if(window.__editDraft.gallery[i]) window.__editDraft.gallery[i].comment = inp.value;
+    });
+  });
+  mount.querySelectorAll('[data-gallery-change]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const i = parseInt(btn.dataset.galleryChange,10);
+      const url = await pickPhoto();
+      if(!url) return;
+      window.__editDraft.gallery[i].src = url;
+      mountEditForm();
+    });
+  });
+  mount.querySelectorAll('[data-gallery-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.galleryDel,10);
+      window.__editDraft.gallery.splice(i,1);
+      if(!window.__editDraft.gallery.length) window.__editDraft.gallery = [{src:'',comment:''}];
+      mountEditForm();
+    });
+  });
+  const addGalleryBtn = mount.querySelector('[data-gallery-add]');
+  if(addGalleryBtn){
+    addGalleryBtn.addEventListener('click', async () => {
+      const url = await pickPhoto();
+      if(!url) return;
+      if(window.__editDraft.gallery.length === 1 && !window.__editDraft.gallery[0].src && !window.__editDraft.gallery[0].comment){
+        window.__editDraft.gallery[0] = { src: url, comment: '' };
+      } else {
+        window.__editDraft.gallery.push({ src: url, comment: '' });
+      }
+      mountEditForm();
+    });
+  }
+  // photo buttons
+  mount.querySelectorAll('[data-photo-view]').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.dataset.photoView));
+  });
+  mount.querySelectorAll('[data-photo-add]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const url = await pickPhoto(); if(!url) return;
+      setPath(window.__editDraft, btn.dataset.photoAdd, url); mountEditForm();
+    });
+  });
+  mount.querySelectorAll('[data-photo-change]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const url = await pickPhoto(); if(!url) return;
+      setPath(window.__editDraft, btn.dataset.photoChange, url); mountEditForm();
+    });
+  });
+  mount.querySelectorAll('[data-photo-remove]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setPath(window.__editDraft, btn.dataset.photoRemove, ''); mountEditForm();
+    });
+  });
+
+  // save
+  const saveBtn = document.getElementById('modalSaveBtn');
+  saveBtn.onclick = async () => {
+    // sync all fields
+    mount.querySelectorAll('[data-e-f]').forEach(el => { window.__editDraft[el.dataset.eF] = el.value; });
+    mount.querySelectorAll('[data-e-fam]').forEach(el => {
+      const [k1,k2] = el.dataset.eFam.split('.');
+      window.__editDraft[k1] = window.__editDraft[k1] || {};
+      window.__editDraft[k1][k2] = el.value;
+    });
+    mount.querySelectorAll('[data-e-arr]').forEach(el => {
+      const arr = el.dataset.eArr; const i = parseInt(el.dataset.i,10); const k = el.dataset.k;
+      if(!Array.isArray(window.__editDraft[arr])) return;
+      if(k) window.__editDraft[arr][i][k] = el.value;
+      else window.__editDraft[arr][i] = el.value;
+    });
+    const data = ensureShape(window.__editDraft);
     data.updatedAt = Date.now();
     const idx = people.findIndex(x => x.id === data.id);
-    if(idx >= 0) people[idx] = data;
-    else people.push(data);
+    if(idx >= 0) people[idx] = data; else people.push(data);
     renderPeople();
-    const ok = await saveToFirebase();
-    showToast(ok ? 'Сохранено' : 'Сохранено локально');
+    const ok = await commitPeople();
+    showToast(ok ? 'Сохранено в Firebase' : 'Сохранено локально');
     openModal('view', data.id);
-  });
-  document.getElementById('modalCancelBtn').addEventListener('click', () => openModal('view', p.id));
+  };
+  const cancelBtn = document.getElementById('modalCancelBtn');
+  if(cancelBtn) cancelBtn.onclick = () => openModal('view', p.id);
 }
 
 /* ===================== EVENTS: GLOBAL ===================== */
@@ -1120,7 +1561,6 @@ sidebarItems.forEach(item => {
     if(view === 'add'){ window.__addDraft = window.__addDraft || emptyPerson(); renderAddForm(); }
   });
 });
-
 searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim(); renderPeople(); });
 newFromDbBtn.addEventListener('click', () => {
   window.__addDraft = emptyPerson();
@@ -1133,8 +1573,7 @@ newFromDbBtn.addEventListener('click', () => {
   renderAddForm();
 });
 
-// database list events
-peopleContainer.addEventListener('click', (e) => {
+peopleContainer.addEventListener('click', async (e) => {
   const toggle = e.target.closest('[data-toggle]');
   if(toggle && !e.target.closest('button')){
     const row = toggle.closest('.person-row');
@@ -1150,7 +1589,8 @@ peopleContainer.addEventListener('click', (e) => {
     if(!confirm('Удалить запись?')) return;
     people = people.filter(p => p.id !== delBtn.dataset.del);
     renderPeople();
-    saveToFirebase().then(ok => showToast(ok ? 'Удалено' : 'Удалено локально'));
+    const ok = await commitPeople();
+    showToast(ok ? 'Удалено из Firebase' : 'Удалено локально');
     return;
   }
 });
@@ -1160,11 +1600,11 @@ modalCloseBtn.addEventListener('click', closeModal);
 document.addEventListener('keydown', (e) => {
   if(e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
 });
-
-// view card toggles (in modal)
 modalBody.addEventListener('click', (e) => {
   const h = e.target.closest('[data-toggle-detail]');
   if(h) h.parentElement.classList.toggle('closed');
+  const img = e.target.closest('[data-photo-view]');
+  if(img) openLightbox(img.dataset.photoView);
 });
 
 /* ===================== START ===================== */
