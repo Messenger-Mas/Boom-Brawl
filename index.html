@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Бланк данных — картотека людей</title>
+<title>База Данных (Гоша+Андрей)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -68,11 +68,6 @@ h1 .accent{color:var(--emerald)}
 .btn-danger:hover{background:var(--danger-bg);border-color:rgba(239,68,68,.3)}
 .btn-cancel{background:transparent;color:var(--text-secondary);border:1px solid var(--border-light)}
 .btn-cancel:hover{background:var(--black-elevated);color:var(--text-primary)}
-.btn-copy{background:transparent;color:var(--purple);border:1px solid rgba(168,85,247,.4)}
-.btn-copy:hover{background:var(--purple-bg);border-color:var(--purple)}
-.btn-fav{background:transparent;color:var(--amber);border:1px solid rgba(245,158,11,.4)}
-.btn-fav:hover{background:rgba(245,158,11,.12);border-color:var(--amber)}
-.btn-fav.active{background:var(--amber);color:var(--black);border-color:var(--amber)}
 .btn-icon{width:34px;height:34px;padding:0;border-radius:.5rem;font-size:1rem}
 .type-select,input[type="text"],input[type="tel"],input[type="password"],input[type="email"],input[type="number"],input[type="date"],textarea,select{
   width:100%;padding:.65rem .85rem;border:1px solid var(--border-light);border-radius:.55rem;font-size:.9rem;
@@ -80,10 +75,6 @@ h1 .accent{color:var(--emerald)}
 input::placeholder,textarea::placeholder{color:var(--text-muted);opacity:.8}
 input:focus,textarea:focus,select:focus{border-color:var(--emerald);background:var(--black-elevated);box-shadow:0 0 0 3px var(--emerald-glow)}
 textarea{resize:vertical;min-height:64px;line-height:1.5}
-.folders-area{margin-top:1rem}
-.folders-area-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--emerald);
-  margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
-.folders-area-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--emerald-dark),transparent)}
 .empty-state{text-align:center;color:var(--text-muted);padding:2.5rem 1rem;font-size:.9rem;
   background:var(--black-card);border:1px dashed var(--border-light);border-radius:.8rem}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--black-elevated);
@@ -92,124 +83,97 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
   white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:.8rem}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 .toast.error{border-color:var(--danger)}
-.toast button{background:transparent;border:none;color:var(--emerald-light);font-weight:700;cursor:pointer;font-size:.82rem}
 .view{display:none}
 .view.active{display:block}
 
-/* ===== СПИСОК ===== */
-.list-toolbar{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;margin:0 0 1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+/* ===== ADD FORM ===== */
+.add-card{background:var(--black-card);border:1px solid var(--border);border-radius:1rem;padding:1.6rem 1.4rem;margin-bottom:1.2rem}
+.add-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.2rem}
+.add-grid .full{grid-column:span 2}
+.add-field{display:flex;flex-direction:column;gap:.3rem}
+.add-field label{font-size:.75rem;font-weight:700;color:var(--text-secondary);letter-spacing:.02em}
+.add-actions{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-end;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border)}
+.section-block{margin-bottom:1.2rem}
+.sub-block{margin-top:.6rem;padding:.8rem;border:1px dashed var(--border-light);border-radius:.6rem;background:var(--black-soft)}
+.sub-block-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;font-size:.75rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--emerald-light)}
+.repeater-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.5rem}
+.repeater-row.small{grid-template-columns:1fr 1fr auto}
+.repeater-row.tiny{grid-template-columns:1fr 1fr auto}
+.repeater-row input,.repeater-row select{min-width:0}
+.icon-del{background:transparent;border:1px solid var(--border-light);color:var(--danger);border-radius:.45rem;
+  width:38px;height:38px;cursor:pointer;font-size:1rem;transition:.15s;flex-shrink:0}
+.icon-del:hover{background:var(--danger-bg);border-color:rgba(239,68,68,.4)}
+
+/* plate */
+.plate-row{display:grid;grid-template-columns:1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.5rem}
+.plate-wrap{position:relative}
+.plate-wrap input{padding-left:2.2rem}
+.plate-preview{margin-top:.2rem;font-size:.78rem;color:var(--amber);font-family:monospace;letter-spacing:1px;display:none}
+.plate-badge{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--emerald);opacity:.7}
+
+/* ===== DATABASE ===== */
+.toolbar{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;margin:0 0 1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
 .search-wrap{position:relative;flex:1;min-width:200px}
 .search-wrap input{padding-left:2.2rem}
 .search-wrap::before{content:'🔍';position:absolute;left:.8rem;top:50%;transform:translateY(-50%);font-size:.85rem;opacity:.6;pointer-events:none}
 .list-stats{font-size:.78rem;color:var(--text-muted);padding:.4rem .8rem;background:var(--black-card);
   border-radius:.5rem;border:1px solid var(--border-light);white-space:nowrap}
 .list-stats b{color:var(--emerald-light)}
-.filter-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1rem}
-.filter-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .8rem;border-radius:.5rem;
-  background:var(--black-card);border:1px solid var(--border-light);font-size:.8rem;cursor:pointer;user-select:none;transition:.15s}
-.filter-chip:hover{border-color:var(--emerald-dark)}
-.filter-chip.active{background:rgba(16,185,129,.12);border-color:var(--emerald);color:var(--emerald-light)}
-.filter-chip select{background:transparent;border:none;color:inherit;font-size:.8rem;padding:.1rem .2rem;width:auto;outline:none}
-.filter-chip input{width:60px;background:transparent;border:none;color:inherit;font-size:.8rem;padding:.1rem;outline:none;border-bottom:1px solid var(--border-light)}
-.table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:.8rem;overflow:hidden}
-.table-head,.table-row{display:grid;grid-template-columns:32px 2.2fr 1.2fr 1.2fr .8fr 1.2fr 90px;gap:.6rem;align-items:center;padding:.7rem 1rem}
-.table-head{background:var(--black-elevated);font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);border-bottom:1px solid var(--border)}
-.table-row{border-bottom:1px solid var(--border);cursor:pointer;transition:.12s;font-size:.86rem}
-.table-row:last-child{border-bottom:none}
-.table-row:hover{background:rgba(16,185,129,.05)}
-.table-row.selected{background:rgba(16,185,129,.12)}
-.table-row .cell-main{font-weight:600;color:var(--text-primary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.table-row .cell-sub{font-size:.72rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.table-row .cell-muted{color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.table-row input[type="checkbox"]{width:1rem;height:1rem;accent-color:var(--emerald);cursor:pointer}
-.badge-tag{display:inline-block;font-size:.62rem;padding:.1rem .45rem;border-radius:.3rem;font-weight:700;
-  text-transform:uppercase;letter-spacing:.04em;background:rgba(16,185,129,.12);color:var(--emerald-light);
-  border:1px solid rgba(16,185,129,.2);margin-right:.25rem}
-.badge-tag.warn{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
-.rating{color:var(--amber);font-size:.78rem;letter-spacing:1px;white-space:nowrap}
-.list-pagination{display:flex;justify-content:center;align-items:center;gap:.5rem;margin-top:1rem;font-size:.82rem;color:var(--text-secondary)}
-.list-pagination button{padding:.3rem .7rem;border-radius:.4rem;border:1px solid var(--border-light);background:var(--black-card);color:var(--text-primary);cursor:pointer}
-.list-pagination button:disabled{opacity:.4;cursor:not-allowed}
-.bulk-bar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;padding:.7rem 1rem;background:rgba(16,185,129,.08);
-  border:1px solid rgba(16,185,129,.3);border-radius:.6rem;margin-bottom:.8rem;font-size:.82rem}
-.bulk-bar.hidden{display:none}
-.bulk-bar .spacer{flex:1}
+.people-list{display:flex;flex-direction:column;gap:.6rem}
+.person-row{background:var(--black-card);border:1px solid var(--border);border-radius:.8rem;overflow:hidden;transition:.15s}
+.person-row:hover{border-color:rgba(16,185,129,.35)}
+.person-summary{display:flex;align-items:center;gap:.9rem;padding:.85rem 1rem;cursor:pointer;flex-wrap:wrap}
+.avatar{width:42px;height:42px;border-radius:50%;background:rgba(16,185,129,.15);color:var(--emerald-light);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;border:1px solid rgba(16,185,129,.3)}
+.person-main{flex:1;min-width:140px}
+.person-name{font-weight:600;font-size:.94rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.person-sub{font-size:.74rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chevron{color:var(--text-muted);font-size:.8rem;transition:transform .2s}
+.person-row.open .chevron{transform:rotate(180deg)}
+.person-quick{display:none;padding:0 1rem 1rem;border-top:1px solid var(--border);margin-top:.2rem}
+.person-row.open .person-quick{display:block}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1.2rem;padding-top:.8rem}
+.quick-item{font-size:.82rem}
+.quick-item .k{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:700;margin-bottom:.15rem}
+.quick-item .v{color:var(--text-primary);word-break:break-word}
+.quick-item .v.empty{color:var(--text-muted);font-style:italic}
+.quick-actions{margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap}
 
-/* ===== РЕДАКТОР ===== */
-.editor-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:700;
-  display:none;overflow-y:auto;padding:2rem 1rem}
-.editor-overlay.open{display:block}
-.editor-panel{max-width:960px;margin:0 auto;background:var(--black-soft);border:1px solid var(--border);
-  border-radius:1.2rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.9);display:flex;flex-direction:column;min-height:70vh}
-.editor-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.2rem 1.6rem;
+/* ===== MODAL (full card / edit) ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:800;
+  display:none;overflow-y:auto;padding:1.6rem 1rem}
+.modal-overlay.open{display:block}
+.modal-panel{max-width:960px;margin:0 auto;background:var(--black-soft);border:1px solid var(--border);
+  border-radius:1.2rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.9);display:flex;flex-direction:column;min-height:60vh}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.1rem 1.5rem;
   border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--black-soft);z-index:2;border-radius:1.2rem 1.2rem 0 0}
-.editor-head h2{font-size:1.15rem;font-weight:600}
-.editor-head .unsaved{font-size:.72rem;color:var(--amber);margin-left:.6rem}
-.editor-body{padding:1.2rem 1.6rem;display:flex;flex-direction:column;gap:1rem;flex:1}
-.editor-section{background:var(--black-card);border:1px solid var(--border);border-radius:.8rem;overflow:hidden}
-.editor-section-head{display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;
-  background:var(--black-elevated);cursor:pointer;user-select:none;font-weight:700;font-size:.85rem;color:var(--emerald-light)}
-.editor-section-head .chev{font-size:.7rem;transition:transform .2s;color:var(--text-muted)}
-.editor-section.closed .chev{transform:rotate(-90deg)}
-.editor-section.closed .editor-section-body{display:none}
-.editor-section-body{padding:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.2rem}
-.editor-section-body .full{grid-column:span 2}
-.editor-field{display:flex;flex-direction:column;gap:.3rem}
-.editor-field label{font-size:.75rem;font-weight:700;color:var(--text-secondary);letter-spacing:.02em}
-.editor-field .err{font-size:.7rem;color:var(--danger);min-height:.9rem}
-.editor-field.invalid input,.editor-field.invalid textarea{border-color:var(--danger)}
-.repeater{display:flex;flex-direction:column;gap:.5rem}
-.repeater-row{display:flex;gap:.5rem;align-items:center}
-.repeater-row input,.repeater-row select{flex:1}
-.repeater-add{align-self:flex-start;font-size:.78rem;padding:.35rem .7rem}
-.chip-input-wrap{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;padding:.4rem;border:1px solid var(--border-light);
-  border-radius:.55rem;background:var(--black-card);min-height:42px}
-.chip-input-wrap:focus-within{border-color:var(--emerald);box-shadow:0 0 0 3px var(--emerald-glow)}
-.chip-input-wrap input{border:none;background:transparent;flex:1;min-width:100px;padding:.2rem}
-.chip{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .55rem;border-radius:.4rem;font-size:.78rem;
-  background:rgba(16,185,129,.15);color:var(--emerald-light);border:1px solid rgba(16,185,129,.3)}
-.chip button{background:transparent;border:none;color:inherit;cursor:pointer;font-weight:700;font-size:.8rem}
-.stars{display:flex;gap:.2rem;font-size:1.3rem;cursor:pointer;user-select:none}
-.stars span{color:var(--border-light);transition:.1s}
-.stars span.on{color:var(--amber)}
-.editor-foot{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-end;padding:1rem 1.6rem;
+.modal-head h2{font-size:1.1rem;font-weight:600}
+.modal-body{padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:1rem;flex:1}
+.modal-foot{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-end;padding:1rem 1.5rem;
   border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--black-soft);border-radius:0 0 1.2rem 1.2rem}
-.editor-foot .spacer{flex:1}
-.draft-note{font-size:.72rem;color:var(--text-muted);align-self:center}
-
-/* auth */
-.auth-card{max-width:520px;margin:0 auto;background:var(--black-card);border:1px solid var(--border-light);
-  border-radius:1rem;padding:2rem 1.8rem;box-shadow:0 20px 50px -20px rgba(0,0,0,.8)}
-.auth-card h2{font-size:1.2rem;font-weight:600;margin-bottom:.4rem;color:var(--emerald-light)}
-.auth-card p.desc{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.4rem;line-height:1.5}
-.auth-field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
-.auth-field label{font-size:.8rem}
-.auth-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.2rem}
-.auth-actions .btn{flex:1;min-width:140px}
-.auth-error{color:var(--danger);font-size:.8rem;margin-top:.6rem;min-height:1.1rem}
-.auth-info{margin-top:1.4rem;padding:.9rem 1rem;background:var(--black);border:1px solid var(--border);
-  border-left:3px solid var(--emerald);border-radius:.6rem;font-size:.82rem;color:var(--text-secondary);line-height:1.5}
-.auth-info b{color:var(--text-primary)}
-.account-box{display:flex;flex-direction:column;gap:.8rem}
-.account-row{display:flex;justify-content:space-between;align-items:center;gap:.8rem;padding:.7rem 0;
-  border-bottom:1px solid var(--border);flex-wrap:wrap}
-.account-row:last-child{border-bottom:none}
-.account-label{font-size:.8rem;color:var(--text-secondary)}
-.account-value{font-size:.85rem;color:var(--text-primary);font-weight:600;word-break:break-all;text-align:right}
-.hash-display{font-family:monospace;font-size:.7rem;color:var(--text-muted);background:var(--black);
-  padding:.25rem .5rem;border-radius:.3rem;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-@media (max-width:900px){
-  .table-head,.table-row{grid-template-columns:28px 2fr 1fr 1fr;gap:.5rem}
-  .table-head .hide-sm,.table-row .hide-sm{display:none}
-}
-@media (max-width:760px){
-  .app{padding:1.6rem 1.2rem;border-radius:1rem;margin-left:0;margin-top:3.5rem}
+.detail-section{background:var(--black-card);border:1px solid var(--border);border-radius:.8rem;overflow:hidden}
+.detail-head{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;
+  background:var(--black-elevated);cursor:pointer;user-select:none;font-weight:700;font-size:.84rem;color:var(--emerald-light)}
+.detail-head .chev{font-size:.7rem;transition:transform .2s;color:var(--text-muted)}
+.detail-section.closed .chev{transform:rotate(-90deg)}
+.detail-section.closed .detail-body{display:none}
+.detail-body{padding:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.2rem}
+.detail-body .full{grid-column:span 2}
+.detail-field{display:flex;flex-direction:column;gap:.3rem}
+.detail-field label{font-size:.72rem;font-weight:700;color:var(--text-secondary)}
+.detail-field .err{font-size:.7rem;color:var(--danger);min-height:.9rem}
+.detail-field.invalid input,.detail-field.invalid textarea,.detail-field.invalid select{border-color:var(--danger)}
+@media (max-width:820px){
+  .add-grid{grid-template-columns:1fr}
+  .add-grid .full{grid-column:span 1}
+  .detail-body{grid-template-columns:1fr}
+  .detail-body .full{grid-column:span 1}
+  .quick-grid{grid-template-columns:1fr}
+  .app{padding:1.6rem 1.1rem;border-radius:1rem;margin-left:0;margin-top:3.5rem}
   h1{font-size:1.35rem}
-  .editor-section-body{grid-template-columns:1fr}
-  .editor-section-body .full{grid-column:span 1}
-  .auth-card{padding:1.5rem 1.2rem}
-  .editor-overlay{padding:.5rem}
+  .repeater-row{grid-template-columns:1fr;}
+  .plate-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -219,139 +183,46 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-title">Меню</div>
   <nav class="sidebar-nav">
-    <div class="sidebar-item active" data-view="list"><span class="icon">🗂️</span><span>Список</span></div>
-    <div class="sidebar-item" data-view="database"><span class="icon">🗄️</span><span>Папки</span></div>
-    <div class="sidebar-item" data-view="settings"><span class="icon">⚙️</span><span>Настройки</span></div>
+    <div class="sidebar-item active" data-view="add"><span class="icon">➕</span><span>Добавить данные</span></div>
+    <div class="sidebar-item" data-view="db"><span class="icon">🗄️</span><span>База данных</span></div>
   </nav>
-  <div class="sidebar-footer" id="sidebarFooter">Не авторизован</div>
+  <div class="sidebar-footer" id="sidebarFooter">Синхронизация с Firebase</div>
 </aside>
 
 <div class="app">
   <div class="app-header">
     <h1>Картотека <span class="accent">людей</span></h1>
-    <div class="subhead" id="appSubhead">Просмотр, поиск и редактирование записей</div>
+    <div class="subhead" id="appSubhead">Добавление новой записи</div>
     <div class="sync-status"><span class="sync-dot" id="syncDot"></span><span id="syncText">Инициализация...</span></div>
   </div>
 
-  <!-- ===== VIEW: СПИСОК ===== -->
-  <div class="view active" id="view-list">
-    <div class="list-toolbar">
-      <div class="search-wrap"><input type="text" id="searchInput" placeholder="Поиск по имени, телефону, email, городу, заметкам..." autocomplete="off"></div>
-      <button class="btn btn-primary" id="newPersonBtn">+ Добавить</button>
-      <button class="btn btn-secondary" id="exportBtn" title="Экспорт CSV">Экспорт</button>
-      <label class="btn btn-secondary" style="cursor:pointer" title="Импорт CSV">
-        Импорт<input type="file" id="importInput" accept=".csv,text/csv" style="display:none">
-      </label>
+  <!-- ===== VIEW: ADD ===== -->
+  <div class="view active" id="view-add">
+    <div id="addFormContainer"></div>
+  </div>
+
+  <!-- ===== VIEW: DATABASE ===== -->
+  <div class="view" id="view-db">
+    <div class="toolbar">
+      <div class="search-wrap"><input type="text" id="searchInput" placeholder="Поиск по ФИО..." autocomplete="off"></div>
       <div class="list-stats" id="listStats">Записей: <b>0</b></div>
+      <button class="btn btn-primary" id="newFromDbBtn">+ Добавить</button>
     </div>
-
-    <div class="filter-row">
-      <div class="filter-chip" id="filterGenderChip">Пол:
-        <select id="filterGender"><option value="">любой</option><option value="М">М</option><option value="Ж">Ж</option></select>
-      </div>
-      <div class="filter-chip">Возраст: <input type="number" id="filterAgeMin" placeholder="от" min="0" max="120"> – <input type="number" id="filterAgeMax" placeholder="до" min="0" max="120"></div>
-      <div class="filter-chip">Город: <input type="text" id="filterCity" placeholder="любой" style="width:110px"></div>
-      <div class="filter-chip" id="filterTagChip">Метка:
-        <select id="filterTag"><option value="">любая</option></select>
-      </div>
-      <div class="filter-chip" id="filterFavChip">
-        <label style="display:flex;align-items:center;gap:.3rem;cursor:pointer"><input type="checkbox" id="filterFav" style="width:auto;accent-color:var(--emerald)"> Только избранные</label>
-      </div>
-      <button class="btn btn-sm btn-cancel" id="clearFiltersBtn">Сбросить</button>
-    </div>
-
-    <div class="bulk-bar hidden" id="bulkBar">
-      <span id="bulkCount">Выбрано: 0</span>
-      <div class="spacer"></div>
-      <select class="type-select" id="bulkMoveSelect" style="min-width:160px"><option value="">Переместить в...</option></select>
-      <button class="btn btn-sm btn-danger" id="bulkDeleteBtn">Удалить выбранные</button>
-      <button class="btn btn-sm btn-cancel" id="bulkClearBtn">Снять выбор</button>
-    </div>
-
-    <div class="table-wrap">
-      <div class="table-head">
-        <div><input type="checkbox" id="selectAll" style="accent-color:var(--emerald)"></div>
-        <div>Имя</div><div>Телефон</div><div class="hide-sm">Город</div><div>Возраст</div><div class="hide-sm">Метки</div><div>★</div>
-      </div>
-      <div id="tableBody"></div>
-    </div>
-
-    <div class="list-pagination" id="pagination">
-      <button id="prevPage">← Назад</button>
-      <span id="pageInfo">1 / 1</span>
-      <button id="nextPage">Вперёд →</button>
-      <select class="type-select" id="pageSize" style="width:auto;min-width:90px">
-        <option value="20">20</option><option value="50" selected>50</option><option value="100">100</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- ===== VIEW: ПАПКИ ===== -->
-  <div class="view" id="view-database">
-    <div class="form-section-title">Папки</div>
-    <div class="list-toolbar">
-      <div class="search-wrap"><input type="text" id="folderSearch" placeholder="Поиск папок..." autocomplete="off"></div>
-      <input type="text" id="newFolderName" placeholder="Название новой папки" style="max-width:240px">
-      <select class="type-select" id="newFolderType" style="max-width:170px"><option value="private">Приватная</option><option value="public">Публичная</option></select>
-      <button class="btn btn-primary" id="createFolderBtn">Создать папку</button>
-    </div>
-    <div class="folder-perms hidden" id="publicFolderPerms" style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;padding:.8rem 1rem;background:var(--black-card);border:1px solid var(--border-light);border-radius:.6rem">
-      <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--emerald-light)">Права публичной папки</div>
-      <label class="filter-chip"><input type="checkbox" id="chkAllowEdit" style="width:auto;accent-color:var(--emerald)"> Разрешить другим изменять</label>
-      <label class="filter-chip"><input type="checkbox" id="chkAllowCopy" style="width:auto;accent-color:var(--emerald)"> Разрешить копировать</label>
-    </div>
-    <div id="foldersContainer"><div class="empty-state">Загрузка...</div></div>
-  </div>
-    <!-- ===== VIEW: НАСТРОЙКИ ===== -->
-  <div class="view" id="view-settings">
-    <div class="form-section-title">Аккаунт</div>
-    <div class="auth-card" id="authCard">
-      <h2>Вход в аккаунт</h2>
-      <p class="desc">Введите пароль, чтобы войти, или зарегистрируйте новый аккаунт.</p>
-      <div id="authLoginForm">
-        <div class="auth-field"><label for="loginPassword">Пароль</label><input type="password" id="loginPassword" autocomplete="current-password"></div>
-        <div class="auth-error" id="loginError"></div>
-        <div class="auth-actions"><button class="btn btn-primary" id="loginBtn">Войти</button><button class="btn btn-cancel" id="showRegisterBtn">Регистрация</button></div>
-      </div>
-      <div id="authRegisterForm" style="display:none">
-        <div class="auth-field"><label for="regPassword">Пароль</label><input type="password" id="regPassword" autocomplete="new-password"></div>
-        <div class="auth-field"><label for="regPassword2">Повторите</label><input type="password" id="regPassword2" autocomplete="new-password"></div>
-        <div class="auth-error" id="regError"></div>
-        <div class="auth-actions"><button class="btn btn-primary" id="registerBtn">Зарегистрироваться</button><button class="btn btn-cancel" id="showLoginBtn">Назад</button></div>
-      </div>
-      <div class="auth-info"><b>Как это работает:</b> пароль хранится как хеш на устройстве и в Firebase. На новом устройстве введите тот же пароль — получите доступ к папкам.</div>
-    </div>
-    <div class="auth-card" id="accountCard" style="display:none">
-      <h2>Аккаунт</h2>
-      <p class="desc">Вы авторизованы. Данные привязаны к аккаунту.</p>
-      <div class="account-box">
-        <div class="account-row"><span class="account-label">Статус</span><span class="account-value" style="color:var(--emerald-light)">Активен</span></div>
-        <div class="account-row"><span class="account-label">ID аккаунта</span><span class="account-value" id="accId" style="font-size:.75rem">—</span></div>
-        <div class="account-row"><span class="account-label">Хеш пароля</span><span class="hash-display" id="accHash">—</span></div>
-        <div class="account-row"><span class="account-label">Устройство</span><span class="account-value" id="accDevice" style="font-size:.72rem;color:var(--text-muted)">—</span></div>
-      </div>
-      <div class="auth-actions"><button class="btn btn-cancel" id="logoutBtn">Выйти</button></div>
-    </div>
+    <div id="peopleContainer"><div class="empty-state">Загрузка...</div></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- ===== РЕДАКТОР ===== -->
-<div class="editor-overlay" id="editorOverlay">
-  <div class="editor-panel">
-    <div class="editor-head">
-      <h2 id="editorTitle">Новая запись <span class="unsaved" id="unsavedIndicator" style="display:none">● не сохранено</span></h2>
-      <button class="btn btn-icon btn-cancel" id="editorCloseBtn" title="Закрыть">✕</button>
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 id="modalTitle">Карта человека</h2>
+      <button class="btn btn-icon btn-cancel" id="modalCloseBtn" title="Закрыть">✕</button>
     </div>
-    <div class="editor-body" id="editorBody"></div>
-    <div class="editor-foot">
-      <span class="draft-note" id="draftNote"></span>
-      <div class="spacer"></div>
-      <button class="btn btn-cancel" id="editorCancelBtn">Отмена</button>
-      <button class="btn btn-secondary" id="editorSaveNewBtn" style="display:none">Сохранить и ещё</button>
-      <button class="btn btn-primary" id="editorSaveBtn">Сохранить</button>
-    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
   </div>
 </div>
 
@@ -369,176 +240,77 @@ const firebaseConfig = {
   appId: "1:936523368636:web:6f4ff89a3871cead4068b9"
 };
 
+let app, db, firebaseReady = false;
 const syncDot = document.getElementById('syncDot');
 const syncText = document.getElementById('syncText');
 function setSyncStatus(state, text){
   if(syncDot) syncDot.className = 'sync-dot ' + state;
   if(syncText) syncText.textContent = text;
 }
-
-let app, db, firebaseReady = false;
 try { app = initializeApp(firebaseConfig); db = getDatabase(app); firebaseReady = true; setSyncStatus('syncing','Подключение...'); }
 catch(e){ console.error(e); setSyncStatus('offline','Firebase недоступен — локально'); }
 
 (function(){
 'use strict';
 
-/* ===================== КОНСТАНТЫ И СОСТОЯНИЕ ===================== */
-const DEVICE_ID = (() => {
-  let id = localStorage.getItem('app_device_id');
-  if(!id){ id = 'dev_' + Date.now() + '_' + Math.random().toString(36).slice(2,10); localStorage.setItem('app_device_id', id); }
-  return id;
-})();
-const LOCAL_KEY_BASE = 'app_folders_';
-const AUTH_KEY = 'app_auth';
-const FAV_KEY_BASE = 'app_favorites_';
-const DRAFT_KEY = 'app_draft';
-const rootPath = 'users';
+/* ===================== CONSTANTS ===================== */
+const ROOT = 'people'; // common node shared by all users
+const LOCAL_KEY = 'people_cache_v2';
 
-let currentAccount = null;
-let folders = [];          // все доступные папки (свои + чужие публичные)
-let myFolders = [];        // только свои
-let favorites = [];        // id записей
-let unsubscribeFolders = null;
-
-// состояние списка
+/* ===================== STATE ===================== */
+let people = [];        // array of person objects
 let searchQuery = '';
-let filterGender = '';
-let filterAgeMin = null, filterAgeMax = null;
-let filterCity = '';
-let filterTag = '';
-let filterFavOnly = false;
-let pageSize = 50, currentPage = 1;
-let sortKey = 'updated', sortDir = 'desc';
-let selectedIds = new Set();
-
-// состояние редактора
-let editorMode = 'create';     // create | edit
-let editorFolderId = null;
-let editorPersonId = null;
-let editorDraft = null;
-let editorDirty = false;
+let isRemoteUpdate = false;
+let unsubscribe = null;
 
 /* ===================== DOM ===================== */
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
-const toastEl = $('#toast');
 const sidebar = $('#sidebar');
 const sidebarOverlay = $('#sidebarOverlay');
 const hamburger = $('#hamburger');
 const sidebarItems = $$('.sidebar-item');
-const sidebarFooter = $('#sidebarFooter');
 const appSubhead = $('#appSubhead');
-const views = { list: $('#view-list'), database: $('#view-database'), settings: $('#view-settings') };
+const views = { add: $('#view-add'), db: $('#view-db') };
 
-const tableBody = $('#tableBody');
-const listStats = $('#listStats');
+const addFormContainer = $('#addFormContainer');
+const peopleContainer = $('#peopleContainer');
 const searchInput = $('#searchInput');
-const filterGenderEl = $('#filterGender');
-const filterAgeMinEl = $('#filterAgeMin');
-const filterAgeMaxEl = $('#filterAgeMax');
-const filterCityEl = $('#filterCity');
-const filterTagEl = $('#filterTag');
-const filterFavEl = $('#filterFav');
-const clearFiltersBtn = $('#clearFiltersBtn');
-const selectAllEl = $('#selectAll');
-const bulkBar = $('#bulkBar');
-const bulkCount = $('#bulkCount');
-const bulkMoveSelect = $('#bulkMoveSelect');
-const bulkDeleteBtn = $('#bulkDeleteBtn');
-const bulkClearBtn = $('#bulkClearBtn');
-const pagination = $('#pagination');
-const pageInfo = $('#pageInfo');
-const prevPage = $('#prevPage');
-const nextPage = $('#nextPage');
-const pageSizeSel = $('#pageSize');
-const newPersonBtn = $('#newPersonBtn');
-const exportBtn = $('#exportBtn');
-const importInput = $('#importInput');
+const listStats = $('#listStats');
+const newFromDbBtn = $('#newFromDbBtn');
 
-const foldersContainer = $('#foldersContainer');
-const folderSearch = $('#folderSearch');
-const newFolderName = $('#newFolderName');
-const newFolderType = $('#newFolderType');
-const createFolderBtn = $('#createFolderBtn');
-const publicFolderPerms = $('#publicFolderPerms');
-const chkAllowEdit = $('#chkAllowEdit');
-const chkAllowCopy = $('#chkAllowCopy');
+const modalOverlay = $('#modalOverlay');
+const modalTitle = $('#modalTitle');
+const modalBody = $('#modalBody');
+const modalFoot = $('#modalFoot');
+const modalCloseBtn = $('#modalCloseBtn');
 
-const editorOverlay = $('#editorOverlay');
-const editorBody = $('#editorBody');
-const editorTitle = $('#editorTitle');
-const editorCloseBtn = $('#editorCloseBtn');
-const editorCancelBtn = $('#editorCancelBtn');
-const editorSaveBtn = $('#editorSaveBtn');
-const editorSaveNewBtn = $('#editorSaveNewBtn');
-const draftNote = $('#draftNote');
-const unsavedIndicator = $('#unsavedIndicator');
+const toastEl = $('#toast');
 
-const authCard = $('#authCard');
-const accountCard = $('#accountCard');
-const authLoginForm = $('#authLoginForm');
-const authRegisterForm = $('#authRegisterForm');
-const loginPassword = $('#loginPassword');
-const loginError = $('#loginError');
-const loginBtn = $('#loginBtn');
-const showRegisterBtn = $('#showRegisterBtn');
-const showLoginBtn = $('#showLoginBtn');
-const regPassword = $('#regPassword');
-const regPassword2 = $('#regPassword2');
-const regError = $('#regError');
-const registerBtn = $('#registerBtn');
-const logoutBtn = $('#logoutBtn');
-const accId = $('#accId');
-const accHash = $('#accHash');
-const accDevice = $('#accDevice');
-
-/* ===================== УТИЛИТЫ ===================== */
+/* ===================== UTILS ===================== */
 let toastTimer;
-function showToast(msg, isError, action){
+function showToast(msg, isError){
   clearTimeout(toastTimer);
-  toastEl.innerHTML = '';
   toastEl.textContent = msg;
   toastEl.classList.toggle('error', !!isError);
-  if(action){
-    const b = document.createElement('button');
-    b.textContent = action.label;
-    b.onclick = () => { action.fn(); toastEl.classList.remove('show'); };
-    toastEl.appendChild(b);
-  }
   toastEl.classList.add('show');
-  toastTimer = setTimeout(() => toastEl.classList.remove('show'), action ? 6000 : 3000);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
 }
 function uid(){ return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8); }
 function escapeHtml(v){
   if(v===null||v===undefined) return '';
   return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
+function escapeAttr(v){ return escapeHtml(v).replace(/"/g,'&quot;'); }
 function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
-function formatDateTime(ts){
-  if(!ts) return '';
-  const d = new Date(ts); if(isNaN(d.getTime())) return '';
-  return d.toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-}
-function parseDateRu(str){
-  if(!str) return 0;
+function formatDateRu(str){
+  if(!str) return '';
   const p = String(str).trim().split('.');
-  if(p.length!==3) return 0;
-  const d=parseInt(p[0],10), m=parseInt(p[1],10), y=parseInt(p[2],10);
-  if(isNaN(d)||isNaN(m)||isNaN(y)||y<1900||y>2100||m<1||m>12||d<1||d>31) return 0;
-  const dt = new Date(y, m-1, d);
-  return isNaN(dt.getTime()) ? 0 : dt.getTime();
+  if(p.length!==3) return str;
+  return str;
 }
-function calcAge(birthDate){
-  const ts = parseDateRu(birthDate);
-  if(!ts) return null;
-  const b = new Date(ts), now = new Date();
-  let a = now.getFullYear() - b.getFullYear();
-  const m = now.getMonth() - b.getMonth();
-  if(m < 0 || (m===0 && now.getDate() < b.getDate())) a--;
-  return a >= 0 && a < 150 ? a : null;
-}
+function isValidEmail(v){ return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 function normalizePhone(v){
   let d = String(v).replace(/\D/g,'');
   if(!d) return '';
@@ -554,6 +326,24 @@ function normalizePhone(v){
   if(p.length>8) r += '-'+p.slice(8,10);
   return r;
 }
+function normalizePlate(v){
+  // Keep letters/digits, uppercase, format like А123ВС777
+  let s = String(v).toUpperCase().replace(/[^А-ЯA-Z0-9]/g,'');
+  // If it contains Cyrillic, restrict to allowed plate letters
+  const allowed = 'АВЕКМНОРСТУХ';
+  if(/[А-Я]/.test(s)){
+    s = s.split('').map(ch => allowed.includes(ch) ? ch : ch).join('');
+  }
+  return s;
+}
+function plateDisplay(v){
+  const s = normalizePlate(v);
+  if(!s) return '';
+  // Try to split into 1 letter + 3 digits + 2 letters + 2-3 digits
+  const m = s.match(/^([А-ЯA-Z])(\d{3})([А-ЯA-Z]{2})(\d{2,3})$/);
+  if(m) return `${m[1]} ${m[2]} ${m[3]} ${m[4]}`;
+  return s.replace(/(.{1})(.{3})(.{2})(.*)/, '$1 $2 $3 $4').trim();
+}
 function normalizeBirthDate(v){
   let d = String(v).replace(/\D/g,'').slice(0,8);
   let r='';
@@ -562,80 +352,31 @@ function normalizeBirthDate(v){
   if(d.length>4) r+='.'+d.slice(4,8);
   return r;
 }
-function isValidEmail(v){ return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-function hashPassword(p){
-  let h = 2166136261;
-  for(let i=0;i<p.length;i++){ h ^= p.charCodeAt(i); h = Math.imul(h,16777619); }
-  return ('00000000' + (h>>>0).toString(16)).slice(-8);
-}
-function getOwnerId(){ return currentAccount ? currentAccount.id : null; }
-function findFolder(id){ return folders.find(f => f.id === id); }
-function canEditForeignFolder(f){ return f && f.ownerId !== getOwnerId() && f.type === 'public' && f.allowEdit === true; }
-function canCopyForeignFolder(f){ return f && f.ownerId !== getOwnerId() && f.type === 'public' && f.allowCopy === true; }
-function allPeople(){
-  const out = [];
-  for(const f of folders){
-    for(const t of (f.themes || [])){
-      out.push({ person: t, folder: f });
-    }
-  }
-  return out;
-}
-function findPerson(personId){
-  for(const f of folders){
-    const t = (f.themes||[]).find(x => x.id === personId);
-    if(t) return { person: t, folder: f };
-  }
-  return null;
-}
 
-/* ===================== ХРАНЕНИЕ ===================== */
-function localKey(){ return LOCAL_KEY_BASE + (currentAccount ? currentAccount.id : 'guest'); }
-function favKey(){ return FAV_KEY_BASE + (currentAccount ? currentAccount.id : 'guest'); }
-
+/* ===================== STORAGE / FIREBASE ===================== */
 function saveLocal(){
-  try { localStorage.setItem(localKey(), JSON.stringify(folders)); }
-  catch(e){ console.warn('localStorage save error', e); }
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify(people)); } catch(e){}
 }
 function loadLocal(){
-  try { const raw = localStorage.getItem(localKey()); return raw ? (JSON.parse(raw)||[]) : []; }
+  try { const raw = localStorage.getItem(LOCAL_KEY); return raw ? (JSON.parse(raw)||[]) : []; }
   catch(e){ return []; }
 }
-function saveFavorites(){
-  try { localStorage.setItem(favKey(), JSON.stringify(favorites)); } catch(e){}
+function peopleToObj(arr){
+  const o = {};
+  for(const p of arr) o[p.id] = p;
+  return o;
 }
-function loadFavorites(){
-  try { const raw = localStorage.getItem(favKey()); return raw ? (JSON.parse(raw)||[]) : []; }
-  catch(e){ return []; }
-}
-function foldersToFirebase(arr){
-  const out = {};
-  for(const f of arr){
-    const themesObj = {};
-    for(const t of (f.themes||[])) themesObj[t.id] = t;
-    out[f.id] = { ...f, themes: themesObj };
-  }
-  return out;
-}
-function firebaseToFolders(obj){
+function objToPeople(obj){
   if(!obj) return [];
-  const arr = [];
-  for(const id of Object.keys(obj)){
-    const f = obj[id]; if(!f) continue;
-    const themes = f.themes ? Object.values(f.themes) : [];
-    arr.push({ ...f, id: f.id || id, themes });
-  }
-  return arr;
+  return Object.values(obj).filter(Boolean);
 }
 
-let isRemoteUpdate = false;
-async function saveFoldersToFirebase(){
-  if(!currentAccount){ showToast('Войдите в аккаунт для синхронизации', true); saveLocal(); return false; }
+async function saveToFirebase(){
   if(!firebaseReady || !db){ saveLocal(); showToast('Сохранено локально', true); return false; }
   try {
     setSyncStatus('syncing','Сохранение...');
     isRemoteUpdate = true;
-    await set(ref(db, `${rootPath}/${currentAccount.id}/folders`), foldersToFirebase(folders));
+    await set(ref(db, ROOT), peopleToObj(people));
     saveLocal();
     setSyncStatus('online','Синхронизировано');
     return true;
@@ -645,902 +386,721 @@ async function saveFoldersToFirebase(){
   } finally { setTimeout(()=>{ isRemoteUpdate = false; }, 300); }
 }
 
-function subscribeFolders(){
-  if(unsubscribeFolders){ unsubscribeFolders(); unsubscribeFolders = null; }
-  if(!currentAccount || !firebaseReady || !db) return;
-  const r = ref(db, `${rootPath}/${currentAccount.id}/folders`);
-  unsubscribeFolders = onValue(r, snap => {
+function subscribe(){
+  if(!firebaseReady || !db) return;
+  if(unsubscribe) unsubscribe();
+  unsubscribe = onValue(ref(db, ROOT), snap => {
     if(isRemoteUpdate) return;
-    const remote = firebaseToFolders(snap.val());
-    if(remote.length === 0 && folders.length > 0){ saveFoldersToFirebase(); return; }
-    folders = remote;
+    const remote = objToPeople(snap.val());
+    if(remote.length === 0 && people.length > 0){
+      // push local data up on first load
+      saveToFirebase(); return;
+    }
+    people = remote;
     saveLocal();
-    refreshFolderViews();
+    renderPeople();
     setSyncStatus('online','Синхронизировано');
   }, err => {
     console.error(err); setSyncStatus('offline','Ошибка чтения');
   });
 }
 
-/* ===================== АККАУНТ ===================== */
-function applyAccountUI(){
-  if(currentAccount){
-    authCard.style.display = 'none';
-    accountCard.style.display = '';
-    accId.textContent = currentAccount.id;
-    accHash.textContent = currentAccount.hash;
-    accDevice.textContent = DEVICE_ID;
-    sidebarFooter.textContent = 'Аккаунт: ' + currentAccount.id.slice(0,14) + '...';
-  } else {
-    authCard.style.display = '';
-    accountCard.style.display = 'none';
-    sidebarFooter.textContent = 'Не авторизован';
-  }
-}
-
-async function doRegister(){
-  regError.textContent = '';
-  const p1 = regPassword.value.trim(), p2 = regPassword2.value.trim();
-  if(p1.length < 4){ regError.textContent = 'Пароль не короче 4 символов'; return; }
-  if(p1 !== p2){ regError.textContent = 'Пароли не совпадают'; return; }
-  const hash = hashPassword(p1), id = 'acc_' + hash;
+async function loadInitial(){
+  // local first
+  people = loadLocal();
+  renderPeople();
   if(firebaseReady && db){
     try {
-      const snap = await get(ref(db, `${rootPath}/${id}/folders`));
-      if(snap.exists()){ regError.textContent = 'Аккаунт с таким паролем уже существует'; return; }
-    } catch(e){ /* сеть */ }
-  }
-  currentAccount = { id, hash };
-  localStorage.setItem(AUTH_KEY, JSON.stringify(currentAccount));
-  folders = []; favorites = [];
-  saveLocal(); saveFavorites();
-  if(firebaseReady && db){ try { await set(ref(db, `${rootPath}/${id}/folders`), {}); } catch(e){} }
-  applyAccountUI();
-  subscribeFolders();
-  refreshFolderViews();
-  showToast('Аккаунт зарегистрирован');
-  regPassword.value = ''; regPassword2.value = '';
-}
-
-async function doLogin(){
-  loginError.textContent = '';
-  const p = loginPassword.value.trim();
-  if(!p){ loginError.textContent = 'Введите пароль'; return; }
-  const hash = hashPassword(p), id = 'acc_' + hash;
-  if(firebaseReady && db){
-    try {
-      const snap = await get(ref(db, `${rootPath}/${id}/folders`));
-      if(!snap.exists()){ loginError.textContent = 'Аккаунт не найден'; return; }
-      currentAccount = { id, hash };
-      localStorage.setItem(AUTH_KEY, JSON.stringify(currentAccount));
-      folders = firebaseToFolders(snap.val());
-      saveLocal();
-      favorites = loadFavorites();
-      applyAccountUI();
-      subscribeFolders();
-      refreshFolderViews();
-      showToast('Вход выполнен');
-      loginPassword.value = '';
-      return;
+      const snap = await get(ref(db, ROOT));
+      const remote = objToPeople(snap.val());
+      if(remote.length){ people = remote; saveLocal(); renderPeople(); }
+      else if(people.length){ await saveToFirebase(); }
     } catch(e){ console.error(e); }
+    subscribe();
   }
-  // офлайн-кэш
-  const prev = currentAccount;
-  currentAccount = { id, hash };
-  const cached = loadLocal();
-  currentAccount = prev;
-  if(Array.isArray(cached) && cached.length){
-    currentAccount = { id, hash };
-    localStorage.setItem(AUTH_KEY, JSON.stringify(currentAccount));
-    folders = cached;
-    favorites = loadFavorites();
-    applyAccountUI();
-    subscribeFolders();
-    refreshFolderViews();
-    showToast('Вход выполнен (офлайн)');
-    loginPassword.value = '';
-    return;
+  if(firebaseReady && db){
+    onValue(ref(db, '.info/connected'), s => {
+      if(s.val()) setSyncStatus('online','Подключено');
+      else setSyncStatus('offline','Нет соединения');
+    });
   }
-  loginError.textContent = 'Аккаунт не найден';
 }
 
-function doLogout(){
-  if(unsubscribeFolders){ unsubscribeFolders(); unsubscribeFolders = null; }
-  currentAccount = null;
-  folders = []; favorites = [];
-  localStorage.removeItem(AUTH_KEY);
-  applyAccountUI();
-  refreshFolderViews();
-  showToast('Вы вышли');
-}
-
-function restoreAuth(){
-  try {
-    const raw = localStorage.getItem(AUTH_KEY);
-    if(raw){
-      const acc = JSON.parse(raw);
-      if(acc && acc.id && acc.hash){
-        currentAccount = acc;
-        favorites = loadFavorites();
-        folders = loadLocal();
-        applyAccountUI();
-        subscribeFolders();
-        refreshFolderViews();
-        return;
-      }
-    }
-  } catch(e){}
-  applyAccountUI();
-  folders = loadLocal();
-  refreshFolderViews();
-}
-
-/* ===================== ПАПКИ ===================== */
-async function createFolder(){
-  if(!currentAccount){ showToast('Войдите в аккаунт', true); return; }
-  const name = newFolderName.value.trim();
-  if(!name){ showToast('Введите название', true); return; }
-  const f = {
-    id: uid(), name, type: newFolderType.value, ownerId: getOwnerId(),
-    createdAt: Date.now(), updatedAt: Date.now(),
-    allowEdit: newFolderType.value === 'public' ? !!chkAllowEdit.checked : false,
-    allowCopy: newFolderType.value === 'public' ? !!chkAllowCopy.checked : false,
-    themes: []
+/* ===================== HELPERS ===================== */
+function emptyPerson(){
+  return {
+    id: uid(),
+    fullName: '',
+    gender: '',
+    birthDate: '',
+    country: '', city: '', region: '', street: '', house: '', apartment: '',
+    phones: [''],          // array of phone strings
+    emails: [''],          // array of emails
+    socials: [{type:'', value:''}],
+    description: '', sport: '', friends: '', relations: '', notes: '',
+    mother: {fullName:'', birthDate:''},
+    father: {fullName:'', birthDate:''},
+    sisters: [{fullName:'', birthDate:''}],
+    brothers: [{fullName:'', birthDate:''}],
+    cars: [{plate:'', model:''}],
+    inn: '', snils: '', certificate: '', passport: '',
+    allergies: '', healthGroup: '', bloodType: '',
+    custom: [{key:'', value:''}],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
   };
-  folders.push(f);
-  newFolderName.value = '';
-  chkAllowEdit.checked = false; chkAllowCopy.checked = false;
-  refreshFolderViews();
-  const ok = await saveFoldersToFirebase();
-  showToast(ok ? 'Папка создана' : 'Папка создана локально');
+}
+function ensureShape(p){
+  const base = emptyPerson();
+  const out = { ...base, ...(p||{}) };
+  out.phones = Array.isArray(out.phones) && out.phones.length ? out.phones : [''];
+  out.emails = Array.isArray(out.emails) && out.emails.length ? out.emails : [''];
+  out.socials = Array.isArray(out.socials) && out.socials.length ? out.socials : [{type:'', value:''}];
+  out.sisters = Array.isArray(out.sisters) && out.sisters.length ? out.sisters : [{fullName:'', birthDate:''}];
+  out.brothers = Array.isArray(out.brothers) && out.brothers.length ? out.brothers : [{fullName:'', birthDate:''}];
+  out.cars = Array.isArray(out.cars) && out.cars.length ? out.cars : [{plate:'', model:''}];
+  out.custom = Array.isArray(out.custom) ? out.custom : [];
+  out.mother = out.mother || {fullName:'', birthDate:''};
+  out.father = out.father || {fullName:'', birthDate:''};
+  out.id = out.id || uid();
+  return out;
 }
 
-async function deleteFolder(folderId){
-  const f = findFolder(folderId);
-  if(!f) return;
-  if(f.ownerId !== getOwnerId()){ showToast('Можно удалять только свои папки', true); return; }
-  if(!confirm(`Удалить папку «${f.name}» со всеми записями?`)) return;
-  const backup = deepClone(f);
-  folders = folders.filter(x => x.id !== folderId);
-  refreshFolderViews();
-  const ok = await saveFoldersToFirebase();
-  showToast(ok ? 'Папка удалена' : 'Удалено локально', false, {
-    label: 'Отменить',
-    fn: async () => {
-      folders.push(backup);
-      refreshFolderViews();
-      await saveFoldersToFirebase();
-    }
+/* ===================== RENDER: ADD FORM ===================== */
+function renderAddForm(){
+  const p = ensureShape(window.__addDraft || emptyPerson());
+  window.__addDraft = p;
+
+  addFormContainer.innerHTML = `
+    <div class="add-card">
+      <div class="form-section-title">Основное</div>
+      <div class="add-grid">
+        <div class="add-field full"><label>ФИО</label><input type="text" data-f="fullName" value="${escapeAttr(p.fullName)}" placeholder="Иванов Иван Иванович"></div>
+        <div class="add-field"><label>Пол</label>
+          <select data-f="gender">
+            <option value="" ${!p.gender?'selected':''}>—</option>
+            <option value="М" ${p.gender==='М'?'selected':''}>Мужской</option>
+            <option value="Ж" ${p.gender==='Ж'?'selected':''}>Женский</option>
+          </select>
+        </div>
+        <div class="add-field"><label>Дата рождения</label><input type="text" data-f="birthDate" data-mask="birthdate" value="${escapeAttr(p.birthDate)}" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric"></div>
+      </div>
+
+      <div class="sub-block-head" style="margin-top:1rem">Место проживания</div>
+      <div class="add-grid">
+        <div class="add-field"><label>Страна</label><input type="text" data-f="country" value="${escapeAttr(p.country)}"></div>
+        <div class="add-field"><label>Город</label><input type="text" data-f="city" value="${escapeAttr(p.city)}"></div>
+        <div class="add-field"><label>Область</label><input type="text" data-f="region" value="${escapeAttr(p.region)}"></div>
+        <div class="add-field"><label>Улица</label><input type="text" data-f="street" value="${escapeAttr(p.street)}"></div>
+        <div class="add-field"><label>Дом</label><input type="text" data-f="house" value="${escapeAttr(p.house)}"></div>
+        <div class="add-field"><label>Кв.</label><input type="text" data-f="apartment" value="${escapeAttr(p.apartment)}"></div>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <div class="form-section-title">Контакты</div>
+      <div class="sub-block">
+        <div class="sub-block-head">Телефоны</div>
+        <div data-rep="phones"></div>
+        <button class="btn btn-secondary btn-sm" data-add-rep="phones">+ Добавить телефон</button>
+      </div>
+      <div class="sub-block">
+        <div class="sub-block-head">Email</div>
+        <div data-rep="emails"></div>
+        <button class="btn btn-secondary btn-sm" data-add-rep="emails">+ Добавить email</button>
+      </div>
+      <div class="sub-block">
+        <div class="sub-block-head">Соцсети / Игры</div>
+        <div data-rep="socials"></div>
+        <button class="btn btn-secondary btn-sm" data-add-rep="socials">+ Добавить соцсеть или игру</button>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <div class="form-section-title">Биография</div>
+      <div class="add-grid">
+        <div class="add-field full"><label>Общее описание</label><textarea data-f="description" rows="3">${escapeHtml(p.description)}</textarea></div>
+        <div class="add-field"><label>Спорт</label><textarea data-f="sport" rows="2">${escapeHtml(p.sport)}</textarea></div>
+        <div class="add-field"><label>Друзья</label><textarea data-f="friends" rows="2">${escapeHtml(p.friends)}</textarea></div>
+        <div class="add-field"><label>Отношения</label><textarea data-f="relations" rows="2">${escapeHtml(p.relations)}</textarea></div>
+        <div class="add-field"><label>Заметки</label><textarea data-f="notes" rows="2">${escapeHtml(p.notes)}</textarea></div>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <div class="form-section-title">Семья</div>
+      <div class="sub-block">
+        <div class="sub-block-head">Мама</div>
+        <div class="repeater-row small" data-family="mother">
+          <input type="text" data-fam="mother.fullName" value="${escapeAttr(p.mother.fullName)}" placeholder="ФИО">
+          <input type="text" data-fam="mother.birthDate" data-mask="birthdate" value="${escapeAttr(p.mother.birthDate)}" placeholder="ДД.ММ.ГГГГ">
+        </div>
+      </div>
+      <div class="sub-block">
+        <div class="sub-block-head">Папа</div>
+        <div class="repeater-row small" data-family="father">
+          <input type="text" data-fam="father.fullName" value="${escapeAttr(p.father.fullName)}" placeholder="ФИО">
+          <input type="text" data-fam="father.birthDate" data-mask="birthdate" value="${escapeAttr(p.father.birthDate)}" placeholder="ДД.ММ.ГГГГ">
+        </div>
+      </div>
+      <div class="sub-block">
+        <div class="sub-block-head">Сёстры</div>
+        <div data-rep="sisters"></div>
+        <button class="btn btn-secondary btn-sm" data-add-rep="sisters">+ Добавить сестру</button>
+      </div>
+      <div class="sub-block">
+        <div class="sub-block-head">Братья</div>
+        <div data-rep="brothers"></div>
+        <button class="btn btn-secondary btn-sm" data-add-rep="brothers">+ Добавить брата</button>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <div class="form-section-title">Документы</div>
+      <div class="sub-block">
+        <div class="sub-block-head">Автомобили</div>
+        <div data-rep="cars"></div>
+        <button class="btn btn-secondary btn-sm" data-add-rep="cars">+ Добавить автомобиль</button>
+      </div>
+      <div class="add-grid" style="margin-top:.8rem">
+        <div class="add-field"><label>ИНН</label><input type="text" data-f="inn" value="${escapeAttr(p.inn)}"></div>
+        <div class="add-field"><label>СНИЛС</label><input type="text" data-f="snils" value="${escapeAttr(p.snils)}"></div>
+        <div class="add-field"><label>Свидетельство</label><input type="text" data-f="certificate" value="${escapeAttr(p.certificate)}"></div>
+        <div class="add-field"><label>Паспорт</label><input type="text" data-f="passport" value="${escapeAttr(p.passport)}"></div>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <div class="form-section-title">Здоровье</div>
+      <div class="add-grid">
+        <div class="add-field full"><label>Аллергии</label><input type="text" data-f="allergies" value="${escapeAttr(p.allergies)}"></div>
+        <div class="add-field"><label>Группа здоровья</label><input type="text" data-f="healthGroup" value="${escapeAttr(p.healthGroup)}"></div>
+        <div class="add-field"><label>Группа крови</label><input type="text" data-f="bloodType" value="${escapeAttr(p.bloodType)}" placeholder="II (A) Rh+"></div>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <div class="form-section-title">Дополнительно</div>
+      <div data-rep="custom"></div>
+      <button class="btn btn-secondary btn-sm" data-add-rep="custom">+ Добавить поле</button>
+    </div>
+
+    <div class="add-actions">
+      <button class="btn btn-cancel" id="addResetBtn">Очистить</button>
+      <button class="btn btn-primary" id="addSaveBtn">Сохранить</button>
+    </div>
+  `;
+
+  renderRepeaters(p);
+  attachAddEvents();
+}
+
+function renderRepeaters(p){
+  // phones
+  const ph = addFormContainer.querySelector('[data-rep="phones"]');
+  ph.innerHTML = p.phones.map((v,i) => `
+    <div class="repeater-row small">
+      <input type="tel" data-arr="phones" data-i="${i}" data-mask="phone" value="${escapeAttr(v)}" placeholder="+7 (___) ___-__-__">
+      <span></span>
+      <button class="icon-del" data-del-rep="phones" data-i="${i}">✕</button>
+    </div>`).join('');
+
+  // emails
+  const em = addFormContainer.querySelector('[data-rep="emails"]');
+  em.innerHTML = p.emails.map((v,i) => `
+    <div class="repeater-row small">
+      <input type="email" data-arr="emails" data-i="${i}" value="${escapeAttr(v)}" placeholder="name@example.com">
+      <span></span>
+      <button class="icon-del" data-del-rep="emails" data-i="${i}">✕</button>
+    </div>`).join('');
+
+  // socials
+  const so = addFormContainer.querySelector('[data-rep="socials"]');
+  so.innerHTML = p.socials.map((s,i) => `
+    <div class="repeater-row small">
+      <input type="text" data-arr="socials" data-i="${i}" data-k="type" value="${escapeAttr(s.type||'')}" placeholder="Соцсеть/игра">
+      <input type="text" data-arr="socials" data-i="${i}" data-k="value" value="${escapeAttr(s.value||'')}" placeholder="Ссылка/ник">
+      <button class="icon-del" data-del-rep="socials" data-i="${i}">✕</button>
+    </div>`).join('');
+
+  // sisters
+  const si = addFormContainer.querySelector('[data-rep="sisters"]');
+  si.innerHTML = p.sisters.map((s,i) => `
+    <div class="repeater-row small">
+      <input type="text" data-arr="sisters" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
+      <input type="text" data-arr="sisters" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
+      <button class="icon-del" data-del-rep="sisters" data-i="${i}">✕</button>
+    </div>`).join('');
+
+  // brothers
+  const br = addFormContainer.querySelector('[data-rep="brothers"]');
+  br.innerHTML = p.brothers.map((s,i) => `
+    <div class="repeater-row small">
+      <input type="text" data-arr="brothers" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
+      <input type="text" data-arr="brothers" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
+      <button class="icon-del" data-del-rep="brothers" data-i="${i}">✕</button>
+    </div>`).join('');
+
+  // cars
+  const ca = addFormContainer.querySelector('[data-rep="cars"]');
+  ca.innerHTML = p.cars.map((c,i) => `
+    <div class="plate-row">
+      <div class="add-field plate-wrap">
+        <label>Номер</label>
+        <span class="plate-badge">🚗</span>
+        <input type="text" data-arr="cars" data-i="${i}" data-k="plate" data-mask="plate" value="${escapeAttr(c.plate||'')}" placeholder="А123ВС777">
+        <div class="plate-preview">${escapeHtml(plateDisplay(c.plate||''))}</div>
+      </div>
+      <div class="add-field">
+        <label>Марка</label>
+        <input type="text" data-arr="cars" data-i="${i}" data-k="model" value="${escapeAttr(c.model||'')}" placeholder="Toyota Camry">
+      </div>
+      <button class="icon-del" data-del-rep="cars" data-i="${i}">✕</button>
+    </div>`).join('');
+
+  // custom
+  const cu = addFormContainer.querySelector('[data-rep="custom"]');
+  cu.innerHTML = p.custom.map((c,i) => `
+    <div class="repeater-row tiny">
+      <input type="text" data-arr="custom" data-i="${i}" data-k="key" value="${escapeAttr(c.key||'')}" placeholder="Название поля">
+      <input type="text" data-arr="custom" data-i="${i}" data-k="value" value="${escapeAttr(c.value||'')}" placeholder="Значение">
+      <button class="icon-del" data-del-rep="custom" data-i="${i}">✕</button>
+    </div>`).join('');
+
+  // masks
+  addFormContainer.querySelectorAll('[data-mask="phone"]').forEach(inp => {
+    inp.addEventListener('input', () => { inp.value = normalizePhone(inp.value); });
+  });
+  addFormContainer.querySelectorAll('[data-mask="birthdate"]').forEach(inp => {
+    inp.addEventListener('input', () => { inp.value = normalizeBirthDate(inp.value); });
+  });
+  addFormContainer.querySelectorAll('[data-mask="plate"]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      inp.value = normalizePlate(inp.value);
+      const prev = inp.closest('.plate-wrap').querySelector('.plate-preview');
+      if(prev){ prev.textContent = plateDisplay(inp.value); prev.style.display = inp.value ? 'block' : 'none'; }
+    });
+    const prev = inp.closest('.plate-wrap').querySelector('.plate-preview');
+    if(prev) prev.style.display = inp.value ? 'block' : 'none';
   });
 }
 
-async function copyFolderToMine(folderId){
-  const src = findFolder(folderId);
-  if(!src || !canCopyForeignFolder(src)){ showToast('Копирование запрещено', true); return; }
-  const copy = deepClone(src);
-  copy.id = uid();
-  copy.ownerId = getOwnerId();
-  copy.name = src.name + ' (копия)';
-  copy.createdAt = copy.updatedAt = Date.now();
-  copy.allowEdit = copy.allowCopy = false;
-  copy.themes = (copy.themes||[]).map(t => ({ ...t, id: uid(), updatedAt: Date.now() }));
-  folders.push(copy);
-  refreshFolderViews();
-  const ok = await saveFoldersToFirebase();
-  showToast(ok ? 'Скопировано' : 'Скопировано локально');
+function attachAddEvents(){
+  // base fields
+  addFormContainer.querySelectorAll('[data-f]').forEach(el => {
+    el.addEventListener('input', () => {
+      window.__addDraft[el.dataset.f] = el.value;
+    });
+  });
+  // family fields
+  addFormContainer.querySelectorAll('[data-fam]').forEach(el => {
+    el.addEventListener('input', () => {
+      const [k1,k2] = el.dataset.fam.split('.');
+      window.__addDraft[k1] = window.__addDraft[k1] || {};
+      window.__addDraft[k1][k2] = el.value;
+    });
+  });
+  // repeater arr fields
+  addFormContainer.querySelectorAll('[data-arr]').forEach(el => {
+    el.addEventListener('input', () => {
+      const arrName = el.dataset.arr;
+      const i = parseInt(el.dataset.i,10);
+      const k = el.dataset.k;
+      if(!Array.isArray(window.__addDraft[arrName])) return;
+      if(k) window.__addDraft[arrName][i][k] = el.value;
+      else window.__addDraft[arrName][i] = el.value;
+    });
+  });
+  // del repeaters
+  addFormContainer.querySelectorAll('[data-del-rep]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const arr = btn.dataset.delRep;
+      const i = parseInt(btn.dataset.i,10);
+      if(!Array.isArray(window.__addDraft[arr])) return;
+      if(window.__addDraft[arr].length <= 1){
+        const empty = arr === 'custom' ? {key:'',value:''} : (arr==='cars' ? {plate:'',model:''} : (arr==='socials'?{type:'',value:''}:(arr==='sisters'||arr==='brothers'?{fullName:'',birthDate:''}:'')));
+        window.__addDraft[arr][0] = empty;
+      } else {
+        window.__addDraft[arr].splice(i,1);
+      }
+      renderAddForm();
+    });
+  });
+  // add repeaters
+  addFormContainer.querySelectorAll('[data-add-rep]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const arr = btn.dataset.addRep;
+      if(!Array.isArray(window.__addDraft[arr])) window.__addDraft[arr] = [];
+      if(arr === 'custom') window.__addDraft[arr].push({key:'',value:''});
+      else if(arr === 'cars') window.__addDraft[arr].push({plate:'',model:''});
+      else if(arr === 'socials') window.__addDraft[arr].push({type:'',value:''});
+      else if(arr === 'sisters' || arr === 'brothers') window.__addDraft[arr].push({fullName:'',birthDate:''});
+      else window.__addDraft[arr].push('');
+      renderAddForm();
+    });
+  });
+  // save
+  addFormContainer.querySelector('#addSaveBtn').addEventListener('click', async () => {
+    const data = collectAddData();
+    // validate emails
+    for(const e of data.emails){
+      if(e && !isValidEmail(e)){ showToast('Неверный email: ' + e, true); return; }
+    }
+    const now = Date.now();
+    const existing = people.find(x => x.id === data.id);
+    if(existing){
+      Object.assign(existing, data, { updatedAt: now });
+    } else {
+      data.createdAt = now; data.updatedAt = now;
+      people.push(data);
+    }
+    renderPeople();
+    const ok = await saveToFirebase();
+    showToast(ok ? 'Сохранено' : 'Сохранено локально');
+    window.__addDraft = emptyPerson();
+    renderAddForm();
+  });
+  addFormContainer.querySelector('#addResetBtn').addEventListener('click', () => {
+    if(!confirm('Очистить форму?')) return;
+    window.__addDraft = emptyPerson();
+    renderAddForm();
+  });
 }
 
-/* ===================== РЕНДЕР СПИСКА ===================== */
+function collectAddData(){
+  const p = ensureShape(window.__addDraft);
+  // base fields already synced via events, but re-read for safety
+  addFormContainer.querySelectorAll('[data-f]').forEach(el => { p[el.dataset.f] = el.value; });
+  addFormContainer.querySelectorAll('[data-fam]').forEach(el => {
+    const [k1,k2] = el.dataset.fam.split('.');
+    p[k1] = p[k1] || {};
+    p[k1][k2] = el.value;
+  });
+  addFormContainer.querySelectorAll('[data-arr]').forEach(el => {
+    const arr = el.dataset.arr;
+    const i = parseInt(el.dataset.i,10);
+    const k = el.dataset.k;
+    if(!Array.isArray(p[arr])) return;
+    if(k) p[arr][i][k] = el.value;
+    else p[arr][i] = el.value;
+  });
+  return p;
+}
+
+/* ===================== RENDER: DATABASE ===================== */
 function computeFiltered(){
-  let list = allPeople();
+  let list = [...people];
   if(searchQuery){
     const q = searchQuery.toLowerCase();
-    list = list.filter(({ person }) => {
-      const hay = [person.fullName, person.phone, person.phone2, person.phone3, person.email,
-        person.city, person.region, person.country, person.addressStreet,
-        person.notes, person.work, person.position, person.hobby,
-        (person.tags||[]).join(' '), person.description].filter(Boolean).join(' ').toLowerCase();
-      return hay.includes(q);
-    });
+    list = list.filter(p => (p.fullName||'').toLowerCase().includes(q));
   }
-  if(filterGender) list = list.filter(({person}) => person.gender === filterGender);
-  if(filterAgeMin !== null || filterAgeMax !== null){
-    list = list.filter(({person}) => {
-      const a = calcAge(person.birthDate);
-      if(a === null) return false;
-      if(filterAgeMin !== null && a < filterAgeMin) return false;
-      if(filterAgeMax !== null && a > filterAgeMax) return false;
-      return true;
-    });
-  }
-  if(filterCity){
-    const c = filterCity.toLowerCase();
-    list = list.filter(({person}) => (person.city||'').toLowerCase().includes(c));
-  }
-  if(filterTag) list = list.filter(({person}) => (person.tags||[]).includes(filterTag));
-  if(filterFavOnly) list = list.filter(({person}) => favorites.includes(person.id));
-  list.sort((a,b) => {
-    const pa = a.person, pb = b.person;
-    let av, bv;
-    if(sortKey === 'name'){
-      av = (pa.fullName||'').toLowerCase(); bv = (pb.fullName||'').toLowerCase();
-    } else if(sortKey === 'age'){
-      av = calcAge(pa.birthDate) ?? 999; bv = calcAge(pb.birthDate) ?? 999;
-    } else if(sortKey === 'city'){
-      av = (pa.city||'').toLowerCase(); bv = (pb.city||'').toLowerCase();
-    } else {
-      av = pa.updatedAt || 0; bv = pb.updatedAt || 0;
-    }
-    if(av < bv) return sortDir === 'asc' ? -1 : 1;
-    if(av > bv) return sortDir === 'asc' ? 1 : -1;
-    return 0;
-  });
+  list.sort((a,b) => (a.fullName||'').localeCompare(b.fullName||'','ru'));
   return list;
 }
 
-function renderTable(){
+function renderPeople(){
   const list = computeFiltered();
   listStats.innerHTML = `Записей: <b>${list.length}</b>`;
-  const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
-  if(currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * pageSize;
-  const page = list.slice(start, start + pageSize);
-
   if(list.length === 0){
-    tableBody.innerHTML = `<div class="empty-state">Ничего не найдено. ${folders.length===0 ? 'Создайте папку и добавьте запись.' : 'Попробуйте изменить фильтры.'}</div>`;
-    pageInfo.textContent = '1 / 1';
-    prevPage.disabled = nextPage.disabled = true;
-    updateBulkBar();
+    peopleContainer.innerHTML = `<div class="empty-state">Пока нет записей. Нажмите «+ Добавить».</div>`;
     return;
   }
-
-  tableBody.innerHTML = page.map(({ person, folder }) => {
-    const age = calcAge(person.birthDate);
-    const tags = (person.tags||[]).map(t => `<span class="badge-tag">${escapeHtml(t)}</span>`).join('');
-    const fav = favorites.includes(person.id);
-    const rating = person.rating || 0;
-    const stars = '★'.repeat(rating) + '☆'.repeat(5-rating);
-    const checked = selectedIds.has(person.id) ? 'checked' : '';
-    const sel = selectedIds.has(person.id) ? 'selected' : '';
+  peopleContainer.innerHTML = list.map(p => {
+    const initials = (p.fullName||'?').trim().split(/\s+/).map(x=>x[0]||'').slice(0,2).join('').toUpperCase() || '?';
+    const birth = p.birthDate || '';
+    const place = [p.country, p.city, p.region, p.street, p.house, p.apartment].filter(Boolean).join(', ');
+    const phone = (p.phones||[]).find(Boolean) || '';
+    const email = (p.emails||[]).find(Boolean) || '';
     return `
-      <div class="table-row ${sel}" data-person="${person.id}" data-folder="${folder.id}">
-        <div><input type="checkbox" data-check="${person.id}" ${checked}></div>
-        <div>
-          <div class="cell-main">${escapeHtml(person.fullName || '(без имени)')}</div>
-          <div class="cell-sub">${escapeHtml(folder.name)}${person.work ? ' · ' + escapeHtml(person.work) : ''}</div>
-        </div>
-        <div class="cell-muted">${escapeHtml(person.phone || '—')}</div>
-        <div class="cell-muted hide-sm">${escapeHtml(person.city || '—')}</div>
-        <div class="cell-muted">${age !== null ? age + ' лет' : '—'}</div>
-        <div class="hide-sm">${tags || '<span style="color:var(--text-muted)">—</span>'}</div>
-        <div class="rating" title="Рейтинг">${stars}</div>
-      </div>`;
-  }).join('');
-
-  pageInfo.textContent = `${currentPage} / ${totalPages}`;
-  prevPage.disabled = currentPage <= 1;
-  nextPage.disabled = currentPage >= totalPages;
-  updateBulkBar();
-}
-
-function updateBulkBar(){
-  if(selectedIds.size === 0){ bulkBar.classList.add('hidden'); return; }
-  bulkBar.classList.remove('hidden');
-  bulkCount.textContent = `Выбрано: ${selectedIds.size}`;
-  const ownFoldersList = folders.filter(f => f.ownerId === getOwnerId() || canEditForeignFolder(f));
-  bulkMoveSelect.innerHTML = '<option value="">Переместить в...</option>' +
-    ownFoldersList.map(f => `<option value="${escapeHtml(f.id)}">${escapeHtml(f.name)}</option>`).join('');
-}
-
-/* ===================== РЕНДЕР ПАПОК ===================== */
-function renderFoldersView(){
-  const q = folderSearch.value.trim().toLowerCase();
-  const visible = folders.filter(f => !q || (f.name||'').toLowerCase().includes(q));
-  if(visible.length === 0){
-    foldersContainer.innerHTML = `<div class="empty-state">Папок нет. Создайте первую папку выше.</div>`;
-    return;
-  }
-  foldersContainer.innerHTML = visible.map(f => {
-    const own = f.ownerId === getOwnerId();
-    const badges = [];
-    if(!own) badges.push('<span class="folder-badge" style="background:var(--blue-bg);color:var(--blue);border:1px solid rgba(59,130,246,.35);font-size:.62rem;padding:.1rem .5rem;border-radius:.35rem;font-weight:800;text-transform:uppercase">Чужая</span>');
-    badges.push(`<span class="folder-badge" style="background:${f.type==='public'?'var(--emerald);color:var(--black)':'rgba(16,185,129,.15);color:var(--emerald-light);border:1px solid rgba(16,185,129,.35)'};font-size:.62rem;padding:.1rem .5rem;border-radius:.35rem;font-weight:800;text-transform:uppercase">${f.type==='public'?'Публичная':'Приватная'}</span>`);
-    if(f.allowCopy) badges.push('<span class="folder-badge" style="background:var(--purple-bg);color:var(--purple);border:1px solid rgba(168,85,247,.35);font-size:.62rem;padding:.1rem .5rem;border-radius:.35rem;font-weight:800;text-transform:uppercase">Копируемая</span>');
-    if(f.allowEdit) badges.push('<span class="folder-badge" style="background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.35);font-size:.62rem;padding:.1rem .5rem;border-radius:.35rem;font-weight:800;text-transform:uppercase">Редактируемая</span>');
-    return `
-      <div style="background:var(--black-card);border:1px solid var(--border);border-radius:.7rem;margin-bottom:.8rem;overflow:hidden">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:.8rem 1rem;background:var(--black-elevated);flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;min-width:0">
-            <span style="font-weight:600;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">${escapeHtml(f.name)}</span>
-            <span style="background:var(--black);color:var(--emerald);font-size:.68rem;padding:.1rem .5rem;border-radius:.4rem;font-weight:700;border:1px solid var(--border-light)">${(f.themes||[]).length}</span>
-            ${badges.join('')}
+      <div class="person-row" data-id="${escapeAttr(p.id)}">
+        <div class="person-summary" data-toggle="${escapeAttr(p.id)}">
+          <div class="avatar">${escapeHtml(initials)}</div>
+          <div class="person-main">
+            <div class="person-name">${escapeHtml(p.fullName || '(без имени)')}</div>
+            <div class="person-sub">${escapeHtml(birth || '—')} ${place ? '· ' + escapeHtml(place) : ''}</div>
           </div>
-          <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-            <button class="btn btn-sm btn-secondary" data-add-to="${escapeHtml(f.id)}">+ Запись</button>
-            ${own ? `<button class="btn btn-sm btn-danger" data-del-folder="${escapeHtml(f.id)}">Удалить</button>` : ''}
-            ${!own && canCopyForeignFolder(f) ? `<button class="btn btn-sm btn-copy" data-copy-folder="${escapeHtml(f.id)}">Копировать</button>` : ''}
+          <span class="chevron">▼</span>
+        </div>
+        <div class="person-quick">
+          <div class="quick-grid">
+            <div class="quick-item"><div class="k">ФИО</div><div class="v ${p.fullName?'':'empty'}">${escapeHtml(p.fullName || 'не указано')}</div></div>
+            <div class="quick-item"><div class="k">Дата рождения</div><div class="v ${birth?'':'empty'}">${escapeHtml(birth || 'не указана')}</div></div>
+            <div class="quick-item"><div class="k">Место проживания</div><div class="v ${place?'':'empty'}">${escapeHtml(place || 'не указано')}</div></div>
+            <div class="quick-item"><div class="k">Телефон</div><div class="v ${phone?'':'empty'}">${escapeHtml(phone || 'не указан')}</div></div>
+            <div class="quick-item"><div class="k">Email</div><div class="v ${email?'':'empty'}">${escapeHtml(email || 'не указан')}</div></div>
+          </div>
+          <div class="quick-actions">
+            <button class="btn btn-sm btn-secondary" data-detail="${escapeAttr(p.id)}">Подробнее</button>
+            <button class="btn btn-sm btn-primary" data-edit="${escapeAttr(p.id)}">Изменить</button>
+            <button class="btn btn-sm btn-danger" data-del="${escapeAttr(p.id)}">Удалить</button>
           </div>
         </div>
       </div>`;
   }).join('');
 }
 
-function refreshFolderViews(){
-  renderTable();
-  renderFoldersView();
-}
+/* ===================== MODAL: FULL CARD / EDIT ===================== */
+let modalMode = 'view'; // view | edit
+let modalPersonId = null;
 
-/* ===================== РЕДАКТОР ===================== */
-/* ===================== РЕДАКТОР ===================== */
-const SECTIONS = [
-  { key:'main', title:'Основное', fields:[
-    { key:'fullName', label:'ФИО', type:'text', full:true, placeholder:'Иванов Иван Иванович' },
-    { key:'gender', label:'Пол', type:'select', options:[['','—'],['М','Мужской'],['Ж','Женский']] },
-    { key:'birthDate', label:'Дата рождения', type:'birthdate', placeholder:'ДД.ММ.ГГГГ' },
-    { key:'rating', label:'Рейтинг', type:'rating' },
-    { key:'location', label:'Место проживания', type:'text', placeholder:'Город, район' }
-  ]},
-  { key:'contacts', title:'Контакты', fields:[
-    { key:'phone', label:'Телефон', type:'phone', placeholder:'+7 (___) ___-__-__' },
-    { key:'phone2', label:'Доп. телефон', type:'phone', placeholder:'+7 (___) ___-__-__' },
-    { key:'phone3', label:'Ещё телефон', type:'phone', placeholder:'+7 (___) ___-__-__' },
-    { key:'email', label:'Email', type:'email', placeholder:'name@example.com' },
-    { key:'telegram', label:'Telegram', type:'text', placeholder:'@nickname' },
-    { key:'whatsapp', label:'WhatsApp', type:'text', placeholder:'+7...' },
-    { key:'vk', label:'VK', type:'text', placeholder:'vk.com/...' },
-    { key:'instagram', label:'Instagram', type:'text', placeholder:'@nickname' },
-    { key:'city', label:'Город', type:'text', placeholder:'Москва' },
-    { key:'region', label:'Регион / область', type:'text' },
-    { key:'country', label:'Страна', type:'text', placeholder:'Россия' },
-    { key:'addressStreet', label:'Улица, дом, кв.', type:'text', full:true }
-  ]},
-  { key:'life', title:'Семья и жизнь', fields:[
-    { key:'maritalStatus', label:'Семейное положение', type:'select', options:[['','—'],['single','Холост/Не замужем'],['married','Женат/Замужем'],['divorced','В разводе'],['widowed','Вдовец/Вдова'],['partnership','Сожительство']] },
-    { key:'education', label:'Образование', type:'select', options:[['','—'],['secondary','Среднее'],['special','Среднее специальное'],['incomplete_higher','Неоконченное высшее'],['higher','Высшее'],['degree','Учёная степень']] },
-    { key:'work', label:'Место работы', type:'text' },
-    { key:'position', label:'Должность', type:'text' },
-    { key:'nationality', label:'Национальность / гражданство', type:'text' },
-    { key:'hobby', label:'Хобби, увлечения', type:'text' },
-    { key:'languages', label:'Языки (через запятую)', type:'text', full:true, placeholder:'Русский — родной, English — B2' },
-    { key:'family', label:'Семья (супруг, дети)', type:'textarea', full:true, placeholder:'Супруга: ... Дети: ...' },
-    { key:'emergencyContact', label:'Экстренный контакт', type:'text', full:true, placeholder:'Имя, телефон' }
-  ]},
-  { key:'health', title:'Здоровье и документы', fields:[
-    { key:'bloodType', label:'Группа крови', type:'text', placeholder:'II (A) Rh+' },
-    { key:'allergies', label:'Аллергии', type:'text' },
-    { key:'chronic', label:'Хронические заболевания', type:'text' },
-    { key:'medications', label:'Постоянные лекарства', type:'text' },
-    { key:'passport', label:'Паспорт (серия/номер)', type:'text' },
-    { key:'passportIssued', label:'Кем выдан, когда', type:'text' },
-    { key:'inn', label:'ИНН', type:'text' },
-    { key:'snils', label:'СНИЛС', type:'text' },
-    { key:'car', label:'Автомобиль', type:'text', placeholder:'Марка, номер' }
-  ]},
-  { key:'extra', title:'Дополнительно', fields:[
-    { key:'description', label:'Общее описание', type:'textarea', full:true },
-    { key:'sport', label:'Спорт', type:'textarea', full:true },
-    { key:'friends', label:'Друзья', type:'textarea', full:true },
-    { key:'relations', label:'Отношения', type:'textarea', full:true },
-    { key:'notes', label:'Заметки', type:'textarea', full:true }
-  ]},
-  { key:'custom', title:'Свои поля', fields:[] }
-];
-
-function escapeAttr(v){ return escapeHtml(v).replace(/"/g,'&quot;'); }
-
-function buildFieldHtml(f, value){
-  const val = value === undefined || value === null ? '' : value;
-  const fullCls = f.full ? ' full' : '';
-  let input = '';
-  if(f.type === 'select'){
-    input = `<select data-field="${f.key}">${f.options.map(o => `<option value="${escapeAttr(o[0])}" ${String(o[0])===String(val)?'selected':''}>${escapeHtml(o[1])}</option>`).join('')}</select>`;
-  } else if(f.type === 'textarea'){
-    input = `<textarea data-field="${f.key}" rows="2" placeholder="${escapeAttr(f.placeholder||'')}">${escapeHtml(val)}</textarea>`;
-  } else if(f.type === 'phone'){
-    input = `<input type="tel" data-field="${f.key}" data-mask="phone" value="${escapeAttr(val)}" placeholder="${escapeAttr(f.placeholder||'')}">`;
-  } else if(f.type === 'birthdate'){
-    input = `<input type="text" data-field="${f.key}" data-mask="birthdate" value="${escapeAttr(val)}" placeholder="${escapeAttr(f.placeholder||'')}" inputmode="numeric" maxlength="10">`;
-  } else if(f.type === 'rating'){
-    const r = parseInt(val,10) || 0;
-    input = `<div class="stars" data-rating="${f.key}">${[1,2,3,4,5].map(n => `<span data-star="${n}" class="${n<=r?'on':''}">★</span>`).join('')}</div>`;
-  } else if(f.type === 'email'){
-    input = `<input type="email" data-field="${f.key}" value="${escapeAttr(val)}" placeholder="${escapeAttr(f.placeholder||'')}">`;
+function openModal(mode, personId){
+  modalMode = mode;
+  modalPersonId = personId;
+  const p = ensureShape(people.find(x => x.id === personId) || emptyPerson());
+  if(mode === 'edit'){
+    // reuse add form inside modal
+    modalTitle.textContent = 'Редактирование';
+    modalBody.innerHTML = '';
+    modalBody.innerHTML = buildEditForm(p);
+    modalFoot.innerHTML = `
+      <button class="btn btn-cancel" id="modalCancelBtn">Отмена</button>
+      <button class="btn btn-primary" id="modalSaveBtn">Сохранить</button>
+    `;
+    attachModalEditEvents(p);
   } else {
-    input = `<input type="text" data-field="${f.key}" value="${escapeAttr(val)}" placeholder="${escapeAttr(f.placeholder||'')}">`;
+    modalTitle.textContent = p.fullName || 'Карта человека';
+    modalBody.innerHTML = buildView(p);
+    modalFoot.innerHTML = `
+      <button class="btn btn-cancel" id="modalCloseFootBtn">Закрыть</button>
+      <button class="btn btn-primary" id="modalEditBtn">Изменить</button>
+    `;
+    document.getElementById('modalCloseFootBtn').addEventListener('click', closeModal);
+    document.getElementById('modalEditBtn').addEventListener('click', () => openModal('edit', personId));
   }
-  return `<div class="editor-field${fullCls}" data-field-wrap="${f.key}">
-    <label>${escapeHtml(f.label)}</label>
-    ${input}
-    <div class="err" data-err="${f.key}"></div>
-  </div>`;
-}
-
-function buildCustomFieldsHtml(custom){
-  const rows = (custom||[]).map((c,i) => `
-    <div class="repeater-row" data-custom-row="${i}">
-      <input type="text" data-custom-key="${i}" value="${escapeAttr(c.key||'')}" placeholder="Название">
-      <input type="text" data-custom-val="${i}" value="${escapeAttr(c.value||'')}" placeholder="Значение">
-      <button type="button" class="btn btn-sm btn-danger" data-custom-del="${i}">✕</button>
-    </div>`).join('');
-  return `<div class="repeater" data-custom-repeater>
-    ${rows}
-    <button type="button" class="btn btn-secondary btn-sm repeater-add" data-custom-add>+ Добавить поле</button>
-  </div>`;
-}
-
-function buildTagsHtml(tags){
-  const chips = (tags||[]).map((t,i) => `<span class="chip">${escapeHtml(t)}<button type="button" data-tag-del="${i}">✕</button></span>`).join('');
-  return `<div class="chip-input-wrap" data-tags-wrap>
-    ${chips}
-    <input type="text" data-tags-input placeholder="Метка + Enter">
-  </div>`;
-}
-
-function openEditor(mode, folderId, personId){
-  if(!currentAccount){ showToast('Войдите в аккаунт', true); return; }
-  editorMode = mode;
-  editorFolderId = folderId || null;
-  editorPersonId = personId || null;
-
-  let data = {};
-  if(mode === 'edit' && personId){
-    const found = findPerson(personId);
-    if(!found){ showToast('Запись не найдена', true); return; }
-    editorFolderId = found.folder.id;
-    data = deepClone(found.person);
-  } else {
-    // черновик
-    try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY)||'null'); if(d) data = d; } catch(e){}
-  }
-  editorDraft = data;
-  renderEditor();
-  editorOverlay.classList.add('open');
+  modalOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-  const first = editorBody.querySelector('input[data-field],textarea[data-field]');
-  if(first) setTimeout(()=>first.focus(), 60);
 }
 
-function closeEditor(){
-  if(editorDirty && !confirm('Закрыть без сохранения?')) return;
-  editorOverlay.classList.remove('open');
+function closeModal(){
+  modalOverlay.classList.remove('open');
   document.body.style.overflow = '';
-  editorDraft = null; editorDirty = false;
-  unsavedIndicator.style.display = 'none';
+  modalPersonId = null;
 }
 
-function renderEditor(){
-  const d = editorDraft || {};
-  editorTitle.innerHTML = (editorMode === 'edit' ? 'Редактирование' : 'Новая запись') +
-    ' <span class="unsaved" id="unsavedIndicator" style="display:' + (editorDirty?'inline':'none') + '">● не сохранено</span>';
+function buildView(p){
+  const place = [p.country, p.city, p.region, p.street, p.house, p.apartment].filter(Boolean).join(', ');
+  const phones = (p.phones||[]).filter(Boolean);
+  const emails = (p.emails||[]).filter(Boolean);
+  const socials = (p.socials||[]).filter(s => s.type || s.value);
+  const sisters = (p.sisters||[]).filter(s => s.fullName || s.birthDate);
+  const brothers = (p.brothers||[]).filter(s => s.fullName || s.birthDate);
+  const cars = (p.cars||[]).filter(c => c.plate || c.model);
+  const custom = (p.custom||[]).filter(c => c.key || c.value);
 
-  const folder = editorFolderId ? findFolder(editorFolderId) : null;
-  const folderLine = `<div style="padding:.6rem 1rem;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:.6rem;font-size:.82rem;margin-bottom:.4rem">
-    Папка: <b style="color:var(--emerald-light)">${escapeHtml(folder ? folder.name : '—')}</b>
-  </div>`;
-
-  let html = folderLine;
-  for(const sec of SECTIONS){
-    if(sec.key === 'custom'){
-      html += `<div class="editor-section" data-section="custom">
-        <div class="editor-section-head" data-toggle-section>Свои поля <span class="chev">▼</span></div>
-        <div class="editor-section-body" style="display:block">
-          ${buildCustomFieldsHtml(d.customFields)}
-        </div>
-      </div>`;
-      continue;
-    }
-    const fieldsHtml = sec.fields.map(f => buildFieldHtml(f, d[f.key])).join('');
-    const extra = sec.key === 'main'
-      ? `<div class="editor-field full" data-field-wrap="tags"><label>Метки</label>${buildTagsHtml(d.tags)}<div class="err"></div></div>`
-      : '';
-    html += `<div class="editor-section" data-section="${sec.key}">
-      <div class="editor-section-head" data-toggle-section>${escapeHtml(sec.title)} <span class="chev">▼</span></div>
-      <div class="editor-section-body">${fieldsHtml}${extra}</div>
+  function row(label, value){
+    const v = value || '—';
+    return `<div class="quick-item"><div class="k">${escapeHtml(label)}</div><div class="v ${value?'':'empty'}">${escapeHtml(v)}</div></div>`;
+  }
+  function section(title, body, closed){
+    return `<div class="detail-section ${closed?'closed':''}">
+      <div class="detail-head" data-toggle-detail>${escapeHtml(title)} <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">${body}</div>
     </div>`;
   }
-  html += `<div style="font-size:.72rem;color:var(--text-muted);text-align:right">Обновлено: ${formatDateTime(d.updatedAt) || '—'}</div>`;
 
-  editorBody.innerHTML = html;
-  attachEditorEvents();
-  draftNote.textContent = '';
-  updateSaveButtons();
+  const mainBody = `
+    ${row('ФИО', p.fullName)}
+    ${row('Пол', p.gender)}
+    ${row('Дата рождения', p.birthDate)}
+    ${row('Место проживания', place)}
+  `;
+  const contactsBody = `
+    ${phones.length ? phones.map((x,i)=>row('Телефон '+(i+1), x)).join('') : row('Телефоны','')}
+    ${emails.length ? emails.map((x,i)=>row('Email '+(i+1), x)).join('') : row('Email','')}
+    ${socials.length ? socials.map(s=>row(s.type || 'Соцсеть/игра', s.value)).join('') : row('Соцсети / Игры','')}
+  `;
+  const bioBody = `
+    ${row('Общее описание', p.description)}
+    ${row('Спорт', p.sport)}
+    ${row('Друзья', p.friends)}
+    ${row('Отношения', p.relations)}
+    ${row('Заметки', p.notes)}
+  `;
+  const familyBody = `
+    ${row('Мама', p.mother && (p.mother.fullName || p.mother.birthDate) ? (p.mother.fullName||'') + ' ' + (p.mother.birthDate||'') : '')}
+    ${row('Папа', p.father && (p.father.fullName || p.father.birthDate) ? (p.father.fullName||'') + ' ' + (p.father.birthDate||'') : '')}
+    ${sisters.length ? sisters.map((s,i)=>row('Сестра '+(i+1), (s.fullName||'') + ' ' + (s.birthDate||''))).join('') : row('Сёстры','')}
+    ${brothers.length ? brothers.map((s,i)=>row('Брат '+(i+1), (s.fullName||'') + ' ' + (s.birthDate||''))).join('') : row('Братья','')}
+  `;
+  const docsBody = `
+    ${cars.length ? cars.map((c,i)=>row('Автомобиль '+(i+1), plateDisplay(c.plate) + (c.model ? ' — ' + c.model : ''))).join('') : row('Автомобили','')}
+    ${row('ИНН', p.inn)}
+    ${row('СНИЛС', p.snils)}
+    ${row('Свидетельство', p.certificate)}
+    ${row('Паспорт', p.passport)}
+  `;
+  const healthBody = `
+    ${row('Аллергии', p.allergies)}
+    ${row('Группа здоровья', p.healthGroup)}
+    ${row('Группа крови', p.bloodType)}
+  `;
+  const customBody = custom.length ? custom.map(c=>row(c.key||'Поле', c.value)).join('') : row('Дополнительно','');
+
+  return `
+    ${section('Основное', mainBody)}
+    ${section('Контакты', contactsBody)}
+    ${section('Биография', bioBody)}
+    ${section('Семья', familyBody, true)}
+    ${section('Документы', docsBody, true)}
+    ${section('Здоровье', healthBody, true)}
+    ${section('Дополнительно', customBody, true)}
+  `;
 }
 
-function updateSaveButtons(){
-  editorSaveNewBtn.style.display = editorMode === 'create' ? '' : 'none';
+function buildEditForm(p){
+  // Similar to add form but inside modal
+  return `
+    <div class="detail-section">
+      <div class="detail-head" data-toggle-detail>Основное <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="detail-field full"><label>ФИО</label><input type="text" data-f="fullName" value="${escapeAttr(p.fullName)}"></div>
+        <div class="detail-field"><label>Пол</label>
+          <select data-f="gender">
+            <option value="" ${!p.gender?'selected':''}>—</option>
+            <option value="М" ${p.gender==='М'?'selected':''}>Мужской</option>
+            <option value="Ж" ${p.gender==='Ж'?'selected':''}>Женский</option>
+          </select>
+        </div>
+        <div class="detail-field"><label>Дата рождения</label><input type="text" data-f="birthDate" data-mask="birthdate" value="${escapeAttr(p.birthDate)}" maxlength="10"></div>
+        <div class="detail-field"><label>Страна</label><input type="text" data-f="country" value="${escapeAttr(p.country)}"></div>
+        <div class="detail-field"><label>Город</label><input type="text" data-f="city" value="${escapeAttr(p.city)}"></div>
+        <div class="detail-field"><label>Область</label><input type="text" data-f="region" value="${escapeAttr(p.region)}"></div>
+        <div class="detail-field"><label>Улица</label><input type="text" data-f="street" value="${escapeAttr(p.street)}"></div>
+        <div class="detail-field"><label>Дом</label><input type="text" data-f="house" value="${escapeAttr(p.house)}"></div>
+        <div class="detail-field"><label>Кв.</label><input type="text" data-f="apartment" value="${escapeAttr(p.apartment)}"></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-head" data-toggle-detail>Контакты <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="detail-field full"><label>Телефоны (через ;)</label><input type="text" data-f="phonesStr" value="${escapeAttr((p.phones||[]).join('; '))}" placeholder="+7..., +7..."></div>
+        <div class="detail-field full"><label>Email (через ;)</label><input type="text" data-f="emailsStr" value="${escapeAttr((p.emails||[]).join('; '))}" placeholder="a@b.c; d@e.f"></div>
+        <div class="detail-field full"><label>Соцсети / Игры (формат: тип:значение; ...)</label><input type="text" data-f="socialsStr" value="${escapeAttr((p.socials||[]).map(s=>s.type+':'+s.value).join('; '))}" placeholder="Telegram:@nick; Steam:12345"></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-head" data-toggle-detail>Биография <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="detail-field full"><label>Общее описание</label><textarea data-f="description">${escapeHtml(p.description)}</textarea></div>
+        <div class="detail-field"><label>Спорт</label><textarea data-f="sport">${escapeHtml(p.sport)}</textarea></div>
+        <div class="detail-field"><label>Друзья</label><textarea data-f="friends">${escapeHtml(p.friends)}</textarea></div>
+        <div class="detail-field"><label>Отношения</label><textarea data-f="relations">${escapeHtml(p.relations)}</textarea></div>
+        <div class="detail-field"><label>Заметки</label><textarea data-f="notes">${escapeHtml(p.notes)}</textarea></div>
+      </div>
+    </div>
+    <div class="detail-section closed">
+      <div class="detail-head" data-toggle-detail>Семья <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="detail-field full"><label>Мама (ФИО ДД.ММ.ГГГГ)</label><input type="text" data-f="motherStr" value="${escapeAttr((p.mother.fullName||'') + ' ' + (p.mother.birthDate||''))}" placeholder="Иванова Мария Петровна 01.01.1970"></div>
+        <div class="detail-field full"><label>Папа (ФИО ДД.ММ.ГГГГ)</label><input type="text" data-f="fatherStr" value="${escapeAttr((p.father.fullName||'') + ' ' + (p.father.birthDate||''))}" placeholder="Иванов Пётр Сергеевич 01.01.1970"></div>
+        <div class="detail-field full"><label>Сёстры (ФИО ДД.ММ.ГГГГ; ...)</label><input type="text" data-f="sistersStr" value="${escapeAttr((p.sisters||[]).map(s=>(s.fullName||'')+' '+(s.birthDate||'')).join('; '))}" placeholder="Иванова Анна 01.01.2000; ..."></div>
+        <div class="detail-field full"><label>Братья (ФИО ДД.ММ.ГГГГ; ...)</label><input type="text" data-f="brothersStr" value="${escapeAttr((p.brothers||[]).map(s=>(s.fullName||'')+' '+(s.birthDate||'')).join('; '))}" placeholder="Иванов Олег 01.01.2000; ..."></div>
+      </div>
+    </div>
+    <div class="detail-section closed">
+      <div class="detail-head" data-toggle-detail>Документы <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="detail-field full"><label>Автомобили (номер:марка; ...)</label><input type="text" data-f="carsStr" value="${escapeAttr((p.cars||[]).map(c=>normalizePlate(c.plate)+':'+(c.model||'')).join('; '))}" placeholder="А123ВС777:Toyota; ..."></div>
+        <div class="detail-field"><label>ИНН</label><input type="text" data-f="inn" value="${escapeAttr(p.inn)}"></div>
+        <div class="detail-field"><label>СНИЛС</label><input type="text" data-f="snils" value="${escapeAttr(p.snils)}"></div>
+        <div class="detail-field"><label>Свидетельство</label><input type="text" data-f="certificate" value="${escapeAttr(p.certificate)}"></div>
+        <div class="detail-field"><label>Паспорт</label><input type="text" data-f="passport" value="${escapeAttr(p.passport)}"></div>
+      </div>
+    </div>
+    <div class="detail-section closed">
+      <div class="detail-head" data-toggle-detail>Здоровье <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="detail-field full"><label>Аллергии</label><input type="text" data-f="allergies" value="${escapeAttr(p.allergies)}"></div>
+        <div class="detail-field"><label>Группа здоровья</label><input type="text" data-f="healthGroup" value="${escapeAttr(p.healthGroup)}"></div>
+        <div class="detail-field"><label>Группа крови</label><input type="text" data-f="bloodType" value="${escapeAttr(p.bloodType)}"></div>
+      </div>
+    </div>
+    <div class="detail-section closed">
+      <div class="detail-head" data-toggle-detail>Дополнительно <span class="chev">▼</span></div>
+      <div class="detail-body" style="display:block">
+        <div class="detail-field full"><label>Доп. поля (название:значение; ...)</label><input type="text" data-f="customStr" value="${escapeAttr((p.custom||[]).map(c=>c.key+':'+c.value).join('; '))}" placeholder="Хобби:Шахматы; ..."></div>
+      </div>
+    </div>
+  `;
 }
 
-function collectEditorData(){
-  const data = { ...(editorDraft || {}) };
-  // обычные поля
-  editorBody.querySelectorAll('[data-field]').forEach(el => {
-    const k = el.dataset.field;
-    if(k === 'rating') return;
-    data[k] = el.value.trim();
-  });
-  // рейтинг
-  const ratingEl = editorBody.querySelector('[data-rating]');
-  if(ratingEl){
-    const on = ratingEl.querySelectorAll('span.on').length;
-    data.rating = on;
-  }
-  // теги
-  data.tags = Array.from(editorBody.querySelectorAll('[data-tags-wrap] .chip')).map(c => {
-    const btn = c.querySelector('button'); const txt = c.textContent;
-    return btn ? txt.replace('✕','').trim() : txt.trim();
-  });
-  // кастомные поля
-  const custom = [];
-  editorBody.querySelectorAll('[data-custom-row]').forEach(row => {
-    const i = row.dataset.customRow;
-    const k = row.querySelector(`[data-custom-key="${i}"]`).value.trim();
-    const v = row.querySelector(`[data-custom-val="${i}"]`).value.trim();
-    if(k || v) custom.push({ key: k, value: v });
-  });
-  data.customFields = custom;
-  return data;
-}
-
-function validateEditor(){
-  const data = collectEditorData();
-  let ok = true;
-  // телефон
-  ['phone','phone2','phone3','whatsapp'].forEach(k => {
-    const wrap = editorBody.querySelector(`[data-field-wrap="${k}"]`);
-    const err = editorBody.querySelector(`[data-err="${k}"]`);
-    if(!wrap || !err) return;
-    wrap.classList.remove('invalid');
-    err.textContent = '';
-    if(data[k] && data[k].replace(/\D/g,'').length < 10){
-      wrap.classList.add('invalid');
-      err.textContent = 'Похоже, номер неполный';
-      ok = false;
-    }
-  });
-  // email
-  const eWrap = editorBody.querySelector('[data-field-wrap="email"]');
-  const eErr = editorBody.querySelector('[data-err="email"]');
-  if(eWrap && eErr){
-    eWrap.classList.remove('invalid'); eErr.textContent = '';
-    if(data.email && !isValidEmail(data.email)){
-      eWrap.classList.add('invalid'); eErr.textContent = 'Неверный email'; ok = false;
-    }
-  }
-  // дата рождения
-  const bWrap = editorBody.querySelector('[data-field-wrap="birthDate"]');
-  const bErr = editorBody.querySelector('[data-err="birthDate"]');
-  if(bWrap && bErr){
-    bWrap.classList.remove('invalid'); bErr.textContent = '';
-    if(data.birthDate && data.birthDate.length === 10 && !parseDateRu(data.birthDate)){
-      bWrap.classList.add('invalid'); bErr.textContent = 'Неверная дата'; ok = false;
-    }
-  }
-  return ok;
-}
-
-function checkDuplicatePhone(){
-  const data = collectEditorData();
-  if(!data.phone) return null;
-  const digits = data.phone.replace(/\D/g,'');
-  if(digits.length < 10) return null;
-  for(const f of folders){
-    for(const t of (f.themes||[])){
-      if(editorPersonId && t.id === editorPersonId) continue;
-      if((t.phone||'').replace(/\D/g,'') === digits){
-        return { person: t, folder: f };
-      }
-    }
-  }
-  return null;
-}
-
-function attachEditorEvents(){
-  // маски
-  editorBody.querySelectorAll('[data-mask="phone"]').forEach(inp => {
-    inp.addEventListener('input', () => { inp.value = normalizePhone(inp.value); markDirty(); });
-  });
-  editorBody.querySelectorAll('[data-mask="birthdate"]').forEach(inp => {
-    inp.addEventListener('input', () => { inp.value = normalizeBirthDate(inp.value); markDirty(); });
-  });
-  // любые инпуты — dirty
-  editorBody.querySelectorAll('[data-field]').forEach(el => {
-    el.addEventListener('input', markDirty);
-    el.addEventListener('change', markDirty);
-  });
-  // секции сворачивание
-  editorBody.querySelectorAll('[data-toggle-section]').forEach(h => {
+function attachModalEditEvents(p){
+  // toggle sections
+  modalBody.querySelectorAll('[data-toggle-detail]').forEach(h => {
     h.addEventListener('click', () => h.parentElement.classList.toggle('closed'));
   });
-  // рейтинг
-  editorBody.querySelectorAll('[data-rating]').forEach(wrap => {
-    wrap.querySelectorAll('[data-star]').forEach(star => {
-      star.addEventListener('click', () => {
-        const n = parseInt(star.dataset.star, 10);
-        wrap.querySelectorAll('[data-star]').forEach(s => s.classList.toggle('on', parseInt(s.dataset.star,10) <= n));
-        markDirty();
-      });
-    });
+  // masks
+  modalBody.querySelectorAll('[data-mask="birthdate"]').forEach(inp => {
+    inp.addEventListener('input', () => { inp.value = normalizeBirthDate(inp.value); });
   });
-  // теги
-  const tagsInput = editorBody.querySelector('[data-tags-input]');
-  if(tagsInput){
-    tagsInput.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' && tagsInput.value.trim()){
-        e.preventDefault();
-        const v = tagsInput.value.trim();
-        const wrap = tagsInput.closest('[data-tags-wrap]');
-        const chip = document.createElement('span');
-        chip.className = 'chip';
-        chip.innerHTML = `${escapeHtml(v)}<button type="button">✕</button>`;
-        chip.querySelector('button').onclick = () => { chip.remove(); markDirty(); };
-        wrap.insertBefore(chip, tagsInput);
-        tagsInput.value = '';
-        markDirty();
+  // save
+  document.getElementById('modalSaveBtn').addEventListener('click', async () => {
+    const data = { ...p };
+    modalBody.querySelectorAll('[data-f]').forEach(el => {
+      const k = el.dataset.f;
+      if(k === 'phonesStr'){
+        data.phones = el.value.split(';').map(s=>normalizePhone(s.trim())).filter(Boolean);
+        if(!data.phones.length) data.phones = [''];
+      } else if(k === 'emailsStr'){
+        data.emails = el.value.split(';').map(s=>s.trim()).filter(Boolean);
+        if(!data.emails.length) data.emails = [''];
+      } else if(k === 'socialsStr'){
+        data.socials = el.value.split(';').map(s=>{
+          const [type,...rest] = s.split(':');
+          return { type: (type||'').trim(), value: rest.join(':').trim() };
+        }).filter(s=>s.type||s.value);
+        if(!data.socials.length) data.socials = [{type:'',value:''}];
+      } else if(k === 'motherStr' || k === 'fatherStr'){
+        const parts = el.value.trim().split(/\s+/);
+        // try to find date at end
+        let birthDate = '';
+        const last = parts[parts.length-1] || '';
+        if(/\d{2}\.\d{2}\.\d{4}/.test(last)){ birthDate = last; parts.pop(); }
+        const fullName = parts.join(' ');
+        if(k === 'motherStr') data.mother = { fullName, birthDate };
+        else data.father = { fullName, birthDate };
+      } else if(k === 'sistersStr' || k === 'brothersStr'){
+        const arr = el.value.split(';').map(s=>{
+          const parts = s.trim().split(/\s+/);
+          let birthDate = '';
+          const last = parts[parts.length-1] || '';
+          if(/\d{2}\.\d{2}\.\d{4}/.test(last)){ birthDate = last; parts.pop(); }
+          return { fullName: parts.join(' '), birthDate };
+        }).filter(s=>s.fullName||s.birthDate);
+        if(!arr.length) arr.push({fullName:'', birthDate:''});
+        if(k === 'sistersStr') data.sisters = arr; else data.brothers = arr;
+      } else if(k === 'carsStr'){
+        data.cars = el.value.split(';').map(s=>{
+          const [plate,...rest] = s.split(':');
+          return { plate: normalizePlate(plate||''), model: rest.join(':').trim() };
+        }).filter(c=>c.plate||c.model);
+        if(!data.cars.length) data.cars = [{plate:'',model:''}];
+      } else if(k === 'customStr'){
+        data.custom = el.value.split(';').map(s=>{
+          const [key,...rest] = s.split(':');
+          return { key: (key||'').trim(), value: rest.join(':').trim() };
+        }).filter(c=>c.key||c.value);
+      } else {
+        data[k] = el.value;
       }
     });
-  }
-  // удаление тегов
-  editorBody.querySelectorAll('[data-tags-wrap] .chip button').forEach(btn => {
-    btn.addEventListener('click', (e) => { e.target.closest('.chip').remove(); markDirty(); });
+    // validate emails
+    for(const e of data.emails){
+      if(e && !isValidEmail(e)){ showToast('Неверный email: ' + e, true); return; }
+    }
+    data.updatedAt = Date.now();
+    const idx = people.findIndex(x => x.id === data.id);
+    if(idx >= 0) people[idx] = data;
+    else people.push(data);
+    renderPeople();
+    const ok = await saveToFirebase();
+    showToast(ok ? 'Сохранено' : 'Сохранено локально');
+    openModal('view', data.id);
   });
-  // кастомные поля
-  const addBtn = editorBody.querySelector('[data-custom-add]');
-  if(addBtn){
-    addBtn.addEventListener('click', () => {
-      const rep = editorBody.querySelector('[data-custom-repeater]');
-      const idx = rep.querySelectorAll('[data-custom-row]').length;
-      const row = document.createElement('div');
-      row.className = 'repeater-row';
-      row.dataset.customRow = idx;
-      row.innerHTML = `
-        <input type="text" data-custom-key="${idx}" placeholder="Название">
-        <input type="text" data-custom-val="${idx}" placeholder="Значение">
-        <button type="button" class="btn btn-sm btn-danger" data-custom-del="${idx}">✕</button>`;
-      row.querySelector('[data-custom-del]').onclick = () => { row.remove(); markDirty(); };
-      rep.insertBefore(row, addBtn);
-      markDirty();
-    });
-  }
-  editorBody.querySelectorAll('[data-custom-del]').forEach(btn => {
-    btn.addEventListener('click', () => { btn.closest('[data-custom-row]').remove(); markDirty(); });
-  });
+  document.getElementById('modalCancelBtn').addEventListener('click', () => openModal('view', p.id));
 }
 
-function markDirty(){
-  editorDirty = true;
-  unsavedIndicator.style.display = 'inline';
-  // черновик для новой записи
-  if(editorMode === 'create'){
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collectEditorData())); draftNote.textContent = 'Черновик сохранён'; } catch(e){}
-  }
-}
-
-async function saveEditor(saveNew){
-  if(!validateEditor()){ showToast('Проверьте выделенные поля', true); return; }
-  const data = collectEditorData();
-  // дубликат телефона
-  if(data.phone){
-    const dup = checkDuplicatePhone();
-    if(dup && !confirm(`Похожая запись уже есть: «${dup.person.fullName || 'без имени'}» в папке «${dup.folder.name}». Всё равно сохранить?`)) return;
-  }
-  // пустая запись — просто закрыть
-  const meaningful = ['fullName','phone','phone2','phone3','email','birthDate','city','telegram','notes','description','work','hobby']
-    .some(k => (data[k]||'').trim()) || (data.tags||[]).length > 0 || (data.customFields||[]).length > 0;
-  if(!meaningful && editorMode === 'create'){
-    closeEditor(true);
-    return;
-  }
-  // папка
-  let target = editorFolderId ? findFolder(editorFolderId) : null;
-  if(!target){
-    target = folders.find(f => f.ownerId === getOwnerId() && f.name === 'Мои бланки');
-    if(!target){
-      target = { id: uid(), name:'Мои бланки', type:'private', ownerId:getOwnerId(),
-        createdAt:Date.now(), updatedAt:Date.now(), allowEdit:false, allowCopy:false, themes:[] };
-      folders.push(target);
-    }
-  }
-  if(target.ownerId !== getOwnerId() && !canEditForeignFolder(target)){
-    showToast('Нет прав на запись в эту папку', true); return;
-  }
-  const now = Date.now();
-  if(editorMode === 'edit' && editorPersonId){
-    const found = findPerson(editorPersonId);
-    if(found){
-      const idx = (found.folder.themes||[]).findIndex(t => t.id === editorPersonId);
-      if(idx >= 0){
-        // если сменили папку — перенести
-        if(found.folder.id !== target.id){
-          const [item] = found.folder.themes.splice(idx,1);
-          Object.assign(item, data, { updatedAt: now });
-          target.themes = target.themes || [];
-          target.themes.push(item);
-          target.updatedAt = now;
-          found.folder.updatedAt = now;
-        } else {
-          Object.assign(found.folder.themes[idx], data, { updatedAt: now });
-          found.folder.updatedAt = now;
-        }
-      }
-    }
-  } else {
-    const person = {
-      id: uid(), ...data,
-      createdAt: now, updatedAt: now
-    };
-    target.themes = target.themes || [];
-    target.themes.push(person);
-    target.updatedAt = now;
-  }
-  editorDirty = false;
-  try { localStorage.removeItem(DRAFT_KEY); } catch(e){}
-  refreshFolderViews();
-  const ok = await saveFoldersToFirebase();
-  showToast(ok ? 'Сохранено в Firebase' : 'Сохранено локально');
-  if(saveNew){
-    // очистить форму
-    editorDraft = {};
-    editorPersonId = null;
-    editorMode = 'create';
-    renderEditor();
-  } else {
-    closeEditor(true);
-  }
-}
-
-/* ===================== УДАЛЕНИЕ / ПЕРЕМЕЩЕНИЕ ЛЮДЕЙ ===================== */
-async function deletePeople(ids){
-  if(!ids.length) return;
-  const removed = [];
-  for(const f of folders){
-    if(f.ownerId !== getOwnerId() && !canEditForeignFolder(f)) continue;
-    f.themes = (f.themes||[]).filter(t => {
-      if(ids.includes(t.id)){ removed.push({ folderId:f.id, person:t }); return false; }
-      return true;
-    });
-    if(removed.some(r => r.folderId === f.id)) f.updatedAt = Date.now();
-  }
-  ids.forEach(id => favorites = favorites.filter(x => x !== id));
-  selectedIds.clear();
-  saveFavorites();
-  refreshFolderViews();
-  const ok = await saveFoldersToFirebase();
-  showToast(ok ? `Удалено: ${removed.length}` : `Удалено локально: ${removed.length}`, false, {
-    label:'Отменить',
-    fn: async () => {
-      for(const r of removed){
-        const f = findFolder(r.folderId);
-        if(f){ f.themes = f.themes || []; f.themes.push(r.person); f.updatedAt = Date.now(); }
-      }
-      refreshFolderViews();
-      await saveFoldersToFirebase();
-    }
-  });
-}
-
-async function movePeople(ids, toFolderId){
-  if(!ids.length || !toFolderId) return;
-  const to = findFolder(toFolderId);
-  if(!to) return;
-  let moved = 0;
-  for(const f of folders){
-    if(f.id === toFolderId) continue;
-    if(f.ownerId !== getOwnerId() && !canEditForeignFolder(f)) continue;
-    const keep = [];
-    for(const t of (f.themes||[])){
-      if(ids.includes(t.id)){
-        t.updatedAt = Date.now();
-        to.themes = to.themes || [];
-        to.themes.push(t);
-        moved++;
-      } else keep.push(t);
-    }
-    f.themes = keep;
-  }
-  to.updatedAt = Date.now();
-  selectedIds.clear();
-  refreshFolderViews();
-  const ok = await saveFoldersToFirebase();
-  showToast(ok ? `Перемещено: ${moved}` : `Перемещено локально: ${moved}`);
-}
-
-/* ===================== EXPORT / IMPORT CSV ===================== */
-function csvEscape(v){
-  const s = v === null || v === undefined ? '' : String(v);
-  if(/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
-  return s;
-}
-
-function exportCsv(){
-  const list = computeFiltered();
-  if(!list.length){ showToast('Нет записей для экспорта', true); return; }
-  const cols = ['fullName','gender','birthDate','phone','phone2','phone3','email','telegram','whatsapp','vk','instagram',
-    'city','region','country','addressStreet','maritalStatus','education','work','position','nationality',
-    'hobby','languages','family','emergencyContact','bloodType','allergies','chronic','medications',
-    'passport','passportIssued','inn','snils','car','description','sport','friends','relations','notes','tags','rating'];
-  const header = ['folder', ...cols];
-  const rows = list.map(({ person, folder }) => {
-    return [folder.name, ...cols.map(c => {
-      if(c === 'tags') return (person.tags||[]).join(';');
-      return person[c] ?? '';
-    })].map(csvEscape).join(',');
-  });
-  const csv = [header.map(csvEscape).join(','), ...rows].join('\r\n');
-  const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `картотека_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
-  showToast(`Экспортировано: ${list.length}`);
-}
-
-function parseCsv(text){
-  const rows = [];
-  let cur = [], field = '', inQ = false;
-  for(let i=0;i<text.length;i++){
-    const ch = text[i];
-    if(inQ){
-      if(ch === '"'){
-        if(text[i+1] === '"'){ field += '"'; i++; }
-        else inQ = false;
-      } else field += ch;
-    } else {
-      if(ch === '"') inQ = true;
-      else if(ch === ','){ cur.push(field); field = ''; }
-      else if(ch === '\n'){ cur.push(field); rows.push(cur); cur = []; field = ''; }
-      else if(ch === '\r'){ /* skip */ }
-      else field += ch;
-    }
-  }
-  if(field.length || cur.length){ cur.push(field); rows.push(cur); }
-  return rows;
-}
-
-async function importCsv(file){
-  const text = await file.text();
-  const rows = parseCsv(text.replace(/^\uFEFF/,''));
-  if(rows.length < 2){ showToast('Файл пуст', true); return; }
-  const header = rows[0].map(h => h.trim());
-  const idx = (name) => header.indexOf(name);
-  const folderIdx = idx('folder');
-  const fieldKeys = ['fullName','gender','birthDate','phone','phone2','phone3','email','telegram','whatsapp','vk','instagram',
-    'city','region','country','addressStreet','maritalStatus','education','work','position','nationality',
-    'hobby','languages','family','emergencyContact','bloodType','allergies','chronic','medications',
-    'passport','passportIssued','inn','snils','car','description','sport','friends','relations','notes','tags','rating'];
-  let imported = 0;
-  for(let r=1;r<rows.length;r++){
-    const row = rows[r];
-    if(!row || row.every(x => !x.trim())) continue;
-    const folderName = folderIdx >= 0 ? (row[folderIdx]||'').trim() : '';
-    let folder = folders.find(f => f.ownerId === getOwnerId() && f.name === folderName);
-    if(!folder){
-      folder = { id: uid(), name: folderName || 'Импорт', type:'private', ownerId:getOwnerId(),
-        createdAt:Date.now(), updatedAt:Date.now(), allowEdit:false, allowCopy:false, themes:[] };
-      folders.push(folder);
-    }
-    const person = { id: uid(), createdAt: Date.now(), updatedAt: Date.now() };
-    for(const k of fieldKeys){
-      const i = idx(k);
-      if(i < 0) continue;
-      let v = row[i] ?? '';
-      if(k === 'tags') person.tags = v ? v.split(';').map(s=>s.trim()).filter(Boolean) : [];
-      else if(k === 'rating') person.rating = parseInt(v,10) || 0;
-      else if(k === 'phone' || k === 'phone2' || k === 'phone3' || k === 'whatsapp') person[k] = v ? normalizePhone(v) : '';
-      else person[k] = v;
-    }
-    folder.themes = folder.themes || [];
-    folder.themes.push(person);
-    folder.updatedAt = Date.now();
-    imported++;
-  }
-  refreshFolderViews();
-  await saveFoldersToFirebase();
-  showToast(`Импортировано: ${imported}`);
-}
-
-/* ===================== СОБЫТИЯ ===================== */
-// меню
+/* ===================== EVENTS: GLOBAL ===================== */
 hamburger.addEventListener('click', () => {
   sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('show'); hamburger.classList.toggle('open');
 });
@@ -1555,169 +1115,63 @@ sidebarItems.forEach(item => {
     Object.values(views).forEach(v => v.classList.remove('active'));
     if(views[view]) views[view].classList.add('active');
     sidebar.classList.remove('open'); sidebarOverlay.classList.remove('show'); hamburger.classList.remove('open');
-    const subheads = {
-      list:'Просмотр, поиск и редактирование записей',
-      database:'Управление папками',
-      settings:'Аккаунт и синхронизация'
-    };
-    appSubhead.textContent = subheads[view] || '';
-    if(view === 'list') renderTable();
-    if(view === 'database') renderFoldersView();
+    appSubhead.textContent = view === 'add' ? 'Добавление новой записи' : 'База данных';
+    if(view === 'db') renderPeople();
+    if(view === 'add'){ window.__addDraft = window.__addDraft || emptyPerson(); renderAddForm(); }
   });
 });
 
-// список
-searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim(); currentPage = 1; renderTable(); });
-filterGenderEl.addEventListener('change', () => { filterGender = filterGenderEl.value; currentPage = 1; renderTable(); });
-filterAgeMinEl.addEventListener('input', () => { filterAgeMin = filterAgeMinEl.value ? parseInt(filterAgeMinEl.value,10) : null; currentPage = 1; renderTable(); });
-filterAgeMaxEl.addEventListener('input', () => { filterAgeMax = filterAgeMaxEl.value ? parseInt(filterAgeMaxEl.value,10) : null; currentPage = 1; renderTable(); });
-filterCityEl.addEventListener('input', () => { filterCity = filterCityEl.value.trim(); currentPage = 1; renderTable(); });
-filterTagEl.addEventListener('change', () => { filterTag = filterTagEl.value; currentPage = 1; renderTable(); });
-filterFavEl.addEventListener('change', () => { filterFavOnly = filterFavEl.checked; currentPage = 1; renderTable(); });
-clearFiltersBtn.addEventListener('click', () => {
-  searchQuery = ''; filterGender = ''; filterAgeMin = filterAgeMax = null; filterCity = ''; filterTag = ''; filterFavOnly = false;
-  searchInput.value = ''; filterGenderEl.value = ''; filterAgeMinEl.value = ''; filterAgeMaxEl.value = ''; filterCityEl.value = '';
-  filterTagEl.value = ''; filterFavEl.checked = false; currentPage = 1;
-  renderTable();
-});
-pageSizeSel.addEventListener('change', () => { pageSize = parseInt(pageSizeSel.value,10) || 50; currentPage = 1; renderTable(); });
-prevPage.addEventListener('click', () => { if(currentPage > 1){ currentPage--; renderTable(); } });
-nextPage.addEventListener('click', () => { currentPage++; renderTable(); });
-
-selectAllEl.addEventListener('change', () => {
-  const list = computeFiltered();
-  const start = (currentPage-1)*pageSize;
-  const page = list.slice(start, start+pageSize);
-  if(selectAllEl.checked) page.forEach(({person}) => selectedIds.add(person.id));
-  else page.forEach(({person}) => selectedIds.delete(person.id));
-  renderTable();
+searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim(); renderPeople(); });
+newFromDbBtn.addEventListener('click', () => {
+  window.__addDraft = emptyPerson();
+  sidebarItems.forEach(i => i.classList.remove('active'));
+  const addItem = [...sidebarItems].find(i=>i.dataset.view==='add');
+  if(addItem) addItem.classList.add('active');
+  Object.values(views).forEach(v => v.classList.remove('active'));
+  views.add.classList.add('active');
+  appSubhead.textContent = 'Добавление новой записи';
+  renderAddForm();
 });
 
-tableBody.addEventListener('click', (e) => {
-  const chk = e.target.closest('[data-check]');
-  if(chk){
-    e.stopPropagation();
-    const id = chk.dataset.check;
-    if(chk.checked) selectedIds.add(id); else selectedIds.delete(id);
-    renderTable();
+// database list events
+peopleContainer.addEventListener('click', (e) => {
+  const toggle = e.target.closest('[data-toggle]');
+  if(toggle && !e.target.closest('button')){
+    const row = toggle.closest('.person-row');
+    row.classList.toggle('open');
     return;
   }
-  const row = e.target.closest('.table-row');
-  if(!row) return;
-  openEditor('edit', row.dataset.folder, row.dataset.person);
+  const detailBtn = e.target.closest('[data-detail]');
+  if(detailBtn){ openModal('view', detailBtn.dataset.detail); return; }
+  const editBtn = e.target.closest('[data-edit]');
+  if(editBtn){ openModal('edit', editBtn.dataset.edit); return; }
+  const delBtn = e.target.closest('[data-del]');
+  if(delBtn){
+    if(!confirm('Удалить запись?')) return;
+    people = people.filter(p => p.id !== delBtn.dataset.del);
+    renderPeople();
+    saveToFirebase().then(ok => showToast(ok ? 'Удалено' : 'Удалено локально'));
+    return;
+  }
 });
 
-bulkClearBtn.addEventListener('click', () => { selectedIds.clear(); selectAllEl.checked = false; renderTable(); });
-bulkDeleteBtn.addEventListener('click', () => {
-  if(!selectedIds.size) return;
-  if(!confirm(`Удалить ${selectedIds.size} записей?`)) return;
-  deletePeople([...selectedIds]);
-});
-bulkMoveSelect.addEventListener('change', () => {
-  const to = bulkMoveSelect.value;
-  if(!to || !selectedIds.size) return;
-  if(!confirm(`Переместить ${selectedIds.size} записей?`)) { bulkMoveSelect.value = ''; return; }
-  movePeople([...selectedIds], to);
-  bulkMoveSelect.value = '';
-});
-
-newPersonBtn.addEventListener('click', () => {
-  // по умолчанию — первая своя папка
-  const own = folders.find(f => f.ownerId === getOwnerId());
-  openEditor('create', own ? own.id : null, null);
-});
-
-exportBtn.addEventListener('click', exportCsv);
-importInput.addEventListener('change', async (e) => {
-  const file = e.target.files && e.target.files[0];
-  if(!file) return;
-  try { await importCsv(file); }
-  catch(err){ console.error(err); showToast('Ошибка импорта: ' + (err.message||err), true); }
-  importInput.value = '';
-});
-
-/* ===================== ПАПКИ ===================== */
-folderSearch.addEventListener('input', renderFoldersView);
-newFolderType.addEventListener('change', () => {
-  publicFolderPerms.classList.toggle('hidden', newFolderType.value !== 'public');
-  publicFolderPerms.style.display = newFolderType.value === 'public' ? 'flex' : 'none';
-});
-createFolderBtn.addEventListener('click', createFolder);
-newFolderName.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); createFolder(); } });
-
-foldersContainer.addEventListener('click', (e) => {
-  const addBtn = e.target.closest('[data-add-to]');
-  if(addBtn){ openEditor('create', addBtn.dataset.addTo, null); return; }
-  const delBtn = e.target.closest('[data-del-folder]');
-  if(delBtn){ deleteFolder(delBtn.dataset.delFolder); return; }
-  const copyBtn = e.target.closest('[data-copy-folder]');
-  if(copyBtn){ copyFolderToMine(copyBtn.dataset.copyFolder); return; }
-});
-
-/* ===================== РЕДАКТОР ===================== */
-editorCloseBtn.addEventListener('click', () => closeEditor());
-editorCancelBtn.addEventListener('click', () => closeEditor());
-editorSaveBtn.addEventListener('click', () => saveEditor(false));
-editorSaveNewBtn.addEventListener('click', () => saveEditor(true));
-editorOverlay.addEventListener('click', (e) => {
-  if(e.target === editorOverlay) closeEditor();
-});
+modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
+modalCloseBtn.addEventListener('click', closeModal);
 document.addEventListener('keydown', (e) => {
-  if(editorOverlay.classList.contains('open')){
-    if(e.key === 'Escape') closeEditor();
-    if((e.ctrlKey || e.metaKey) && e.key === 's'){ e.preventDefault(); saveEditor(false); }
-  }
+  if(e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
 });
 
-window.addEventListener('beforeunload', (e) => {
-  if(editorDirty){
-    e.preventDefault();
-    e.returnValue = '';
-  }
+// view card toggles (in modal)
+modalBody.addEventListener('click', (e) => {
+  const h = e.target.closest('[data-toggle-detail]');
+  if(h) h.parentElement.classList.toggle('closed');
 });
 
-/* ===================== AUTH ===================== */
-loginBtn.addEventListener('click', doLogin);
-registerBtn.addEventListener('click', doRegister);
-logoutBtn.addEventListener('click', doLogout);
-showRegisterBtn.addEventListener('click', () => { loginError.textContent = ''; authLoginForm.style.display = 'none'; authRegisterForm.style.display = ''; });
-showLoginBtn.addEventListener('click', () => { regError.textContent = ''; authLoginForm.style.display = ''; authRegisterForm.style.display = 'none'; });
-loginPassword.addEventListener('keydown', (e) => { if(e.key === 'Enter') doLogin(); });
-regPassword2.addEventListener('keydown', (e) => { if(e.key === 'Enter') doRegister(); });
-
-/* ===================== СТАРТ ===================== */
-restoreAuth();
-
-if(firebaseReady && db){
-  onValue(ref(db, '.info/connected'), snap => {
-    if(snap.val()) setSyncStatus('online','Подключено');
-    else setSyncStatus('offline','Нет соединения');
-  });
-} else {
-  setSyncStatus('offline','Firebase недоступен — локально');
-}
-
-// обновить селект меток
-function refreshTagFilter(){
-  const tags = new Set();
-  for(const f of folders){
-    for(const t of (f.themes||[])){
-      (t.tags||[]).forEach(x => x && tags.add(x));
-    }
-  }
-  const cur = filterTagEl.value;
-  filterTagEl.innerHTML = '<option value="">любая</option>' + [...tags].sort().map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('');
-  if([...tags].includes(cur)) filterTagEl.value = cur;
-}
-
-const _origRefresh = refreshFolderViews;
-refreshFolderViews = function(){
-  _origRefresh();
-  refreshTagFilter();
-};
-
-// первичный рендер
-refreshFolderViews();
+/* ===================== START ===================== */
+window.__addDraft = emptyPerson();
+renderAddForm();
+renderPeople();
+loadInitial();
 
 })();
 </script>
