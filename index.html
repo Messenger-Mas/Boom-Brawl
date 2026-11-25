@@ -23,8 +23,10 @@ body{font-family:'Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background
 .sidebar.open{transform:translateX(0)}
 .sidebar-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--emerald);
   padding:.3rem .7rem 1rem;border-bottom:1px solid var(--border);margin-bottom:.8rem;display:flex;justify-content:space-between;align-items:center}
-.sidebar-close{background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;padding:0 .5rem;line-height:1}
-.sidebar-close:hover{color:var(--text-primary)}
+.sidebar-close-btn{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:var(--emerald-light);
+  width:28px;height:28px;border-radius:.4rem;font-size:1rem;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:.15s}
+.sidebar-close-btn:hover{background:rgba(16,185,129,.25);color:#fff}
 .sidebar-nav{display:flex;flex-direction:column;gap:.35rem}
 .sidebar-item{display:flex;align-items:center;gap:.7rem;padding:.65rem .85rem;border-radius:.55rem;cursor:pointer;
   color:var(--text-secondary);font-size:.9rem;font-weight:500;transition:.15s ease;user-select:none;border:1px solid transparent}
@@ -99,9 +101,9 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .add-field{display:flex;flex-direction:column;gap:.3rem}
 .add-field label{font-size:.75rem;font-weight:700;color:var(--text-secondary);letter-spacing:.02em}
 .add-actions{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-end;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border)}
-.sub-block{margin-top:.6rem;padding:.8rem;border:1px dashed var(--border-light);border-radius:.6rem;background:var(--black-soft);position:relative}
-.sub-block-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;font-size:.75rem;font-weight:800;
-  text-transform:uppercase;letter-spacing:.08em;color:var(--emerald-light)}
+.sub-block{margin-top:.6rem;padding:.8rem;border:1px dashed var(--border-light);border-radius:.6rem;background:var(--black-soft);position:relative;transition:opacity .2s}
+.sub-block.disabled-block{opacity:.4;pointer-events:none}
+.sub-block.disabled-block .no-check{pointer-events:auto;opacity:1}
 .repeater-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.5rem;align-items:center;margin-bottom:.5rem}
 .repeater-row.small{grid-template-columns:1fr 1fr auto}
 .repeater-row.tiny{grid-template-columns:1fr 1fr auto}
@@ -111,7 +113,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .icon-del:hover{background:var(--danger-bg);border-color:rgba(239,68,68,.4)}
 
 /* no-checkbox */
-.no-check{display:flex;align-items:center;gap:.5rem;margin-top:.4rem;font-size:.8rem;color:var(--text-secondary)}
+.no-check{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;font-size:.8rem;color:var(--text-secondary);cursor:pointer;user-select:none}
 .no-check input{width:1.1rem;height:1.1rem;accent-color:var(--emerald);cursor:pointer}
 
 /* multi-photo */
@@ -124,14 +126,6 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .photo-add-btn{width:80px;height:80px;border-radius:.55rem;border:1px dashed var(--border-light);background:transparent;
   color:var(--text-muted);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:.7rem;gap:.2rem}
 .photo-add-btn:hover{background:var(--black-card);border-color:var(--emerald);color:var(--emerald)}
-
-/* big avatar */
-.avatar-big{width:84px;height:84px;border-radius:.7rem;object-fit:cover;border:1px solid var(--border-light);
-  background:var(--black-elevated);flex-shrink:0}
-.avatar-big.empty{display:flex;align-items:center;justify-content:center;color:var(--emerald-light);
-  font-size:1.8rem;font-weight:800}
-.fio-row{display:flex;gap:.9rem;align-items:flex-start}
-.fio-row .grow{flex:1;min-width:0}
 
 /* gallery */
 .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem}
@@ -233,7 +227,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-title">
     Меню
-    <button class="sidebar-close" id="sidebarCloseBtn">✕</button>
+    <button class="sidebar-close-btn" id="sidebarCloseBtn">✕</button>
   </div>
   <nav class="sidebar-nav">
     <div class="sidebar-item active" data-view="add"><span class="icon">➕</span><span>Добавить данные</span></div>
@@ -304,7 +298,7 @@ catch(e){ console.error(e); setSyncStatus('offline','Firebase недоступе
 'use strict';
 
 const ROOT = 'people';
-const LOCAL_KEY = 'people_cache_goshа_andrey_v3';
+const LOCAL_KEY = 'people_cache_goshа_andrey_v4';
 
 let people = [];
 let searchQuery = '';
@@ -391,7 +385,6 @@ function normalizeBirthDate(v){
   return r;
 }
 
-/* Resize/compress an image File to a data URL */
 function fileToCompressedDataUrl(file, maxW=800, quality=0.72){
   return new Promise((resolve, reject) => {
     if(!file) return reject(new Error('no file'));
@@ -515,10 +508,11 @@ async function loadInitial(){
 function emptyPerson(){
   return {
     id: uid(),
-    fullName: '',
-    middleName: '', // Отчество
+    lastName: '',
+    firstName: '',
+    middleName: '',
     middleNameNone: false,
-    photo: [], // Array of strings (max 3)
+    photo: [],
     gender: '',
     birthDate: '',
     address: '',
@@ -548,7 +542,6 @@ function ensureShape(p){
   const base = emptyPerson();
   const out = { ...base, ...(p||{}) };
   
-  // Migration: if photo is string, convert to array
   if(typeof out.photo === 'string') out.photo = out.photo ? [out.photo] : [];
   if(!Array.isArray(out.photo)) out.photo = [];
   
@@ -573,7 +566,6 @@ function ensureShape(p){
   if(!Array.isArray(out.documents) || !out.documents.length){
     out.documents = emptyPerson().documents;
   } else {
-    // Migrate old documents if they exist
     out.documents = out.documents.map(d => {
       let newD = { ...d };
       if(typeof newD.photo === 'string') newD.photo = newD.photo ? [newD.photo] : [];
@@ -599,7 +591,7 @@ function ensureShape(p){
   return out;
 }
 
-/* ===================== PHOTO PICKER HELPERS ===================== */
+/* ===================== PHOTO PICKER ===================== */
 let photoPickResolve = null;
 hiddenFileInput.addEventListener('change', async (e) => {
   const files = Array.from(e.target.files || []);
@@ -625,7 +617,6 @@ function pickPhoto(){
   });
 }
 
-/* Returns HTML for a multi-photo grid */
 function photoSlotHtml(id, photos, labelEmpty='Фото'){
   let html = `<div class="photo-grid" data-photo-grid="${escapeAttr(id)}">`;
   (photos||[]).forEach((src, idx) => {
@@ -663,50 +654,21 @@ function getPath(obj, path){
   return cur;
 }
 
-function attachPhotoEvents(container, draftObj, rerenderFn){
-  container.querySelectorAll('[data-photo-view]').forEach(img => {
-    img.addEventListener('click', () => openLightbox(img.dataset.photoView));
-  });
-  container.querySelectorAll('[data-photo-add]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const path = btn.dataset.photoAdd;
-      const current = getPath(draftObj, path) || [];
-      if(current.length >= 3) return showToast('Максимум 3 фото', true);
-      const urls = await pickPhoto();
-      if(!urls.length) return;
-      
-      let newPhotos = current.concat(urls);
-      if(newPhotos.length > 3) newPhotos = newPhotos.slice(0, 3);
-      setPath(draftObj, path, newPhotos);
-      rerenderFn();
-    });
-  });
-  container.querySelectorAll('[data-photo-del]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const path = btn.dataset.photoDel;
-      const idx = parseInt(btn.dataset.idx, 10);
-      const current = getPath(draftObj, path) || [];
-      current.splice(idx, 1);
-      setPath(draftObj, path, current);
-      rerenderFn();
-    });
-  });
-}
-
-/* ===================== RENDER: ADD FORM ===================== */
-function renderAddForm(isEdit=false){
+/* ===================== RENDER FORM ===================== */
+function renderForm(container, isEdit=false){
   const p = ensureShape(window.__addDraft || emptyPerson());
   window.__addDraft = p;
 
-  addFormContainer.innerHTML = `
+  container.innerHTML = `
     <div class="add-card">
       <div class="form-section-title">Основное</div>
       <div class="add-grid">
-        <div class="add-field full"><label>ФИО</label><input type="text" data-f="fullName" value="${escapeAttr(p.fullName)}" placeholder="Фамилия Имя"></div>
+        <div class="add-field"><label>Фамилия</label><input type="text" data-f="lastName" value="${escapeAttr(p.lastName)}" placeholder="Иванов"></div>
+        <div class="add-field"><label>Имя</label><input type="text" data-f="firstName" value="${escapeAttr(p.firstName)}" placeholder="Иван"></div>
         <div class="add-field full">
           <label>Отчество</label>
-          <input type="text" data-f="middleName" value="${escapeAttr(p.middleName)}" placeholder="Отчество" ${p.middleNameNone?'disabled':''}>
-          <label class="no-check"><input type="checkbox" data-chk="middleNameNone" ${p.middleNameNone?'checked':''}> Нету</label>
+          <input type="text" data-f="middleName" value="${escapeAttr(p.middleName)}" placeholder="Иванович" ${p.middleNameNone?'disabled':''}>
+          <label class="no-check"><input type="checkbox" data-chk="middleNameNone" ${p.middleNameNone?'checked':''}> Нет отчества</label>
         </div>
         <div class="add-field">
           <label>Пол</label>
@@ -830,14 +792,14 @@ function renderAddForm(isEdit=false){
     </div>
   `;
 
-  renderRepeaters(p);
-  renderGalleryAdd(p);
-  attachAddEvents(isEdit);
-  attachPhotoEvents(addFormContainer, p, () => renderAddForm(isEdit));
+  renderRepeaters(container, p);
+  renderGallery(container, p);
+  attachEvents(container, p, isEdit);
 }
 
-function renderRepeaters(p){
-  const ph = addFormContainer.querySelector('[data-rep="phones"]');
+/* ===================== RENDER REPEATERS ===================== */
+function renderRepeaters(container, p){
+  const ph = container.querySelector('[data-rep="phones"]');
   ph.innerHTML = p.phones.map((v,i) => `
     <div class="repeater-row small">
       <input type="tel" data-arr="phones" data-i="${i}" data-mask="phone" value="${escapeAttr(v)}" placeholder="+7 (___) ___-__-__">
@@ -845,7 +807,7 @@ function renderRepeaters(p){
       <button class="icon-del" data-del-rep="phones" data-i="${i}">✕</button>
     </div>`).join('');
 
-  const em = addFormContainer.querySelector('[data-rep="emails"]');
+  const em = container.querySelector('[data-rep="emails"]');
   em.innerHTML = p.emails.map((v,i) => `
     <div class="repeater-row small">
       <input type="email" data-arr="emails" data-i="${i}" value="${escapeAttr(v)}" placeholder="name@example.com">
@@ -853,7 +815,7 @@ function renderRepeaters(p){
       <button class="icon-del" data-del-rep="emails" data-i="${i}">✕</button>
     </div>`).join('');
 
-  const so = addFormContainer.querySelector('[data-rep="socials"]');
+  const so = container.querySelector('[data-rep="socials"]');
   so.innerHTML = p.socials.map((s,i) => `
     <div class="repeater-row small">
       <input type="text" data-arr="socials" data-i="${i}" data-k="type" value="${escapeAttr(s.type||'')}" placeholder="Соцсеть/игра">
@@ -863,60 +825,66 @@ function renderRepeaters(p){
     ${photoSlotHtml('socials.'+i+'.photo', s.photo, 'Фото')}
   `).join('');
 
-  const si = addFormContainer.querySelector('[data-rep="sisters"]');
+  const si = container.querySelector('[data-rep="sisters"]');
   si.innerHTML = p.sisters.map((s,i) => `
-    <div class="repeater-row small">
-      <input type="text" data-arr="sisters" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
-      <input type="text" data-arr="sisters" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
-      <button class="icon-del" data-del-rep="sisters" data-i="${i}">✕</button>
+    <div class="sub-block ${s.none?'disabled-block':''}" style="margin-top:.4rem">
+      <div class="repeater-row small">
+        <input type="text" data-arr="sisters" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО" ${s.none?'disabled':''}>
+        <input type="text" data-arr="sisters" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ" ${s.none?'disabled':''}>
+        <button class="icon-del" data-del-rep="sisters" data-i="${i}">✕</button>
+      </div>
+      ${photoSlotHtml('sisters.'+i+'.photo', s.photo, 'Фото')}
+      <label class="no-check"><input type="checkbox" data-chk-arr="sisters" data-i="${i}" ${s.none?'checked':''}> Нет сестры</label>
     </div>
-    <label class="no-check"><input type="checkbox" data-chk-arr="sisters" data-i="${i}" ${s.none?'checked':''}> Нету</label>
-    ${photoSlotHtml('sisters.'+i+'.photo', s.photo, 'Фото')}
   `).join('');
 
-  const br = addFormContainer.querySelector('[data-rep="brothers"]');
+  const br = container.querySelector('[data-rep="brothers"]');
   br.innerHTML = p.brothers.map((s,i) => `
-    <div class="repeater-row small">
-      <input type="text" data-arr="brothers" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО">
-      <input type="text" data-arr="brothers" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ">
-      <button class="icon-del" data-del-rep="brothers" data-i="${i}">✕</button>
+    <div class="sub-block ${s.none?'disabled-block':''}" style="margin-top:.4rem">
+      <div class="repeater-row small">
+        <input type="text" data-arr="brothers" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО" ${s.none?'disabled':''}>
+        <input type="text" data-arr="brothers" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ" ${s.none?'disabled':''}>
+        <button class="icon-del" data-del-rep="brothers" data-i="${i}">✕</button>
+      </div>
+      ${photoSlotHtml('brothers.'+i+'.photo', s.photo, 'Фото')}
+      <label class="no-check"><input type="checkbox" data-chk-arr="brothers" data-i="${i}" ${s.none?'checked':''}> Нет брата</label>
     </div>
-    <label class="no-check"><input type="checkbox" data-chk-arr="brothers" data-i="${i}" ${s.none?'checked':''}> Нету</label>
-    ${photoSlotHtml('brothers.'+i+'.photo', s.photo, 'Фото')}
   `).join('');
 
-  const ca = addFormContainer.querySelector('[data-rep="cars"]');
+  const ca = container.querySelector('[data-rep="cars"]');
   ca.innerHTML = p.cars.map((c,i) => `
-    <div class="plate-row" style="grid-template-columns: 1fr 1fr auto;">
-      <div class="add-field plate-wrap">
-        <label>Номер</label>
-        <span class="plate-badge">🚗</span>
-        <input type="text" data-arr="cars" data-i="${i}" data-k="plate" data-mask="plate" value="${escapeAttr(c.plate||'')}" placeholder="А123ВС777">
+    <div class="sub-block ${c.none?'disabled-block':''}" style="margin-top:.4rem">
+      <div class="plate-row" style="grid-template-columns: 1fr 1fr auto;">
+        <div class="add-field plate-wrap">
+          <label>Номер</label>
+          <span class="plate-badge">🚗</span>
+          <input type="text" data-arr="cars" data-i="${i}" data-k="plate" data-mask="plate" value="${escapeAttr(c.plate||'')}" placeholder="А123ВС777" ${c.none?'disabled':''}>
+        </div>
+        <div class="add-field">
+          <label>Марка</label>
+          <input type="text" data-arr="cars" data-i="${i}" data-k="model" value="${escapeAttr(c.model||'')}" placeholder="Toyota Camry" ${c.none?'disabled':''}>
+        </div>
+        <button class="icon-del" data-del-rep="cars" data-i="${i}" style="margin-bottom:2px">✕</button>
       </div>
-      <div class="add-field">
-        <label>Марка</label>
-        <input type="text" data-arr="cars" data-i="${i}" data-k="model" value="${escapeAttr(c.model||'')}" placeholder="Toyota Camry">
-      </div>
-      <button class="icon-del" data-del-rep="cars" data-i="${i}" style="margin-bottom:2px">✕</button>
+      ${photoSlotHtml('cars.'+i+'.photo', c.photo, 'Фото')}
+      <label class="no-check"><input type="checkbox" data-chk-arr="cars" data-i="${i}" ${c.none?'checked':''}> Нет машины</label>
     </div>
-    <label class="no-check"><input type="checkbox" data-chk-arr="cars" data-i="${i}" ${c.none?'checked':''}> Нету машины</label>
-    ${photoSlotHtml('cars.'+i+'.photo', c.photo, 'Фото')}
   `).join('');
 
-  const doc = addFormContainer.querySelector('[data-rep="documents"]');
+  const doc = container.querySelector('[data-rep="documents"]');
   doc.innerHTML = p.documents.map((d,i) => `
-    <div class="sub-block" style="margin-bottom:.6rem">
+    <div class="sub-block ${d.none?'disabled-block':''}" style="margin-bottom:.6rem">
       <div class="repeater-row small">
         <input type="text" data-arr="documents" data-i="${i}" data-k="label" value="${escapeAttr(d.label||'')}" placeholder="Название" readonly style="opacity:0.7;cursor:not-allowed">
         <input type="text" data-arr="documents" data-i="${i}" data-k="value" value="${escapeAttr(d.value||'')}" placeholder="Номер/серия" ${d.none?'disabled':''}>
         ${i >= 3 ? `<button class="icon-del" data-del-rep="documents" data-i="${i}">✕</button>` : `<span></span>`}
       </div>
-      <label class="no-check"><input type="checkbox" data-chk-arr="documents" data-i="${i}" ${d.none?'checked':''}> Нету</label>
       ${photoSlotHtml('documents.'+i+'.photo', d.photo, 'Фото')}
+      <label class="no-check"><input type="checkbox" data-chk-arr="documents" data-i="${i}" ${d.none?'checked':''}> Нету</label>
     </div>
   `).join('');
 
-  const cu = addFormContainer.querySelector('[data-rep="custom"]');
+  const cu = container.querySelector('[data-rep="custom"]');
   cu.innerHTML = p.custom.map((c,i) => `
     <div class="repeater-row tiny">
       <input type="text" data-arr="custom" data-i="${i}" data-k="key" value="${escapeAttr(c.key||'')}" placeholder="Название поля">
@@ -924,36 +892,33 @@ function renderRepeaters(p){
       <button class="icon-del" data-del-rep="custom" data-i="${i}">✕</button>
     </div>`).join('');
 
-  // masks
-  addFormContainer.querySelectorAll('[data-mask="phone"]').forEach(inp => {
+  container.querySelectorAll('[data-mask="phone"]').forEach(inp => {
     inp.addEventListener('input', () => { inp.value = normalizePhone(inp.value); });
   });
-  addFormContainer.querySelectorAll('[data-mask="birthdate"]').forEach(inp => {
+  container.querySelectorAll('[data-mask="birthdate"]').forEach(inp => {
     inp.addEventListener('input', () => { inp.value = normalizeBirthDate(inp.value); });
   });
-  addFormContainer.querySelectorAll('[data-mask="plate"]').forEach(inp => {
-    inp.addEventListener('input', () => {
-      inp.value = normalizePlate(inp.value);
-    });
+  container.querySelectorAll('[data-mask="plate"]').forEach(inp => {
+    inp.addEventListener('input', () => { inp.value = normalizePlate(inp.value); });
   });
 }
 
-function renderGalleryAdd(p){
-  const g = addFormContainer.querySelector('[data-gallery-add]');
+/* ===================== RENDER GALLERY ===================== */
+function renderGallery(container, p){
+  const g = container.querySelector('[data-gallery-add]');
   if(!g) return;
   g.innerHTML = (p.gallery||[]).map((item,i) => {
-    if(!item.src && !item.comment) {
-      return '';
-    }
+    if(!item.src && !item.comment) return '';
     return `<div class="gallery-item">
       ${item.src ? `<img src="${escapeAttr(item.src)}" data-photo-view="${escapeAttr(item.src)}" alt="">` : `<div style="height:130px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)">нет фото</div>`}
-      <div class="cap">${escapeHtml(item.comment||'')}</div>
+      <div class="cap"><input type="text" data-gallery-comment="${i}" value="${escapeAttr(item.comment||'')}" placeholder="Комментарий" style="padding:.2rem;font-size:.74rem;background:transparent;border:none;border-bottom:1px solid var(--border-light)"></div>
       <div class="ctl">
-        <button type="button" data-gallery-change="${i}">Заменить фото</button>
+        <button type="button" data-gallery-change="${i}">Заменить</button>
         <button type="button" data-gallery-del="${i}">Удалить</button>
       </div>
     </div>`;
   }).join('');
+
   g.querySelectorAll('[data-photo-view]').forEach(img => {
     img.addEventListener('click', () => openLightbox(img.dataset.photoView));
   });
@@ -963,7 +928,7 @@ function renderGalleryAdd(p){
       const urls = await pickPhoto();
       if(!urls.length) return;
       window.__addDraft.gallery[i].src = urls[0];
-      renderAddForm(window.__isEditMode);
+      renderForm(container, window.__isEditMode);
     });
   });
   g.querySelectorAll('[data-gallery-del]').forEach(btn => {
@@ -971,38 +936,46 @@ function renderGalleryAdd(p){
       const i = parseInt(btn.dataset.galleryDel,10);
       window.__addDraft.gallery.splice(i,1);
       if(!window.__addDraft.gallery.length) window.__addDraft.gallery = [{src:'', comment:''}];
-      renderAddForm(window.__isEditMode);
+      renderForm(container, window.__isEditMode);
+    });
+  });
+  g.querySelectorAll('[data-gallery-comment]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const i = parseInt(inp.dataset.galleryComment,10);
+      if(window.__addDraft.gallery[i]) window.__addDraft.gallery[i].comment = inp.value;
     });
   });
 }
 
-function attachAddEvents(isEdit){
+/* ===================== ATTACH EVENTS ===================== */
+function attachEvents(container, p, isEdit){
   window.__isEditMode = isEdit;
-  addFormContainer.querySelectorAll('[data-f]').forEach(el => {
+  
+  container.querySelectorAll('[data-f]').forEach(el => {
     el.addEventListener('input', () => { window.__addDraft[el.dataset.f] = el.value; });
   });
-  addFormContainer.querySelectorAll('[data-chk]').forEach(el => {
+  container.querySelectorAll('[data-chk]').forEach(el => {
     el.addEventListener('change', () => {
       window.__addDraft[el.dataset.chk] = el.checked;
-      renderAddForm(isEdit);
+      renderForm(container, isEdit);
     });
   });
-  addFormContainer.querySelectorAll('[data-chk-arr]').forEach(el => {
+  container.querySelectorAll('[data-chk-arr]').forEach(el => {
     el.addEventListener('change', () => {
       const arr = el.dataset.chkArr;
       const i = parseInt(el.dataset.i,10);
       window.__addDraft[arr][i].none = el.checked;
-      renderAddForm(isEdit);
+      renderForm(container, isEdit);
     });
   });
-  addFormContainer.querySelectorAll('[data-fam]').forEach(el => {
+  container.querySelectorAll('[data-fam]').forEach(el => {
     el.addEventListener('input', () => {
       const [k1,k2] = el.dataset.fam.split('.');
       window.__addDraft[k1] = window.__addDraft[k1] || {};
       window.__addDraft[k1][k2] = el.value;
     });
   });
-  addFormContainer.querySelectorAll('[data-arr]').forEach(el => {
+  container.querySelectorAll('[data-arr]').forEach(el => {
     el.addEventListener('input', () => {
       const arrName = el.dataset.arr;
       const i = parseInt(el.dataset.i,10);
@@ -1012,7 +985,7 @@ function attachAddEvents(isEdit){
       else window.__addDraft[arrName][i] = el.value;
     });
   });
-  addFormContainer.querySelectorAll('[data-del-rep]').forEach(btn => {
+  container.querySelectorAll('[data-del-rep]').forEach(btn => {
     btn.addEventListener('click', () => {
       const arr = btn.dataset.delRep;
       const i = parseInt(btn.dataset.i,10);
@@ -1022,18 +995,19 @@ function attachAddEvents(isEdit){
       } else {
         window.__addDraft[arr].splice(i,1);
       }
-      renderAddForm(isEdit);
+      renderForm(container, isEdit);
     });
   });
-  addFormContainer.querySelectorAll('[data-add-rep]').forEach(btn => {
+  container.querySelectorAll('[data-add-rep]').forEach(btn => {
     btn.addEventListener('click', () => {
       const arr = btn.dataset.addRep;
       if(!Array.isArray(window.__addDraft[arr])) window.__addDraft[arr] = [];
       window.__addDraft[arr].push(emptyItemFor(arr));
-      renderAddForm(isEdit);
+      renderForm(container, isEdit);
     });
   });
-  const addGalleryBtn = addFormContainer.querySelector('[data-add-gallery]');
+  
+  const addGalleryBtn = container.querySelector('[data-add-gallery]');
   if(addGalleryBtn){
     addGalleryBtn.addEventListener('click', async () => {
       const urls = await pickPhoto();
@@ -1043,14 +1017,42 @@ function attachAddEvents(isEdit){
       } else {
         window.__addDraft.gallery.push({ src: urls[0], comment: '' });
       }
-      renderAddForm(isEdit);
+      renderForm(container, isEdit);
     });
   }
-  
-  const saveBtn = addFormContainer.querySelector(isEdit ? '#modalSaveBtn' : '#addSaveBtn');
+
+  // Photo add/del (outside of gallery)
+  container.querySelectorAll('[data-photo-view]').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.dataset.photoView));
+  });
+  container.querySelectorAll('[data-photo-add]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const path = btn.dataset.photoAdd;
+      const current = getPath(window.__addDraft, path) || [];
+      if(current.length >= 3) return showToast('Максимум 3 фото', true);
+      const urls = await pickPhoto();
+      if(!urls.length) return;
+      let newPhotos = current.concat(urls);
+      if(newPhotos.length > 3) newPhotos = newPhotos.slice(0, 3);
+      setPath(window.__addDraft, path, newPhotos);
+      renderForm(container, isEdit);
+    });
+  });
+  container.querySelectorAll('[data-photo-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const path = btn.dataset.photoDel;
+      const idx = parseInt(btn.dataset.idx, 10);
+      const current = getPath(window.__addDraft, path) || [];
+      current.splice(idx, 1);
+      setPath(window.__addDraft, path, current);
+      renderForm(container, isEdit);
+    });
+  });
+
+  const saveBtn = container.querySelector(isEdit ? '#modalSaveBtn' : '#addSaveBtn');
   if(saveBtn){
     saveBtn.addEventListener('click', async () => {
-      const data = collectAddData();
+      const data = collectData(container);
       for(const e of data.emails){
         if(e && !isValidEmail(e)){ showToast('Неверный email: ' + e, true); return; }
       }
@@ -1063,6 +1065,7 @@ function attachAddEvents(isEdit){
         people.push(data);
       }
       renderPeople();
+      renderAlphabet();
       const ok = await commitPeople();
       showToast(ok ? 'Сохранено в Firebase' : 'Сохранено локально');
       
@@ -1070,20 +1073,20 @@ function attachAddEvents(isEdit){
         closeModal();
       } else {
         window.__addDraft = emptyPerson();
-        renderAddForm(false);
+        renderForm(container, false);
       }
     });
   }
   
-  const resetBtn = addFormContainer.querySelector('#addResetBtn');
+  const resetBtn = container.querySelector('#addResetBtn');
   if(resetBtn){
     resetBtn.addEventListener('click', () => {
       if(!confirm('Очистить форму?')) return;
       window.__addDraft = emptyPerson();
-      renderAddForm(false);
+      renderForm(container, false);
     });
   }
-  const cancelBtn = addFormContainer.querySelector('#modalCancelBtn');
+  const cancelBtn = container.querySelector('#modalCancelBtn');
   if(cancelBtn){
     cancelBtn.addEventListener('click', closeModal);
   }
@@ -1099,15 +1102,15 @@ function emptyItemFor(arr){
   return '';
 }
 
-function collectAddData(){
+function collectData(container){
   const p = ensureShape(window.__addDraft);
-  addFormContainer.querySelectorAll('[data-f]').forEach(el => { p[el.dataset.f] = el.value; });
-  addFormContainer.querySelectorAll('[data-fam]').forEach(el => {
+  container.querySelectorAll('[data-f]').forEach(el => { p[el.dataset.f] = el.value; });
+  container.querySelectorAll('[data-fam]').forEach(el => {
     const [k1,k2] = el.dataset.fam.split('.');
     p[k1] = p[k1] || {};
     p[k1][k2] = el.value;
   });
-  addFormContainer.querySelectorAll('[data-arr]').forEach(el => {
+  container.querySelectorAll('[data-arr]').forEach(el => {
     const arr = el.dataset.arr;
     const i = parseInt(el.dataset.i,10);
     const k = el.dataset.k;
@@ -1118,26 +1121,30 @@ function collectAddData(){
   return p;
 }
 
-/* ===================== RENDER: DATABASE ===================== */
+/* ===================== RENDER DATABASE ===================== */
 let currentLetterFilter = '';
 
 function computeFiltered(){
   let list = [...people];
-  if(searchQuery){
-    const q = searchQuery.toLowerCase();
-    list = list.filter(p => (p.fullName||'').toLowerCase().includes(q));
+  const searchQ = searchQuery.toLowerCase();
+  if(searchQ){
+    list = list.filter(p => ((p.lastName||'') + ' ' + (p.firstName||'') + ' ' + (p.middleName||'')).toLowerCase().includes(searchQ));
   }
   if(currentLetterFilter){
-    list = list.filter(p => (p.fullName||'').trim().toUpperCase().startsWith(currentLetterFilter));
+    list = list.filter(p => (p.lastName||'').trim().toUpperCase().startsWith(currentLetterFilter));
   }
-  list.sort((a,b) => (a.fullName||'').localeCompare(b.fullName||'','ru'));
+  list.sort((a,b) => {
+    const nameA = (a.lastName||'') + ' ' + (a.firstName||'');
+    const nameB = (b.lastName||'') + ' ' + (b.firstName||'');
+    return nameA.localeCompare(nameB,'ru');
+  });
   return list;
 }
 
 function renderAlphabet(){
   const letters = new Set();
   people.forEach(p => {
-    const first = (p.fullName||'').trim().charAt(0).toUpperCase();
+    const first = (p.lastName||'').trim().charAt(0).toUpperCase();
     if(first && /[А-ЯЁA-Z]/.test(first)) letters.add(first);
   });
   const sorted = Array.from(letters).sort((a,b)=>a.localeCompare(b,'ru'));
@@ -1168,7 +1175,7 @@ function renderPeople(){
   
   const groups = {};
   list.forEach(p => {
-    let first = (p.fullName||'').trim().charAt(0).toUpperCase();
+    let first = (p.lastName||'').trim().charAt(0).toUpperCase();
     if(!first || !/[А-ЯЁA-Z]/.test(first)) first = '#';
     if(!groups[first]) groups[first] = [];
     groups[first].push(p);
@@ -1183,7 +1190,8 @@ function renderPeople(){
     <div class="letter-group" data-letter="${L}">
       <div class="letter-title">${L}</div>
       ${groups[L].map(p => {
-        const initials = (p.fullName||'?').trim().split(/\s+/).map(x=>x[0]||'').slice(0,2).join('').toUpperCase() || '?';
+        const fullName = [p.lastName, p.firstName, p.middleNameNone ? '' : p.middleName].filter(Boolean).join(' ') || '(без имени)';
+        const initials = (p.lastName||'?').charAt(0).toUpperCase() + (p.firstName||'?').charAt(0).toUpperCase();
         const birth = p.birthDate || '';
         const place = p.address || '';
         const phone = (p.phones||[]).find(Boolean) || '';
@@ -1195,14 +1203,14 @@ function renderPeople(){
             <div class="person-summary" data-toggle="${escapeAttr(p.id)}">
               ${avatar}
               <div class="person-main">
-                <div class="person-name">${escapeHtml(p.fullName || '(без имени)')}</div>
+                <div class="person-name">${escapeHtml(fullName)}</div>
                 <div class="person-sub">${escapeHtml(birth || '—')}${place ? ' · ' + escapeHtml(place) : ''}</div>
               </div>
               <span class="chevron">▼</span>
             </div>
             <div class="person-quick">
               <div class="quick-grid">
-                <div class="quick-item"><div class="k">ФИО</div><div class="v ${p.fullName?'':'empty'}">${escapeHtml(p.fullName || 'не указано')}</div></div>
+                <div class="quick-item"><div class="k">ФИО</div><div class="v ${fullName?'':'empty'}">${escapeHtml(fullName || 'не указано')}</div></div>
                 <div class="quick-item"><div class="k">Дата рождения</div><div class="v ${birth?'':'empty'}">${escapeHtml(birth || 'не указана')}</div></div>
                 <div class="quick-item"><div class="k">Место проживания</div><div class="v ${place?'':'empty'}">${escapeHtml(place || 'не указано')}</div></div>
                 <div class="quick-item"><div class="k">Телефон</div><div class="v ${phone?'':'empty'}">${escapeHtml(phone || 'не указан')}</div></div>
@@ -1226,48 +1234,22 @@ function openModal(mode, personId){
   
   if(mode === 'edit'){
     modalTitle.textContent = 'Редактирование';
-    // Генерируем ту же самую форму, что и при создании, но в модалке
-    window.__addDraft = p;
-    // Меняем контейнер временно, чтобы отрендерить форму в модалку
-    const original = addFormContainer;
-    // Создаем форму прямо в modalBody
-    modalBody.innerHTML = '<div id="editFormTemp"></div>';
-    
-    // Подменяем глобальную переменную для рендера (костыль, но работает)
-    const realAddFormContainer = document.getElementById('addFormContainer');
-    
-    // Чтобы переиспользовать функцию, нам нужно отрендерить в modalBody
-    // Просто вызовем функцию, передав туда форму. Но функция использует const addFormContainer.
-    // Поэтому сделаем так: создадим форму в модалке вручную с помощью той же логики.
-    // Для простоты скопируем HTML из renderAddForm.
-    
-    // Вместо сложной подмены сделаем проще:
-    const tempDiv = document.createElement('div');
-    tempDiv.id = 'addFormContainer'; // Перезаписываем ID
+    window.__addDraft = deepClone(p);
     modalBody.innerHTML = '';
-    modalBody.appendChild(tempDiv);
-    
-    // Временно меняем ссылку (она const, так что используем переопределение окна, не сработает).
-    // Давайте просто отрендерим в tempDiv через глобальную функцию, которая будет использовать querySelector.
-    // Чтобы не ломать структуру, я просто вызову updateAddFormContainerDOM(tempDiv) неявно.
-    
-    // В JS нет возможности переопределить const, поэтому изменим подход:
-    // Мы отрендерим форму в отдельный элемент и используем его как контейнер.
-    // Для этого передадим контейнер в функцию.
-    
-    renderFormInto(tempDiv, p, true);
-    
-    modalFoot.innerHTML = ''; // Кнопки уже внутри формы
+    const formWrapper = document.createElement('div');
+    modalBody.appendChild(formWrapper);
+    renderForm(formWrapper, true);
+    modalFoot.style.display = 'none'; // Скрываем подвал, кнопки внутри формы
   } else {
-    modalTitle.textContent = p.fullName || 'Карта человека';
+    modalTitle.textContent = [p.lastName, p.firstName, p.middleNameNone ? '' : p.middleName].filter(Boolean).join(' ') || 'Карта человека';
     modalBody.innerHTML = buildView(p);
+    modalFoot.style.display = '';
     modalFoot.innerHTML = `
       <button class="btn btn-cancel" id="modalCloseFootBtn">Закрыть</button>
       <button class="btn btn-primary" id="modalEditBtn">Изменить</button>
     `;
     document.getElementById('modalCloseFootBtn').addEventListener('click', closeModal);
     document.getElementById('modalEditBtn').addEventListener('click', () => {
-      modalBody.innerHTML = '';
       openModal('edit', personId);
     });
   }
@@ -1275,75 +1257,17 @@ function openModal(mode, personId){
   document.body.style.overflow = 'hidden';
 }
 
-function renderFormInto(container, p, isEdit){
-  // Временная функция, которая делает то же, что renderAddForm, но в переданный контейнер
-  // Копируем логику, но меняем addFormContainer на локальную переменную
-  const originalAddFormContainer = addFormContainer;
-  
-  // Мы не можем переопределить const, поэтому используем eval-подобный подход через замыкание
-  // Проще всего продублировать вызов, но с передачей контейнера.
-  // Для этого сделаем глобальную переменную для контейнера.
-  window.__currentFormContainer = container;
-  
-  // Перепишем функции, чтобы они использовали window.__currentFormContainer, если он есть
-  // Но это требует переписывания всего... 
-  
-  // Самый простой и надежный путь: отрендерить через ту же функцию, но указать ей контейнер.
-  // Перепишем renderAddForm, чтобы она принимала контейнер.
-  renderAddFormImpl(container, p, isEdit);
+function closeModal(){
+  modalOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+  modalFoot.style.display = '';
+  window.__addDraft = emptyPerson();
+  renderForm(addFormContainer, false);
 }
 
-function renderAddFormImpl(container, p, isEdit){
-  // Это полная копия renderAddForm, но с параметром container
-  // Чтобы не дублировать 200 строк, я использую хак: временно подменяю innerHTML у addFormContainer
-  // и вызываю старую функцию, а потом переношу DOM. Но это грязно.
-  
-  // Чистый путь: вынести весь HTML-шаблон в отдельную функцию.
-  // Я уже сделал renderAddForm. Давайте просто вызовем её, но передадим контейнер через замыкание.
-  
-  // Так как addFormContainer — это const, я не могу его изменить.
-  // Решение: сохраним текущее содержимое addFormContainer, вызовем renderAddForm(), 
-  // а затем перенесем готовый DOM в модалку.
-  
-  const mainContainer = $('#addFormContainer'); // это const, ссылка на оригинал
-  
-  // Сохраним, что было в оригинале (обычно там пусто или форма)
-  const backup = mainContainer.innerHTML;
-  
-  // Отрендерим форму в оригинальный контейнер
-  window.__addDraft = p;
-  // Вызываем внутреннюю логику, которая заполняет addFormContainer
-  // Но renderAddForm уже определена и использует const addFormContainer.
-  // Я не могу ее переопределить. 
-  
-  // Ладно, самый простой способ: скопируем весь блок кода из renderAddForm сюда и заменим 
-  // addFormContainer на container. Это дублирование, но оно работает.
-  
-  // Для краткости кода в этом ответе, я просто вызову renderAddForm() и перенесу DOM.
-  // Это сработает, так как пользователь не увидит промежуточное состояние.
-  
-  renderAddForm(isEdit); // Отрисует в оригинальном addFormContainer
-  
-  // Переносим в модалку
-  container.innerHTML = addFormContainer.innerHTML;
-  
-  // Очищаем оригинал (чтобы не было дублей)
-  addFormContainer.innerHTML = '';
-  
-  // Теперь нужно перепривязать события к новому DOM.
-  // Так как attachAddEvents ищет элементы внутри addFormContainer, она их не найдет.
-  // Поэтому вызовем attachAddEvents с новым контейнером.
-  // Но attachAddEvents использует addFormContainer.
-  
-  // Придется переписать attachAddEvents, чтобы она принимала контейнер.
-  // Я сделаю это ниже.
-  
-  // Пока что просто вызову attachAddEvents, но она не сработает.
-  // Вместо этого я перепишу attachAddEvents, чтобы она использовала container.
-}
-
-/* ===================== VIEW (FULL CARD) ===================== */
+/* ===================== VIEW ===================== */
 function buildView(p){
+  const fullName = [p.lastName, p.firstName, p.middleNameNone ? '' : p.middleName].filter(Boolean).join(' ');
   const phones = (p.phones||[]).filter(Boolean);
   const emails = (p.emails||[]).filter(Boolean);
   const socials = (p.socials||[]).filter(s => s.type || s.value || (s.photo && s.photo.length));
@@ -1375,8 +1299,7 @@ function buildView(p){
     ${p.photo && p.photo.length ? `<div class="full" style="text-align:center;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
       ${p.photo.map(src=>`<img src="${escapeAttr(src)}" data-photo-view="${escapeAttr(src)}" style="max-width:150px;max-height:150px;border-radius:.6rem;cursor:pointer;border:1px solid var(--border-light)">`).join('')}
     </div>` : ''}
-    ${row('ФИО', p.fullName)}
-    ${row('Отчество', p.middleNameNone ? 'Нету' : p.middleName)}
+    ${row('ФИО', fullName)}
     ${row('Пол', p.gender)}
     ${row('Дата рождения', p.birthDate)}
     ${row('Место проживания', p.address)}
@@ -1444,20 +1367,7 @@ function buildView(p){
   `;
 }
 
-function closeModal(){
-  modalOverlay.classList.remove('open');
-  document.body.style.overflow = '';
-  // Восстанавливаем оригинальный контейнер, если он был очищен
-  if(!$('#addFormContainer')){
-    const d = document.createElement('div');
-    d.id = 'addFormContainer';
-    $('#view-add').appendChild(d);
-  }
-  window.__addDraft = emptyPerson();
-  renderAddForm();
-}
-
-/* ===================== EVENTS: GLOBAL ===================== */
+/* ===================== GLOBAL EVENTS ===================== */
 hamburger.addEventListener('click', () => {
   sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('show'); hamburger.classList.toggle('open');
 });
@@ -1477,10 +1387,11 @@ sidebarItems.forEach(item => {
     if(views[view]) views[view].classList.add('active');
     sidebar.classList.remove('open'); sidebarOverlay.classList.remove('show'); hamburger.classList.remove('open');
     appSubhead.textContent = view === 'add' ? 'Добавление новой записи' : 'База данных';
-    if(view === 'db') renderPeople();
-    if(view === 'add'){ window.__addDraft = window.__addDraft || emptyPerson(); renderAddForm(); }
+    if(view === 'db') { renderAlphabet(); renderPeople(); }
+    if(view === 'add'){ window.__addDraft = window.__addDraft || emptyPerson(); renderForm(addFormContainer, false); }
   });
 });
+
 searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim(); renderPeople(); });
 newFromDbBtn.addEventListener('click', () => {
   window.__addDraft = emptyPerson();
@@ -1490,7 +1401,7 @@ newFromDbBtn.addEventListener('click', () => {
   Object.values(views).forEach(v => v.classList.remove('active'));
   views.add.classList.add('active');
   appSubhead.textContent = 'Добавление новой записи';
-  renderAddForm();
+  renderForm(addFormContainer, false);
 });
 
 peopleContainer.addEventListener('click', async (e) => {
@@ -1530,7 +1441,7 @@ modalBody.addEventListener('click', (e) => {
 
 /* ===================== START ===================== */
 window.__addDraft = emptyPerson();
-renderAddForm();
+renderForm(addFormContainer, false);
 renderAlphabet();
 renderPeople();
 loadInitial();
