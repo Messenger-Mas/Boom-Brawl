@@ -35,8 +35,6 @@ body{font-family:'Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background
 .sidebar-item .icon{font-size:1.05rem;width:1.3rem;text-align:center}
 .sidebar-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border);font-size:.72rem;
   color:var(--text-muted);padding:.8rem .7rem;word-break:break-word;line-height:1.5}
-.sidebar-footer .support-link{color:var(--blue);cursor:pointer;text-decoration:underline}
-.sidebar-footer .support-link:hover{color:#60a5fa}
 .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:.2s ease;z-index:450}
 .sidebar-overlay.show{opacity:1;visibility:visible}
 .hamburger{position:fixed;top:1rem;left:1rem;z-index:600;width:44px;height:44px;border-radius:.6rem;
@@ -113,15 +111,9 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .icon-del{background:transparent;border:1px solid var(--border-light);color:var(--danger);border-radius:.45rem;
   width:38px;height:38px;cursor:pointer;font-size:1rem;transition:.15s;flex-shrink:0}
 .icon-del:hover{background:var(--danger-bg);border-color:rgba(239,68,68,.4)}
-
-/* doc label */
 .doc-label{display:block;font-size:.75rem;font-weight:700;color:var(--text-secondary);margin-bottom:.35rem;letter-spacing:.02em}
-
-/* no-checkbox */
 .no-check{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;font-size:.8rem;color:var(--text-secondary);cursor:pointer;user-select:none}
 .no-check input{width:1.1rem;height:1.1rem;accent-color:var(--emerald);cursor:pointer}
-
-/* multi-photo */
 .photo-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.4rem}
 .photo-thumb-wrap{position:relative;width:80px;height:80px;border-radius:.55rem;overflow:hidden;border:1px solid var(--border-light);background:var(--black-elevated);flex-shrink:0}
 .photo-thumb-wrap img{width:100%;height:100%;object-fit:cover;cursor:pointer}
@@ -131,16 +123,12 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .photo-add-btn{width:80px;height:80px;border-radius:.55rem;border:1px dashed var(--border-light);background:transparent;
   color:var(--text-muted);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:.7rem;gap:.2rem}
 .photo-add-btn:hover{background:var(--black-card);border-color:var(--emerald);color:var(--emerald)}
-
-/* gallery */
 .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem}
 .gallery-item{background:var(--black-elevated);border:1px solid var(--border-light);border-radius:.6rem;overflow:hidden;display:flex;flex-direction:column}
 .gallery-item img{width:100%;height:130px;object-fit:cover;cursor:pointer;background:var(--black-card)}
 .gallery-item .cap{font-size:.74rem;color:var(--text-secondary);padding:.4rem .55rem;word-break:break-word;flex:1}
 .gallery-item .ctl{display:flex;justify-content:space-between;padding:.25rem .4rem .4rem}
 .gallery-item .ctl button{background:none;border:none;cursor:pointer;font-size:.7rem;color:var(--danger);text-decoration:underline}
-
-/* plate */
 .plate-row{display:grid;grid-template-columns:1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.5rem}
 .plate-wrap{position:relative}
 .plate-wrap input{padding-left:2.2rem}
@@ -154,13 +142,10 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .list-stats{font-size:.78rem;color:var(--text-muted);padding:.4rem .8rem;background:var(--black-card);
   border-radius:.5rem;border:1px solid var(--border-light);white-space:nowrap}
 .list-stats b{color:var(--emerald-light)}
-
-/* alphabet nav */
 .alphabet-nav{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem;padding:.5rem;background:var(--black-card);border-radius:.6rem;border:1px solid var(--border-light)}
 .alphabet-nav button{background:none;border:none;color:var(--text-secondary);font-weight:700;font-size:.85rem;padding:.3rem .6rem;border-radius:.4rem;cursor:pointer;transition:.15s}
 .alphabet-nav button:hover{background:var(--black-elevated);color:var(--emerald)}
 .alphabet-nav button.active{background:rgba(16,185,129,.15);color:var(--emerald-light);border:1px solid rgba(16,185,129,.4)}
-
 .people-list{display:flex;flex-direction:column;gap:.6rem}
 .letter-group{margin-bottom:1.2rem}
 .letter-title{font-size:1.2rem;font-weight:800;color:var(--emerald);margin-bottom:.5rem;padding-bottom:.2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--black-soft);z-index:10}
@@ -182,6 +167,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .quick-item .k{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:700;margin-bottom:.15rem}
 .quick-item .v{color:var(--text-primary);word-break:break-word}
 .quick-item .v.empty{color:var(--text-muted);font-style:italic}
+.quick-item .v.updated{color:var(--emerald-light);font-weight:600}
 .quick-actions{margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap}
 
 /* ===== MODAL ===== */
@@ -217,7 +203,6 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
   .repeater-row{grid-template-columns:1fr;}
   .plate-row{grid-template-columns:1fr;}
 }
-/* lightbox */
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:2000;display:none;
   align-items:center;justify-content:center;padding:1rem}
 .lightbox.open{display:flex}
@@ -225,7 +210,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .lightbox .close{position:absolute;top:1rem;right:1rem;background:var(--black-elevated);border:1px solid var(--border-light);
   color:var(--text-primary);width:44px;height:44px;border-radius:.6rem;font-size:1.3rem;cursor:pointer}
 
-/* support modal */
+/* support / settings / users */
 .support-panel{max-width:560px}
 .support-contacts{font-size:.88rem;color:var(--text-primary);background:var(--black-card);border:1px solid var(--border-light);
   border-radius:.6rem;padding:.8rem 1rem;margin-bottom:.8rem;line-height:1.7}
@@ -240,6 +225,39 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .chat-input-row input{flex:1}
 .support-uid{font-size:.7rem;color:var(--text-muted);margin-top:.6rem;word-break:break-all}
 .support-uid b{color:var(--blue)}
+.uid-row{display:flex;align-items:center;gap:.6rem;background:var(--black-card);border:1px solid var(--border-light);
+  border-radius:.6rem;padding:.7rem .9rem;margin-bottom:.8rem;word-break:break-all}
+.uid-row code{font-size:.8rem;color:var(--blue);flex:1}
+.copy-btn{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);color:var(--blue);
+  padding:.35rem .7rem;border-radius:.45rem;font-size:.75rem;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.copy-btn:hover{background:rgba(59,130,246,.25)}
+.badge{display:inline-block;background:var(--danger);color:#fff;border-radius:50%;min-width:20px;height:20px;
+  padding:0 5px;font-size:.7rem;font-weight:700;line-height:20px;text-align:center;margin-left:auto}
+.user-list{display:flex;flex-direction:column;gap:.5rem}
+.user-item{display:flex;align-items:center;gap:.7rem;padding:.7rem .9rem;background:var(--black-card);
+  border:1px solid var(--border-light);border-radius:.6rem;cursor:pointer;transition:.15s}
+.user-item:hover{border-color:rgba(16,185,129,.4);background:var(--black-elevated)}
+.user-item.unread{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.35)}
+.status-dot{width:.6rem;height:.6rem;border-radius:50%;flex-shrink:0}
+.status-dot.online{background:var(--emerald);box-shadow:0 0 6px var(--emerald)}
+.status-dot.offline{background:var(--danger)}
+.status-dot.never{background:var(--text-muted)}
+.user-item .info{flex:1;min-width:0}
+.user-item .name{font-size:.85rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-item .sub{font-size:.7rem;color:var(--text-muted)}
+.users-header{font-size:.82rem;color:var(--text-secondary);margin-bottom:.8rem;display:flex;gap:1rem;flex-wrap:wrap}
+.users-header b{color:var(--emerald-light)}
+.back-btn{background:transparent;border:none;color:var(--emerald-light);font-size:1.2rem;cursor:pointer;margin-right:.4rem}
+.user-chat-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem}
+.user-chat-head .uid{font-size:.72rem;color:var(--text-muted);word-break:break-all;flex:1}
+.ban-btn{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:var(--danger);
+  padding:.35rem .7rem;border-radius:.45rem;font-size:.75rem;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.15s}
+.ban-btn:hover{background:rgba(239,68,68,.25)}
+.ban-btn.unban{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.4);color:var(--emerald-light)}
+.ban-btn.unban:hover{background:rgba(16,185,129,.25)}
+.ban-label{font-size:.7rem;color:var(--danger);font-weight:700}
+.readonly-banner{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);color:var(--amber);
+  padding:.7rem 1rem;border-radius:.6rem;margin-bottom:1rem;font-size:.85rem}
 </style>
 </head>
 <body>
@@ -253,8 +271,10 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
   <nav class="sidebar-nav">
     <div class="sidebar-item active" data-view="add"><span class="icon">➕</span><span>Добавить данные</span></div>
     <div class="sidebar-item" data-view="db"><span class="icon">🗄️</span><span>База данных</span></div>
+    <div class="sidebar-item" data-view="users" id="usersNavItem" style="display:none"><span class="icon">👥</span><span>Пользователи</span></div>
+    <div class="sidebar-item" data-view="support" id="supportNavItem"><span class="icon">💬</span><span>Поддержка</span></div>
+    <div class="sidebar-item" data-view="settings"><span class="icon">⚙️</span><span>Настройки</span></div>
   </nav>
-  <div class="sidebar-footer" id="sidebarFooter">По всем вопросам и ошибкам обращаться <span class="support-link" id="supportLink">сюда</span></div>
 </aside>
 
 <div class="app">
@@ -263,6 +283,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
     <div class="subhead" id="appSubhead">Добавление новой записи</div>
     <div class="sync-status"><span class="sync-dot" id="syncDot"></span><span id="syncText">Инициализация...</span></div>
   </div>
+  <div id="readonlyBanner" class="readonly-banner" style="display:none"></div>
   <div class="view active" id="view-add"><div id="addFormContainer"></div></div>
   <div class="view" id="view-db">
     <div class="toolbar">
@@ -273,6 +294,9 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
     <div class="alphabet-nav" id="alphabetNav"></div>
     <div id="peopleContainer"><div class="empty-state">Загрузка...</div></div>
   </div>
+  <div class="view" id="view-support"></div>
+  <div class="view" id="view-settings"></div>
+  <div class="view" id="view-users"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -292,7 +316,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, get, push, query, orderByChild } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js';
+import { getDatabase, ref, set, onValue, get, push, remove, update } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0FYjnMg30jS9D2jeJ-EVTKt5_UU5PfCw",
@@ -307,9 +331,10 @@ const firebaseConfig = {
 
 /* ============================================================
    ВПИШИТЕ СВОЙ UID СЮДА, ЧТОБЫ СТАТЬ АДМИНОМ.
-   Свой UID вы увидите в окне поддержки (внизу, синим).
+   Свой UID вы увидите в окне «Настройки».
+   Можно несколько через запятую: "uid1","uid2"
    ============================================================ */
-const ADMIN_UID = "u_mwzd0omk_fduirahz","u_mwzdi8a8_9l79d1og"; // например: "abc123def456"
+const ADMIN_UID = ["u_mwzd0omk_fduirahz","u_mwzdi8a8_9l79d1og"];
 
 let app, db, firebaseReady = false;
 const syncDot = document.getElementById('syncDot');
@@ -326,10 +351,10 @@ catch(e){ console.error(e); setSyncStatus('offline','Firebase недоступе
 
 const ROOT = 'people';
 const SUPPORT_ROOT = 'support_messages';
+const USERS_ROOT = 'users';
 const LOCAL_KEY = 'people_cache_v5';
 const UID_KEY = 'site_user_uid';
 
-/* ---- user uid (стабильный) ---- */
 function getOrCreateUid(){
   let uid = localStorage.getItem(UID_KEY);
   if(!uid){
@@ -339,15 +364,18 @@ function getOrCreateUid(){
   return uid;
 }
 const MY_UID = getOrCreateUid();
-const IS_ADMIN = ADMIN_UID && MY_UID === ADMIN_UID;
+const IS_ADMIN = Array.isArray(ADMIN_UID) && ADMIN_UID.includes(MY_UID);
 
 let people = [];
 let supportMessages = [];
+let usersMap = {};
 let searchQuery = '';
 let unsubscribe = null;
 let unsubscribeSupport = null;
+let unsubscribeUsers = null;
 let localWriteTs = 0;
 let pendingWrite = false;
+let supportViewState = { mode: 'list', targetUid: null };
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
@@ -357,7 +385,13 @@ const sidebarOverlay = $('#sidebarOverlay');
 const hamburger = $('#hamburger');
 const sidebarItems = $$('.sidebar-item');
 const appSubhead = $('#appSubhead');
-const views = { add: $('#view-add'), db: $('#view-db') };
+const views = {
+  add: $('#view-add'),
+  db: $('#view-db'),
+  support: $('#view-support'),
+  settings: $('#view-settings'),
+  users: $('#view-users')
+};
 const addFormContainer = $('#addFormContainer');
 const peopleContainer = $('#peopleContainer');
 const searchInput = $('#searchInput');
@@ -376,7 +410,49 @@ const lightbox = $('#lightbox');
 const lightboxImg = $('#lightboxImg');
 const lightboxClose = $('#lightboxClose');
 const sidebarCloseBtn = $('#sidebarCloseBtn');
-const supportLink = $('#supportLink');
+const usersNavItem = $('#usersNavItem');
+const readonlyBanner = $('#readonlyBanner');
+
+/* ===================== PERMISSIONS ===================== */
+function myBanStatus(){
+  const u = usersMap[MY_UID];
+  return (u && u.ban) || '';
+}
+function canEdit(){
+  if(IS_ADMIN) return true;
+  return myBanStatus() !== 'all' && myBanStatus() !== 'edit';
+}
+function canView(){
+  if(IS_ADMIN) return true;
+  return myBanStatus() !== 'all';
+}
+function applyPermissions(){
+  usersNavItem.style.display = IS_ADMIN ? '' : 'none';
+  const ban = myBanStatus();
+  if(ban === 'all'){
+    readonlyBanner.style.display = 'block';
+    readonlyBanner.textContent = 'Вы заблокированы: не можете просматривать базу, создавать записи и писать в поддержку.';
+    ['add','db','support'].forEach(v => {
+      const item = [...sidebarItems].find(i => i.dataset.view === v);
+      if(item) item.style.display = 'none';
+    });
+  } else if(ban === 'edit'){
+    readonlyBanner.style.display = 'block';
+    readonlyBanner.textContent = 'Вам запрещено изменять базу и создавать записи. Доступен только просмотр.';
+    ['add','db','support'].forEach(v => {
+      const item = [...sidebarItems].find(i => i.dataset.view === v);
+      if(item) item.style.display = '';
+    });
+    newFromDbBtn.style.display = 'none';
+  } else {
+    readonlyBanner.style.display = 'none';
+    ['add','db','support'].forEach(v => {
+      const item = [...sidebarItems].find(i => i.dataset.view === v);
+      if(item) item.style.display = '';
+    });
+    newFromDbBtn.style.display = '';
+  }
+}
 
 /* ===================== UTILS ===================== */
 let toastTimer;
@@ -489,6 +565,7 @@ function objToPeople(obj){
 
 /* ===================== FIREBASE SYNC ===================== */
 async function commitPeople(){
+  if(!canEdit()){ showToast('Нет прав на изменение', true); return false; }
   if(!firebaseReady || !db){ saveLocal(); showToast('Сохранено локально (Firebase недоступен)', true); return false; }
   pendingWrite = true;
   try {
@@ -523,7 +600,7 @@ function subscribe(){
     if(pendingWrite) return;
     const remote = objToPeople(snap.val());
     if(remote.length === 0 && people.length > 0 && localWriteTs === 0){
-      commitPeople(); return;
+      if(canEdit()) commitPeople(); return;
     }
     if(arraysEqualByIdSet(people, remote)){
       people = remote; saveLocal(); renderPeople(); setSyncStatus('online','Синхронизировано'); return;
@@ -540,8 +617,46 @@ function subscribeSupport(){
   unsubscribeSupport = onValue(ref(db, SUPPORT_ROOT), snap => {
     const val = snap.val() || {};
     supportMessages = Object.values(val).sort((a,b) => (a.ts||0) - (b.ts||0));
-    if(modalPanel.dataset.mode === 'support') renderSupportBody();
+    if(views.support.classList.contains('active')) renderSupportView();
   }, err => { console.error(err); });
+}
+
+function subscribeUsers(){
+  if(!firebaseReady || !db) return;
+  if(unsubscribeUsers) unsubscribeUsers();
+  unsubscribeUsers = onValue(ref(db, USERS_ROOT), snap => {
+    usersMap = snap.val() || {};
+    applyPermissions();
+    if(views.support.classList.contains('active')) renderSupportView();
+    if(views.users.classList.contains('active')) renderUsersView();
+  }, err => { console.error(err); });
+}
+
+async function registerMe(){
+  if(!firebaseReady || !db) return;
+  try {
+    const meRef = ref(db, USERS_ROOT + '/' + MY_UID);
+    const snap = await get(meRef);
+    const now = Date.now();
+    if(!snap.exists()){
+      await set(meRef, {
+        uid: MY_UID,
+        createdAt: now,
+        lastSeen: now,
+        online: true
+      });
+    } else {
+      await update(meRef, { lastSeen: now, online: true });
+    }
+    const onlineRef = ref(db, USERS_ROOT + '/' + MY_UID + '/online');
+    onValue(ref(db, '.info/connected'), s => {
+      if(s.val()) set(onlineRef, true);
+      else set(onlineRef, false);
+    });
+    window.addEventListener('beforeunload', () => {
+      try { set(ref(db, USERS_ROOT + '/' + MY_UID + '/online'), false); } catch(e){}
+    });
+  } catch(e){ console.error(e); }
 }
 
 async function loadInitial(){
@@ -553,12 +668,14 @@ async function loadInitial(){
       const remote = objToPeople(snap.val());
       if(remote.length){
         people = remote; saveLocal(); renderPeople();
-      } else if(people.length){
+      } else if(people.length && canEdit()){
         await commitPeople();
       }
     } catch(e){ console.error(e); }
     subscribe();
     subscribeSupport();
+    subscribeUsers();
+    registerMe();
     onValue(ref(db, '.info/connected'), s => {
       if(s.val()) setSyncStatus('online','Подключено');
       else setSyncStatus('offline','Нет соединения');
@@ -597,7 +714,7 @@ function emptyPerson(){
     custom: [{key:'', value:''}],
     gallery: [{src:'', comment:''}],
     createdAt: Date.now(),
-    updatedAt: Date.now()
+    updatedAt: 0
   };
 }
 function ensureShape(p){
@@ -720,28 +837,29 @@ function getPath(obj, path){
 function renderForm(container, isEdit=false){
   const p = ensureShape(window.__addDraft || emptyPerson());
   window.__addDraft = p;
+  const ro = !canEdit();
 
   container.innerHTML = `
     <div class="add-card">
       <div class="form-section-title">Основное</div>
       <div class="add-grid">
-        <div class="add-field"><label>Фамилия</label><input type="text" data-f="lastName" value="${escapeAttr(p.lastName)}" placeholder="Иванов"></div>
-        <div class="add-field"><label>Имя</label><input type="text" data-f="firstName" value="${escapeAttr(p.firstName)}" placeholder="Иван"></div>
+        <div class="add-field"><label>Фамилия</label><input type="text" data-f="lastName" value="${escapeAttr(p.lastName)}" placeholder="Иванов" ${ro?'disabled':''}></div>
+        <div class="add-field"><label>Имя</label><input type="text" data-f="firstName" value="${escapeAttr(p.firstName)}" placeholder="Иван" ${ro?'disabled':''}></div>
         <div class="add-field full">
           <label>Отчество</label>
-          <input type="text" data-f="middleName" value="${escapeAttr(p.middleName)}" placeholder="Иванович" ${p.middleNameNone?'disabled':''}>
-          <label class="no-check"><input type="checkbox" data-chk="middleNameNone" ${p.middleNameNone?'checked':''}> Нет отчества</label>
+          <input type="text" data-f="middleName" value="${escapeAttr(p.middleName)}" placeholder="Иванович" ${(p.middleNameNone||ro)?'disabled':''}>
+          <label class="no-check"><input type="checkbox" data-chk="middleNameNone" ${p.middleNameNone?'checked':''} ${ro?'disabled':''}> Нет отчества</label>
         </div>
         <div class="add-field">
           <label>Пол</label>
-          <select data-f="gender">
+          <select data-f="gender" ${ro?'disabled':''}>
             <option value="" ${!p.gender?'selected':''}>—</option>
             <option value="М" ${p.gender==='М'?'selected':''}>Мужской</option>
             <option value="Ж" ${p.gender==='Ж'?'selected':''}>Женский</option>
           </select>
         </div>
-        <div class="add-field"><label>Дата рождения</label><input type="text" data-f="birthDate" data-mask="birthdate" value="${escapeAttr(p.birthDate)}" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric"></div>
-        <div class="add-field full"><label>Место проживания (одной строкой)</label><input type="text" data-f="address" value="${escapeAttr(p.address)}" placeholder="Страна, город, область, улица, дом, кв."></div>
+        <div class="add-field"><label>Дата рождения</label><input type="text" data-f="birthDate" data-mask="birthdate" value="${escapeAttr(p.birthDate)}" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric" ${ro?'disabled':''}></div>
+        <div class="add-field full"><label>Место проживания (одной строкой)</label><input type="text" data-f="address" value="${escapeAttr(p.address)}" placeholder="Страна, город, область, улица, дом, кв." ${ro?'disabled':''}></div>
       </div>
     </div>
 
@@ -755,28 +873,28 @@ function renderForm(container, isEdit=false){
       <div class="sub-block">
         <div class="sub-block-head">Телефоны</div>
         <div data-rep="phones"></div>
-        <button class="btn btn-secondary btn-sm" data-add-rep="phones">+ Добавить телефон</button>
+        <button class="btn btn-secondary btn-sm" data-add-rep="phones" ${ro?'disabled':''}>+ Добавить телефон</button>
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Email</div>
         <div data-rep="emails"></div>
-        <button class="btn btn-secondary btn-sm" data-add-rep="emails">+ Добавить email</button>
+        <button class="btn btn-secondary btn-sm" data-add-rep="emails" ${ro?'disabled':''}>+ Добавить email</button>
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Соцсети / Игры</div>
         <div data-rep="socials"></div>
-        <button class="btn btn-secondary btn-sm" data-add-rep="socials">+ Добавить соцсеть или игру</button>
+        <button class="btn btn-secondary btn-sm" data-add-rep="socials" ${ro?'disabled':''}>+ Добавить соцсеть или игру</button>
       </div>
     </div>
 
     <div class="add-card">
       <div class="form-section-title">Биография</div>
       <div class="add-grid">
-        <div class="add-field full"><label>Общее описание</label><textarea data-f="description" rows="3">${escapeHtml(p.description)}</textarea></div>
-        <div class="add-field"><label>Спорт</label><textarea data-f="sport" rows="2">${escapeHtml(p.sport)}</textarea></div>
-        <div class="add-field"><label>Друзья</label><textarea data-f="friends" rows="2">${escapeHtml(p.friends)}</textarea></div>
-        <div class="add-field"><label>Отношения</label><textarea data-f="relations" rows="2">${escapeHtml(p.relations)}</textarea></div>
-        <div class="add-field"><label>Заметки</label><textarea data-f="notes" rows="2">${escapeHtml(p.notes)}</textarea></div>
+        <div class="add-field full"><label>Общее описание</label><textarea data-f="description" rows="3" ${ro?'disabled':''}>${escapeHtml(p.description)}</textarea></div>
+        <div class="add-field"><label>Спорт</label><textarea data-f="sport" rows="2" ${ro?'disabled':''}>${escapeHtml(p.sport)}</textarea></div>
+        <div class="add-field"><label>Друзья</label><textarea data-f="friends" rows="2" ${ro?'disabled':''}>${escapeHtml(p.friends)}</textarea></div>
+        <div class="add-field"><label>Отношения</label><textarea data-f="relations" rows="2" ${ro?'disabled':''}>${escapeHtml(p.relations)}</textarea></div>
+        <div class="add-field"><label>Заметки</label><textarea data-f="notes" rows="2" ${ro?'disabled':''}>${escapeHtml(p.notes)}</textarea></div>
       </div>
     </div>
 
@@ -785,28 +903,28 @@ function renderForm(container, isEdit=false){
       <div class="sub-block">
         <div class="sub-block-head">Мама</div>
         <div class="repeater-row small" data-family="mother">
-          <input type="text" data-fam="mother.fullName" value="${escapeAttr(p.mother.fullName)}" placeholder="ФИО">
-          <input type="text" data-fam="mother.birthDate" data-mask="birthdate" value="${escapeAttr(p.mother.birthDate)}" placeholder="ДД.ММ.ГГГГ">
+          <input type="text" data-fam="mother.fullName" value="${escapeAttr(p.mother.fullName)}" placeholder="ФИО" ${ro?'disabled':''}>
+          <input type="text" data-fam="mother.birthDate" data-mask="birthdate" value="${escapeAttr(p.mother.birthDate)}" placeholder="ДД.ММ.ГГГГ" ${ro?'disabled':''}>
         </div>
         ${photoSlotHtml('mother.photo', p.mother.photo, 'Фото')}
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Папа</div>
         <div class="repeater-row small" data-family="father">
-          <input type="text" data-fam="father.fullName" value="${escapeAttr(p.father.fullName)}" placeholder="ФИО">
-          <input type="text" data-fam="father.birthDate" data-mask="birthdate" value="${escapeAttr(p.father.birthDate)}" placeholder="ДД.ММ.ГГГГ">
+          <input type="text" data-fam="father.fullName" value="${escapeAttr(p.father.fullName)}" placeholder="ФИО" ${ro?'disabled':''}>
+          <input type="text" data-fam="father.birthDate" data-mask="birthdate" value="${escapeAttr(p.father.birthDate)}" placeholder="ДД.ММ.ГГГГ" ${ro?'disabled':''}>
         </div>
         ${photoSlotHtml('father.photo', p.father.photo, 'Фото')}
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Сёстры</div>
         <div data-rep="sisters"></div>
-        <button class="btn btn-secondary btn-sm" data-add-rep="sisters">+ Добавить сестру</button>
+        <button class="btn btn-secondary btn-sm" data-add-rep="sisters" ${ro?'disabled':''}>+ Добавить сестру</button>
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Братья</div>
         <div data-rep="brothers"></div>
-        <button class="btn btn-secondary btn-sm" data-add-rep="brothers">+ Добавить брата</button>
+        <button class="btn btn-secondary btn-sm" data-add-rep="brothers" ${ro?'disabled':''}>+ Добавить брата</button>
       </div>
     </div>
 
@@ -815,7 +933,7 @@ function renderForm(container, isEdit=false){
       <div class="sub-block">
         <div class="sub-block-head">Автомобили</div>
         <div data-rep="cars"></div>
-        <button class="btn btn-secondary btn-sm" data-add-rep="cars">+ Добавить автомобиль</button>
+        <button class="btn btn-secondary btn-sm" data-add-rep="cars" ${ro?'disabled':''}>+ Добавить автомобиль</button>
       </div>
       <div class="sub-block">
         <div class="sub-block-head">Документы (Полис, Паспорт, Свидетельство)</div>
@@ -828,29 +946,29 @@ function renderForm(container, isEdit=false){
       <div class="add-grid">
         <div class="add-field full">
           <label>Аллергии</label>
-          <input type="text" data-f="allergies" value="${escapeAttr(p.allergies)}" ${p.allergiesNone?'disabled':''}>
-          <label class="no-check"><input type="checkbox" data-chk="allergiesNone" ${p.allergiesNone?'checked':''}> Нету</label>
+          <input type="text" data-f="allergies" value="${escapeAttr(p.allergies)}" ${(p.allergiesNone||ro)?'disabled':''}>
+          <label class="no-check"><input type="checkbox" data-chk="allergiesNone" ${p.allergiesNone?'checked':''} ${ro?'disabled':''}> Нету</label>
         </div>
-        <div class="add-field"><label>Группа здоровья</label><input type="text" data-f="healthGroup" value="${escapeAttr(p.healthGroup)}"></div>
-        <div class="add-field"><label>Группа крови</label><input type="text" data-f="bloodType" value="${escapeAttr(p.bloodType)}" placeholder="II (A) Rh+"></div>
+        <div class="add-field"><label>Группа здоровья</label><input type="text" data-f="healthGroup" value="${escapeAttr(p.healthGroup)}" ${ro?'disabled':''}></div>
+        <div class="add-field"><label>Группа крови</label><input type="text" data-f="bloodType" value="${escapeAttr(p.bloodType)}" placeholder="II (A) Rh+" ${ro?'disabled':''}></div>
       </div>
     </div>
 
     <div class="add-card">
       <div class="form-section-title">Фотки</div>
       <div class="gallery-grid" data-gallery-add></div>
-      <button class="btn btn-secondary btn-sm" data-add-gallery style="margin-top:.6rem">+ Добавить фото с комментарием</button>
+      <button class="btn btn-secondary btn-sm" data-add-gallery style="margin-top:.6rem" ${ro?'disabled':''}>+ Добавить фото с комментарием</button>
     </div>
 
     <div class="add-card">
       <div class="form-section-title">Дополнительно</div>
       <div data-rep="custom"></div>
-      <button class="btn btn-secondary btn-sm" data-add-rep="custom">+ Добавить поле</button>
+      <button class="btn btn-secondary btn-sm" data-add-rep="custom" ${ro?'disabled':''}>+ Добавить поле</button>
     </div>
 
     <div class="add-actions">
-      ${isEdit ? `<button class="btn btn-cancel" id="modalCancelBtn">Отмена</button>` : `<button class="btn btn-cancel" id="addResetBtn">Очистить</button>`}
-      <button class="btn btn-primary" id="${isEdit ? 'modalSaveBtn' : 'addSaveBtn'}">Сохранить</button>
+      ${isEdit ? `<button class="btn btn-cancel" id="modalCancelBtn">Отмена</button>` : `<button class="btn btn-cancel" id="addResetBtn" ${ro?'disabled':''}>Очистить</button>`}
+      <button class="btn btn-primary" id="${isEdit ? 'modalSaveBtn' : 'addSaveBtn'}" ${ro?'disabled':''}>Сохранить</button>
     </div>
   `;
 
@@ -861,28 +979,29 @@ function renderForm(container, isEdit=false){
 
 /* ===================== RENDER REPEATERS ===================== */
 function renderRepeaters(container, p){
+  const ro = !canEdit();
   const ph = container.querySelector('[data-rep="phones"]');
   ph.innerHTML = p.phones.map((v,i) => `
     <div class="repeater-row small">
-      <input type="tel" data-arr="phones" data-i="${i}" data-mask="phone" value="${escapeAttr(v)}" placeholder="+7 (___) ___-__-__">
+      <input type="tel" data-arr="phones" data-i="${i}" data-mask="phone" value="${escapeAttr(v)}" placeholder="+7 (___) ___-__-__" ${ro?'disabled':''}>
       <span></span>
-      <button class="icon-del" data-del-rep="phones" data-i="${i}">✕</button>
+      <button class="icon-del" data-del-rep="phones" data-i="${i}" ${ro?'disabled':''}>✕</button>
     </div>`).join('');
 
   const em = container.querySelector('[data-rep="emails"]');
   em.innerHTML = p.emails.map((v,i) => `
     <div class="repeater-row small">
-      <input type="email" data-arr="emails" data-i="${i}" value="${escapeAttr(v)}" placeholder="name@example.com">
+      <input type="email" data-arr="emails" data-i="${i}" value="${escapeAttr(v)}" placeholder="name@example.com" ${ro?'disabled':''}>
       <span></span>
-      <button class="icon-del" data-del-rep="emails" data-i="${i}">✕</button>
+      <button class="icon-del" data-del-rep="emails" data-i="${i}" ${ro?'disabled':''}>✕</button>
     </div>`).join('');
 
   const so = container.querySelector('[data-rep="socials"]');
   so.innerHTML = p.socials.map((s,i) => `
     <div class="repeater-row small">
-      <input type="text" data-arr="socials" data-i="${i}" data-k="type" value="${escapeAttr(s.type||'')}" placeholder="Соцсеть/игра">
-      <input type="text" data-arr="socials" data-i="${i}" data-k="value" value="${escapeAttr(s.value||'')}" placeholder="Ссылка/ник">
-      <button class="icon-del" data-del-rep="socials" data-i="${i}">✕</button>
+      <input type="text" data-arr="socials" data-i="${i}" data-k="type" value="${escapeAttr(s.type||'')}" placeholder="Соцсеть/игра" ${ro?'disabled':''}>
+      <input type="text" data-arr="socials" data-i="${i}" data-k="value" value="${escapeAttr(s.value||'')}" placeholder="Ссылка/ник" ${ro?'disabled':''}>
+      <button class="icon-del" data-del-rep="socials" data-i="${i}" ${ro?'disabled':''}>✕</button>
     </div>
     ${photoSlotHtml('socials.'+i+'.photo', s.photo, 'Фото')}
   `).join('');
@@ -891,12 +1010,12 @@ function renderRepeaters(container, p){
   si.innerHTML = p.sisters.map((s,i) => `
     <div class="sub-block ${s.none?'disabled-block':''}" style="margin-top:.4rem">
       <div class="repeater-row small">
-        <input type="text" data-arr="sisters" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО" ${s.none?'disabled':''}>
-        <input type="text" data-arr="sisters" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ" ${s.none?'disabled':''}>
-        <button class="icon-del" data-del-rep="sisters" data-i="${i}">✕</button>
+        <input type="text" data-arr="sisters" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО" ${(s.none||ro)?'disabled':''}>
+        <input type="text" data-arr="sisters" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ" ${(s.none||ro)?'disabled':''}>
+        <button class="icon-del" data-del-rep="sisters" data-i="${i}" ${ro?'disabled':''}>✕</button>
       </div>
       ${photoSlotHtml('sisters.'+i+'.photo', s.photo, 'Фото')}
-      <label class="no-check"><input type="checkbox" data-chk-arr="sisters" data-i="${i}" ${s.none?'checked':''}> Нет сестры</label>
+      <label class="no-check"><input type="checkbox" data-chk-arr="sisters" data-i="${i}" ${s.none?'checked':''} ${ro?'disabled':''}> Нет сестры</label>
     </div>
   `).join('');
 
@@ -904,12 +1023,12 @@ function renderRepeaters(container, p){
   br.innerHTML = p.brothers.map((s,i) => `
     <div class="sub-block ${s.none?'disabled-block':''}" style="margin-top:.4rem">
       <div class="repeater-row small">
-        <input type="text" data-arr="brothers" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО" ${s.none?'disabled':''}>
-        <input type="text" data-arr="brothers" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ" ${s.none?'disabled':''}>
-        <button class="icon-del" data-del-rep="brothers" data-i="${i}">✕</button>
+        <input type="text" data-arr="brothers" data-i="${i}" data-k="fullName" value="${escapeAttr(s.fullName||'')}" placeholder="ФИО" ${(s.none||ro)?'disabled':''}>
+        <input type="text" data-arr="brothers" data-i="${i}" data-k="birthDate" data-mask="birthdate" value="${escapeAttr(s.birthDate||'')}" placeholder="ДД.ММ.ГГГГ" ${(s.none||ro)?'disabled':''}>
+        <button class="icon-del" data-del-rep="brothers" data-i="${i}" ${ro?'disabled':''}>✕</button>
       </div>
       ${photoSlotHtml('brothers.'+i+'.photo', s.photo, 'Фото')}
-      <label class="no-check"><input type="checkbox" data-chk-arr="brothers" data-i="${i}" ${s.none?'checked':''}> Нет брата</label>
+      <label class="no-check"><input type="checkbox" data-chk-arr="brothers" data-i="${i}" ${s.none?'checked':''} ${ro?'disabled':''}> Нет брата</label>
     </div>
   `).join('');
 
@@ -920,16 +1039,16 @@ function renderRepeaters(container, p){
         <div class="add-field plate-wrap">
           <label>Номер</label>
           <span class="plate-badge">🚗</span>
-          <input type="text" data-arr="cars" data-i="${i}" data-k="plate" data-mask="plate" value="${escapeAttr(c.plate||'')}" placeholder="А123ВС777" ${c.none?'disabled':''}>
+          <input type="text" data-arr="cars" data-i="${i}" data-k="plate" data-mask="plate" value="${escapeAttr(c.plate||'')}" placeholder="А123ВС777" ${(c.none||ro)?'disabled':''}>
         </div>
         <div class="add-field">
           <label>Марка</label>
-          <input type="text" data-arr="cars" data-i="${i}" data-k="model" value="${escapeAttr(c.model||'')}" placeholder="Toyota Camry" ${c.none?'disabled':''}>
+          <input type="text" data-arr="cars" data-i="${i}" data-k="model" value="${escapeAttr(c.model||'')}" placeholder="Toyota Camry" ${(c.none||ro)?'disabled':''}>
         </div>
-        <button class="icon-del" data-del-rep="cars" data-i="${i}" style="margin-bottom:2px">✕</button>
+        <button class="icon-del" data-del-rep="cars" data-i="${i}" style="margin-bottom:2px" ${ro?'disabled':''}>✕</button>
       </div>
       ${photoSlotHtml('cars.'+i+'.photo', c.photo, 'Фото')}
-      <label class="no-check"><input type="checkbox" data-chk-arr="cars" data-i="${i}" ${c.none?'checked':''}> Нет машины</label>
+      <label class="no-check"><input type="checkbox" data-chk-arr="cars" data-i="${i}" ${c.none?'checked':''} ${ro?'disabled':''}> Нет машины</label>
     </div>
   `).join('');
 
@@ -938,21 +1057,21 @@ function renderRepeaters(container, p){
     <div class="sub-block ${d.none?'disabled-block':''}" style="margin-bottom:.6rem">
       <span class="doc-label">${escapeHtml(d.label||'Документ')}</span>
       <div class="repeater-row small">
-        <input type="text" data-arr="documents" data-i="${i}" data-k="value" value="${escapeAttr(d.value||'')}" placeholder="Номер/серия" ${d.none?'disabled':''}>
+        <input type="text" data-arr="documents" data-i="${i}" data-k="value" value="${escapeAttr(d.value||'')}" placeholder="Номер/серия" ${(d.none||ro)?'disabled':''}>
         <span></span>
-        ${i >= 3 ? `<button class="icon-del" data-del-rep="documents" data-i="${i}">✕</button>` : `<span></span>`}
+        ${i >= 3 ? `<button class="icon-del" data-del-rep="documents" data-i="${i}" ${ro?'disabled':''}>✕</button>` : `<span></span>`}
       </div>
       ${photoSlotHtml('documents.'+i+'.photo', d.photo, 'Фото')}
-      <label class="no-check"><input type="checkbox" data-chk-arr="documents" data-i="${i}" ${d.none?'checked':''}> Нету</label>
+      <label class="no-check"><input type="checkbox" data-chk-arr="documents" data-i="${i}" ${d.none?'checked':''} ${ro?'disabled':''}> Нету</label>
     </div>
   `).join('');
 
   const cu = container.querySelector('[data-rep="custom"]');
   cu.innerHTML = p.custom.map((c,i) => `
     <div class="repeater-row tiny">
-      <input type="text" data-arr="custom" data-i="${i}" data-k="key" value="${escapeAttr(c.key||'')}" placeholder="Название поля">
-      <input type="text" data-arr="custom" data-i="${i}" data-k="value" value="${escapeAttr(c.value||'')}" placeholder="Значение">
-      <button class="icon-del" data-del-rep="custom" data-i="${i}">✕</button>
+      <input type="text" data-arr="custom" data-i="${i}" data-k="key" value="${escapeAttr(c.key||'')}" placeholder="Название поля" ${ro?'disabled':''}>
+      <input type="text" data-arr="custom" data-i="${i}" data-k="value" value="${escapeAttr(c.value||'')}" placeholder="Значение" ${ro?'disabled':''}>
+      <button class="icon-del" data-del-rep="custom" data-i="${i}" ${ro?'disabled':''}>✕</button>
     </div>`).join('');
 
   container.querySelectorAll('[data-mask="phone"]').forEach(inp => {
@@ -970,14 +1089,15 @@ function renderRepeaters(container, p){
 function renderGallery(container, p){
   const g = container.querySelector('[data-gallery-add]');
   if(!g) return;
+  const ro = !canEdit();
   g.innerHTML = (p.gallery||[]).map((item,i) => {
     if(!item.src && !item.comment) return '';
     return `<div class="gallery-item">
       ${item.src ? `<img src="${escapeAttr(item.src)}" data-photo-view="${escapeAttr(item.src)}" alt="">` : `<div style="height:130px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)">нет фото</div>`}
-      <div class="cap"><input type="text" data-gallery-comment="${i}" value="${escapeAttr(item.comment||'')}" placeholder="Комментарий" style="padding:.2rem;font-size:.74rem;background:transparent;border:none;border-bottom:1px solid var(--border-light)"></div>
+      <div class="cap"><input type="text" data-gallery-comment="${i}" value="${escapeAttr(item.comment||'')}" placeholder="Комментарий" style="padding:.2rem;font-size:.74rem;background:transparent;border:none;border-bottom:1px solid var(--border-light)" ${ro?'disabled':''}></div>
       <div class="ctl">
-        <button type="button" data-gallery-change="${i}">Заменить</button>
-        <button type="button" data-gallery-del="${i}">Удалить</button>
+        <button type="button" data-gallery-change="${i}" ${ro?'disabled':''}>Заменить</button>
+        <button type="button" data-gallery-del="${i}" ${ro?'disabled':''}>Удалить</button>
       </div>
     </div>`;
   }).join('');
@@ -987,6 +1107,7 @@ function renderGallery(container, p){
   });
   g.querySelectorAll('[data-gallery-change]').forEach(btn => {
     btn.addEventListener('click', async () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       const i = parseInt(btn.dataset.galleryChange,10);
       const urls = await pickPhoto();
       if(!urls.length) return;
@@ -996,6 +1117,7 @@ function renderGallery(container, p){
   });
   g.querySelectorAll('[data-gallery-del]').forEach(btn => {
     btn.addEventListener('click', () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       const i = parseInt(btn.dataset.galleryDel,10);
       window.__addDraft.gallery.splice(i,1);
       if(!window.__addDraft.gallery.length) window.__addDraft.gallery = [{src:'', comment:''}];
@@ -1050,6 +1172,7 @@ function attachEvents(container, p, isEdit){
   });
   container.querySelectorAll('[data-del-rep]').forEach(btn => {
     btn.addEventListener('click', () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       const arr = btn.dataset.delRep;
       const i = parseInt(btn.dataset.i,10);
       if(!Array.isArray(window.__addDraft[arr])) return;
@@ -1063,6 +1186,7 @@ function attachEvents(container, p, isEdit){
   });
   container.querySelectorAll('[data-add-rep]').forEach(btn => {
     btn.addEventListener('click', () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       const arr = btn.dataset.addRep;
       if(!Array.isArray(window.__addDraft[arr])) window.__addDraft[arr] = [];
       window.__addDraft[arr].push(emptyItemFor(arr));
@@ -1073,6 +1197,7 @@ function attachEvents(container, p, isEdit){
   const addGalleryBtn = container.querySelector('[data-add-gallery]');
   if(addGalleryBtn){
     addGalleryBtn.addEventListener('click', async () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       const urls = await pickPhoto();
       if(!urls.length) return;
       if(window.__addDraft.gallery.length === 1 && !window.__addDraft.gallery[0].src && !window.__addDraft.gallery[0].comment){
@@ -1089,6 +1214,7 @@ function attachEvents(container, p, isEdit){
   });
   container.querySelectorAll('[data-photo-add]').forEach(btn => {
     btn.addEventListener('click', async () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       const path = btn.dataset.photoAdd;
       const current = getPath(window.__addDraft, path) || [];
       if(current.length >= 3) return showToast('Максимум 3 фото', true);
@@ -1102,6 +1228,7 @@ function attachEvents(container, p, isEdit){
   });
   container.querySelectorAll('[data-photo-del]').forEach(btn => {
     btn.addEventListener('click', () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       const path = btn.dataset.photoDel;
       const idx = parseInt(btn.dataset.idx, 10);
       const current = getPath(window.__addDraft, path) || [];
@@ -1114,6 +1241,7 @@ function attachEvents(container, p, isEdit){
   const saveBtn = container.querySelector(isEdit ? '#modalSaveBtn' : '#addSaveBtn');
   if(saveBtn){
     saveBtn.addEventListener('click', async () => {
+      if(!canEdit()) return showToast('Нет прав на сохранение', true);
       const data = collectData(container);
       for(const e of data.emails){
         if(e && !isValidEmail(e)){ showToast('Неверный email: ' + e, true); return; }
@@ -1123,7 +1251,8 @@ function attachEvents(container, p, isEdit){
       if(existingIdx >= 0){
         Object.assign(people[existingIdx], data, { updatedAt: now });
       } else {
-        data.createdAt = now; data.updatedAt = now;
+        data.createdAt = now;
+        data.updatedAt = 0;
         people.push(data);
       }
       renderPeople();
@@ -1226,9 +1355,19 @@ function renderAlphabet(){
   });
 }
 
+function lastChangeText(p){
+  const ts = p.updatedAt || p.createdAt;
+  return formatDateTime(ts);
+}
+
 function renderPeople(){
   const list = computeFiltered();
   listStats.innerHTML = `Записей: <b>${list.length}</b>`;
+
+  if(!canView()){
+    peopleContainer.innerHTML = `<div class="empty-state">Доступ к базе запрещён.</div>`;
+    return;
+  }
 
   if(list.length === 0){
     peopleContainer.innerHTML = `<div class="empty-state">Пока нет записей. Нажмите «+ Добавить».</div>`;
@@ -1277,13 +1416,12 @@ function renderPeople(){
                 <div class="quick-item"><div class="k">Место проживания</div><div class="v ${place?'':'empty'}">${escapeHtml(place || 'не указано')}</div></div>
                 <div class="quick-item"><div class="k">Телефон</div><div class="v ${phone?'':'empty'}">${escapeHtml(phone || 'не указан')}</div></div>
                 <div class="quick-item"><div class="k">Email</div><div class="v ${email?'':'empty'}">${escapeHtml(email || 'не указан')}</div></div>
-                <div class="quick-item"><div class="k">Создан</div><div class="v">${escapeHtml(formatDateTime(p.createdAt))}</div></div>
-                <div class="quick-item"><div class="k">ID записи</div><div class="v">${escapeHtml(p.id)}</div></div>
+                <div class="quick-item"><div class="k">Последнее обновление</div><div class="v updated">${escapeHtml(lastChangeText(p))}</div></div>
               </div>
               <div class="quick-actions">
                 <button class="btn btn-sm btn-secondary" data-detail="${escapeAttr(p.id)}">Подробнее</button>
-                <button class="btn btn-sm btn-primary" data-edit="${escapeAttr(p.id)}">Изменить</button>
-                <button class="btn btn-sm btn-danger" data-del="${escapeAttr(p.id)}">Удалить</button>
+                <button class="btn btn-sm btn-primary" data-edit="${escapeAttr(p.id)}" ${canEdit()?'':'disabled'}>Изменить</button>
+                <button class="btn btn-sm btn-danger" data-del="${escapeAttr(p.id)}" ${canEdit()?'':'disabled'}>Удалить</button>
               </div>
             </div>
           </div>`;
@@ -1292,20 +1430,46 @@ function renderPeople(){
   `).join('');
 }
 
-/* ===================== SUPPORT MODAL ===================== */
-function openSupportModal(){
-  modalPanel.className = 'modal-panel support-panel';
-  modalPanel.dataset.mode = 'support';
-  modalTitle.textContent = 'Поддержка';
-  modalBody.innerHTML = '';
-  modalFoot.style.display = 'none';
-  renderSupportBody();
-  modalOverlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+/* ===================== SUPPORT ===================== */
+function unreadCountFor(uid){
+  const seen = Number(localStorage.getItem('support_seen_' + MY_UID + '_' + uid) || 0);
+  return supportMessages.filter(m => m.uid === uid && m.ts > seen).length;
+}
+function unreadTotal(){
+  const uids = new Set(supportMessages.map(m => m.uid));
+  let sum = 0;
+  uids.forEach(u => { sum += unreadCountFor(u); });
+  return sum;
+}
+function markRead(uid){
+  const last = supportMessages.filter(m => m.uid === uid).reduce((mx,m)=>Math.max(mx,m.ts||0),0);
+  localStorage.setItem('support_seen_' + MY_UID + '_' + uid, String(last));
+}
+function getUserLabel(uid){
+  const u = usersMap[uid] || {};
+  const created = u.createdAt ? formatDateTime(u.createdAt) : '—';
+  return `${uid} · создан ${created}`;
 }
 
-function renderSupportBody(){
-  const chatHtml = supportMessages.length ? supportMessages.map(m => {
+function renderSupportView(){
+  if(!canView()){
+    views.support.innerHTML = `<div class="empty-state">Доступ к поддержке запрещён.</div>`;
+    return;
+  }
+  if(IS_ADMIN){
+    if(supportViewState.mode === 'chat' && supportViewState.targetUid){
+      renderAdminChat(supportViewState.targetUid);
+    } else {
+      renderAdminList();
+    }
+  } else {
+    renderUserSupport();
+  }
+}
+
+function renderUserSupport(){
+  const mine = supportMessages.filter(m => m.uid === MY_UID);
+  const chatHtml = mine.length ? mine.map(m => {
     const isMine = m.uid === MY_UID;
     return `<div class="chat-msg ${isMine?'user':'admin'}">
       ${escapeHtml(m.text)}
@@ -1313,7 +1477,8 @@ function renderSupportBody(){
     </div>`;
   }).join('') : `<div class="empty-state" style="padding:1rem;border:none;background:transparent">Сообщений пока нет. Напишите первым.</div>`;
 
-  modalBody.innerHTML = `
+  views.support.innerHTML = `
+    <div class="form-section-title">Поддержка</div>
     <div class="support-contacts">
       <div><b>Телефон:</b> +7 (926) 238-02-00</div>
       <div><b>Почта:</b> andreymomot105@gmail.com</div>
@@ -1323,14 +1488,80 @@ function renderSupportBody(){
       <input type="text" id="chatInput" placeholder="Введите сообщение..." autocomplete="off">
       <button class="btn btn-primary btn-sm" id="chatSendBtn">Отправить</button>
     </div>
-    <div class="support-uid">
-      Ваш ID: <b>${escapeHtml(MY_UID)}</b>${IS_ADMIN ? ' (вы админ)' : ''}
-    </div>
   `;
-
   const chatBox = document.getElementById('chatBox');
   if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  async function sendMessage(){
+    const text = (input.value || '').trim();
+    if(!text) return;
+    if(!canView()) return showToast('Доступ запрещён', true);
+    if(!firebaseReady || !db){ showToast('Нет соединения с Firebase', true); return; }
+    try {
+      const msgRef = push(ref(db, SUPPORT_ROOT));
+      await set(msgRef, { uid: MY_UID, name: 'Пользователь', text, ts: Date.now() });
+      input.value = '';
+    } catch(e){ console.error(e); showToast('Ошибка отправки', true); }
+  }
+  if(sendBtn) sendBtn.addEventListener('click', sendMessage);
+  if(input) input.addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
+}
 
+function renderAdminList(){
+  const uids = Array.from(new Set(supportMessages.map(m => m.uid)));
+  const list = uids.map(u => ({ uid: u, unread: unreadCountFor(u), label: getUserLabel(u) }))
+    .sort((a,b) => b.unread - a.unread);
+  const items = list.length ? list.map(item => `
+    <div class="user-item ${item.unread>0?'unread':''}" data-uid="${escapeAttr(item.uid)}">
+      <div class="info">
+        <div class="name">${escapeHtml(item.uid)}</div>
+        <div class="sub">${escapeHtml(getUserLabel(item.uid).split('· ')[1] || '')}</div>
+      </div>
+      ${item.unread>0 ? `<span class="badge">${item.unread}</span>` : ''}
+    </div>
+  `).join('') : `<div class="empty-state">Пока никто не обращался.</div>`;
+
+  views.support.innerHTML = `
+    <div class="form-section-title">Обращения в поддержку</div>
+    <div class="user-list">${items}</div>
+  `;
+  views.support.querySelectorAll('[data-uid]').forEach(el => {
+    el.addEventListener('click', () => {
+      supportViewState = { mode: 'chat', targetUid: el.dataset.uid };
+      markRead(el.dataset.uid);
+      renderSupportView();
+    });
+  });
+}
+
+function renderAdminChat(targetUid){
+  const msgs = supportMessages.filter(m => m.uid === targetUid);
+  const chatHtml = msgs.length ? msgs.map(m => {
+    const isMine = m.uid === MY_UID;
+    return `<div class="chat-msg ${isMine?'user':'admin'}">
+      ${escapeHtml(m.text)}
+      <div class="meta">${escapeHtml(m.name || (isMine ? 'Вы' : 'Пользователь'))} · ${escapeHtml(formatDateTime(m.ts))}</div>
+    </div>`;
+  }).join('') : `<div class="empty-state" style="padding:1rem;border:none;background:transparent">Сообщений нет.</div>`;
+
+  views.support.innerHTML = `
+    <div class="user-chat-head">
+      <button class="back-btn" id="backToSupportList" title="Назад">←</button>
+      <div class="uid">${escapeHtml(getUserLabel(targetUid))}</div>
+    </div>
+    <div class="chat-box" id="chatBox">${chatHtml}</div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ответ..." autocomplete="off">
+      <button class="btn btn-primary btn-sm" id="chatSendBtn">Отправить</button>
+    </div>
+  `;
+  const chatBox = document.getElementById('chatBox');
+  if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+  document.getElementById('backToSupportList').addEventListener('click', () => {
+    supportViewState = { mode: 'list', targetUid: null };
+    renderSupportView();
+  });
   const input = document.getElementById('chatInput');
   const sendBtn = document.getElementById('chatSendBtn');
   async function sendMessage(){
@@ -1339,19 +1570,87 @@ function renderSupportBody(){
     if(!firebaseReady || !db){ showToast('Нет соединения с Firebase', true); return; }
     try {
       const msgRef = push(ref(db, SUPPORT_ROOT));
-      await set(msgRef, {
-        uid: MY_UID,
-        name: IS_ADMIN ? 'Админ' : 'Пользователь',
-        text,
-        ts: Date.now()
-      });
+      await set(msgRef, { uid: targetUid, name: 'Поддержка', text, ts: Date.now(), admin: true });
       input.value = '';
-    } catch(e){
-      console.error(e); showToast('Ошибка отправки', true);
-    }
+    } catch(e){ console.error(e); showToast('Ошибка отправки', true); }
   }
   if(sendBtn) sendBtn.addEventListener('click', sendMessage);
   if(input) input.addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
+}
+
+/* ===================== USERS ===================== */
+function renderUsersView(){
+  if(!IS_ADMIN){
+    views.users.innerHTML = `<div class="empty-state">Доступ только для админа.</div>`;
+    return;
+  }
+  const uids = Object.keys(usersMap);
+  const online = uids.filter(u => usersMap[u].online).length;
+  const items = uids.sort((a,b) => (usersMap[b].createdAt||0) - (usersMap[a].createdAt||0)).map(u => {
+    const usr = usersMap[u];
+    const dot = usr.online ? 'online' : 'offline';
+    const ban = usr.ban || '';
+    const banLabel = ban === 'all' ? 'полный бан' : ban === 'edit' ? 'только чтение' : '';
+    return `<div class="user-item">
+      <span class="status-dot ${dot}"></span>
+      <div class="info">
+        <div class="name">${escapeHtml(u)}</div>
+        <div class="sub">создан ${escapeHtml(formatDateTime(usr.createdAt))}${banLabel ? ' · ' + escapeHtml(banLabel) : ''}</div>
+      </div>
+      <button class="ban-btn ${ban?'unban':''}" data-ban="${escapeAttr(u)}" data-current="${escapeAttr(ban)}">
+        ${ban ? 'Разбанить' : 'Забанить'}
+      </button>
+    </div>`;
+  }).join('') || `<div class="empty-state">Пользователей пока нет.</div>`;
+
+  views.users.innerHTML = `
+    <div class="form-section-title">Пользователи</div>
+    <div class="users-header">
+      <div>Всего: <b>${uids.length}</b></div>
+      <div>В сети: <b>${online}</b></div>
+    </div>
+    <div class="user-list">${items}</div>
+  `;
+  views.users.querySelectorAll('[data-ban]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const u = btn.dataset.ban;
+      const cur = btn.dataset.current || '';
+      let next = '';
+      if(cur === '') next = 'edit';
+      else if(cur === 'edit') next = 'all';
+      else next = '';
+      try {
+        await update(ref(db, USERS_ROOT + '/' + u), { ban: next });
+        showToast(next === '' ? 'Пользователь разбанен' : next === 'edit' ? 'Запрет на изменение' : 'Полный бан');
+      } catch(e){ console.error(e); showToast('Ошибка', true); }
+    });
+  });
+}
+
+/* ===================== SETTINGS ===================== */
+function renderSettingsView(){
+  views.settings.innerHTML = `
+    <div class="form-section-title">Настройки</div>
+    <div class="add-field" style="margin-bottom:1rem">
+      <label>Ваш ID</label>
+      <div class="uid-row">
+        <code id="myUidText">${escapeHtml(MY_UID)}</code>
+        <button class="copy-btn" id="copyUidBtn">Скопировать</button>
+      </div>
+    </div>
+    <div class="support-uid">${IS_ADMIN ? 'Вы администратор.' : 'Обычный пользователь.'}</div>
+  `;
+  document.getElementById('copyUidBtn').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(MY_UID);
+      showToast('ID скопирован');
+    } catch(e){
+      const ta = document.createElement('textarea');
+      ta.value = MY_UID; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove();
+      showToast('ID скопирован');
+    }
+  });
 }
 
 /* ===================== MODAL ===================== */
@@ -1361,6 +1660,7 @@ function openModal(mode, personId){
   const p = ensureShape(people.find(x => x.id === personId) || emptyPerson());
 
   if(mode === 'edit'){
+    if(!canEdit()) return showToast('Нет прав на изменение', true);
     modalTitle.textContent = 'Редактирование';
     window.__addDraft = deepClone(p);
     modalBody.innerHTML = '';
@@ -1374,10 +1674,12 @@ function openModal(mode, personId){
     modalFoot.style.display = '';
     modalFoot.innerHTML = `
       <button class="btn btn-cancel" id="modalCloseFootBtn">Закрыть</button>
-      <button class="btn btn-primary" id="modalEditBtn">Изменить</button>
+      <button class="btn btn-primary" id="modalEditBtn" ${canEdit()?'':'disabled'}>Изменить</button>
     `;
     document.getElementById('modalCloseFootBtn').addEventListener('click', closeModal);
-    document.getElementById('modalEditBtn').addEventListener('click', () => {
+    const editBtn = document.getElementById('modalEditBtn');
+    if(editBtn) editBtn.addEventListener('click', () => {
+      if(!canEdit()) return showToast('Нет прав', true);
       openModal('edit', personId);
     });
   }
@@ -1433,8 +1735,6 @@ function buildView(p){
     ${row('Пол', p.gender)}
     ${row('Дата рождения', p.birthDate)}
     ${row('Место проживания', p.address)}
-    ${row('Создан', formatDateTime(p.createdAt))}
-    ${row('ID', p.id)}
   `;
   const contactsBody = `
     ${phones.length ? phones.map((x,i)=>row('Телефон '+(i+1), x)).join('') : row('Телефоны','')}
@@ -1499,6 +1799,24 @@ function buildView(p){
   `;
 }
 
+/* ===================== NAVIGATION ===================== */
+function showView(view){
+  if(view === 'add' && !canEdit() && myBanStatus()==='all') return;
+  if(view === 'users' && !IS_ADMIN) return;
+  if(view === 'support' && !canView()) return;
+  sidebarItems.forEach(i => i.classList.remove('active'));
+  const item = [...sidebarItems].find(i => i.dataset.view === view);
+  if(item) item.classList.add('active');
+  Object.values(views).forEach(v => v.classList.remove('active'));
+  if(views[view]) views[view].classList.add('active');
+  closeSidebar();
+  if(view === 'add'){ appSubhead.textContent = 'Добавление новой записи'; window.__addDraft = window.__addDraft || emptyPerson(); renderForm(addFormContainer, false); }
+  if(view === 'db'){ appSubhead.textContent = 'База данных'; renderAlphabet(); renderPeople(); }
+  if(view === 'support'){ appSubhead.textContent = 'Поддержка'; renderSupportView(); }
+  if(view === 'settings'){ appSubhead.textContent = 'Настройки'; renderSettingsView(); }
+  if(view === 'users'){ appSubhead.textContent = 'Пользователи'; renderUsersView(); }
+}
+
 /* ===================== GLOBAL EVENTS ===================== */
 hamburger.addEventListener('click', () => {
   sidebar.classList.add('open');
@@ -1515,30 +1833,15 @@ sidebarCloseBtn.addEventListener('click', closeSidebar);
 
 sidebarItems.forEach(item => {
   item.addEventListener('click', () => {
-    const view = item.dataset.view;
-    sidebarItems.forEach(i => i.classList.remove('active'));
-    item.classList.add('active');
-    Object.values(views).forEach(v => v.classList.remove('active'));
-    if(views[view]) views[view].classList.add('active');
-    closeSidebar();
-    appSubhead.textContent = view === 'add' ? 'Добавление новой записи' : 'База данных';
-    if(view === 'db') { renderAlphabet(); renderPeople(); }
-    if(view === 'add'){ window.__addDraft = window.__addDraft || emptyPerson(); renderForm(addFormContainer, false); }
+    showView(item.dataset.view);
   });
 });
 
-supportLink.addEventListener('click', openSupportModal);
-
 searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim(); renderPeople(); });
 newFromDbBtn.addEventListener('click', () => {
+  if(!canEdit()) return showToast('Нет прав', true);
   window.__addDraft = emptyPerson();
-  sidebarItems.forEach(i => i.classList.remove('active'));
-  const addItem = [...sidebarItems].find(i=>i.dataset.view==='add');
-  if(addItem) addItem.classList.add('active');
-  Object.values(views).forEach(v => v.classList.remove('active'));
-  views.add.classList.add('active');
-  appSubhead.textContent = 'Добавление новой записи';
-  renderForm(addFormContainer, false);
+  showView('add');
 });
 
 peopleContainer.addEventListener('click', async (e) => {
@@ -1551,9 +1854,13 @@ peopleContainer.addEventListener('click', async (e) => {
   const detailBtn = e.target.closest('[data-detail]');
   if(detailBtn){ openModal('view', detailBtn.dataset.detail); return; }
   const editBtn = e.target.closest('[data-edit]');
-  if(editBtn){ openModal('edit', editBtn.dataset.edit); return; }
+  if(editBtn){
+    if(!canEdit()) return showToast('Нет прав', true);
+    openModal('edit', editBtn.dataset.edit); return;
+  }
   const delBtn = e.target.closest('[data-del]');
   if(delBtn){
+    if(!canEdit()) return showToast('Нет прав', true);
     if(!confirm('Удалить запись?')) return;
     people = people.filter(p => p.id !== delBtn.dataset.del);
     renderPeople();
@@ -1581,6 +1888,7 @@ window.__addDraft = emptyPerson();
 renderForm(addFormContainer, false);
 renderAlphabet();
 renderPeople();
+applyPermissions();
 loadInitial();
 
 })();
