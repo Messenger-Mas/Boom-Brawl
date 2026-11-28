@@ -10,8 +10,8 @@
   --black:#0a0a0a;--black-soft:#141414;--black-card:#1a1a1a;--black-elevated:#222;
   --emerald:#10b981;--emerald-dark:#059669;--emerald-light:#34d399;--emerald-glow:rgba(16,185,129,.25);
   --text-primary:#f5f5f5;--text-secondary:#b8b8b8;--text-muted:#8a8a8a;--border:#2a2a2a;--border-light:#333;
-  --danger:#ef4444;--danger-bg:rgba(239,68,68,.12);--amber:#f59e0b;--blue:#3b82f6;--blue-bg:rgba(59,130,246,.12);
-  --purple:#a855f7;--purple-bg:rgba(168,85,247,.12);--sidebar-w:260px;
+  --danger:#ef4444;--danger-bg:rgba(239,68,68,.12);--amber:#f59e0b;--blue:#3b82f6;
+  --sidebar-w:260px;
 }
 body{font-family:'Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background:var(--black);
   background-image:radial-gradient(circle at 20% 0%,rgba(16,185,129,.08),transparent 50%);
@@ -45,7 +45,6 @@ body{font-family:'Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background
   box-shadow:0 25px 60px -20px rgba(0,0,0,.9),0 0 0 1px rgba(16,185,129,.05);padding:2.5rem 2.2rem;margin-left:60px}
 .app-header{margin-bottom:1.6rem;padding-bottom:1.4rem;border-bottom:1px solid var(--border)}
 h1{font-size:1.6rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
-h1 .accent{color:var(--emerald)}
 .subhead{color:var(--text-secondary);font-size:.9rem}
 .sync-status{font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem;margin-top:.4rem}
 .sync-dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--text-muted);flex-shrink:0}
@@ -163,6 +162,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .modal-overlay.open{display:block}
 .modal-panel{max-width:960px;margin:0 auto;background:var(--black-soft);border:1px solid var(--border);
   border-radius:1.2rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.9);display:flex;flex-direction:column;min-height:60vh}
+.modal-panel.small{max-width:480px;min-height:auto}
 .modal-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.1rem 1.5rem;
   border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--black-soft);z-index:2;border-radius:1.2rem 1.2rem 0 0}
 .modal-head h2{font-size:1.1rem;font-weight:600}
@@ -225,6 +225,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .status-dot.offline{background:var(--danger)}
 .user-item .info{flex:1;min-width:140px}
 .user-item .name{font-size:.85rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-item .name .nick{color:var(--blue);font-weight:500;margin-left:.4rem;font-size:.8rem}
 .user-item .sub{font-size:.7rem;color:var(--text-muted)}
 .users-header{font-size:.82rem;color:var(--text-secondary);margin-bottom:.8rem;display:flex;gap:1rem;flex-wrap:wrap}
 .users-header b{color:var(--emerald-light)}
@@ -233,15 +234,24 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 .user-chat-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem}
 .user-chat-head .uid{font-size:.72rem;color:var(--text-muted);word-break:break-all;flex:1}
 .ban-select{background:var(--black-elevated);border:1px solid var(--border-light);color:var(--text-primary);
-  padding:.35rem .6rem;border-radius:.45rem;font-size:.75rem;font-family:inherit;cursor:pointer;min-width:140px}
+  padding:.45rem .7rem;border-radius:.5rem;font-size:.78rem;font-family:inherit;cursor:pointer;min-width:130px;width:auto}
 .ban-select:focus{border-color:var(--emerald);outline:none}
 .ban-select.ban-all{color:var(--danger);border-color:rgba(239,68,68,.4)}
 .ban-select.ban-edit{color:var(--amber);border-color:rgba(245,158,11,.4)}
 .ban-select.ban-none{color:var(--emerald-light);border-color:rgba(16,185,129,.4)}
-.readonly-banner{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);color:var(--amber);
-  padding:.7rem 1rem;border-radius:.6rem;margin-bottom:1rem;font-size:.85rem}
 .blocked-message{text-align:center;color:var(--text-muted);padding:3rem 1rem;font-size:1rem;
   background:var(--black-card);border:1px dashed var(--border-light);border-radius:.8rem}
+.user-actions{display:flex;align-items:center;gap:.4rem;margin-left:auto}
+.dots-btn{background:var(--black-elevated);border:1px solid var(--border-light);color:var(--text-secondary);
+  width:34px;height:34px;border-radius:.5rem;font-size:1.1rem;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
+.dots-btn:hover{background:var(--black-card);color:var(--text-primary);border-color:var(--emerald-dark)}
+.dots-menu{position:absolute;background:var(--black-elevated);border:1px solid var(--border-light);border-radius:.55rem;
+  box-shadow:0 10px 30px -5px rgba(0,0,0,.8);z-index:1000;min-width:170px;overflow:hidden}
+.dots-menu button{display:block;width:100%;text-align:left;padding:.6rem .9rem;background:none;border:none;
+  color:var(--text-primary);font-size:.85rem;cursor:pointer;font-family:inherit;transition:.15s}
+.dots-menu button:hover{background:var(--black-card)}
+.dots-menu button.danger{color:var(--danger)}
+.dots-menu button.danger:hover{background:var(--danger-bg)}
 </style>
 </head>
 <body>
@@ -299,7 +309,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, get, push, remove, update, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js';
+import { getDatabase, ref, set, onValue, get, push, remove, update, onDisconnect } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0FYjnMg30jS9D2jeJ-EVTKt5_UU5PfCw",
@@ -337,7 +347,7 @@ const USERS_ROOT = 'users';
 const LOCAL_KEY = 'people_cache_v5';
 const UID_KEY = 'site_user_uid';
 const ADMIN_SEEN_KEY = 'admin_seen_users';
-const ONLINE_WINDOW = 2 * 60 * 1000; // 2 минуты
+const ONLINE_WINDOW = 2 * 60 * 1000;
 
 function getOrCreateUid(){
   let uid = localStorage.getItem(UID_KEY);
@@ -361,6 +371,7 @@ let localWriteTs = 0;
 let pendingWrite = false;
 let supportViewState = { mode: 'list', targetUid: null };
 let heartbeatTimer = null;
+let openDotsMenu = null;
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
@@ -421,23 +432,10 @@ function isUserOnline(usr){
 }
 function applyPermissions(){
   usersNavItem.style.display = IS_ADMIN ? '' : 'none';
-  const ban = myBanStatus();
-  ['add','db','support'].forEach(v => {
-    const item = [...sidebarItems].find(i => i.dataset.view === v);
-    if(item) item.style.display = '';
-  });
-  if(IS_ADMIN) return;
-  if(ban === 'edit'){
-    const addItem = [...sidebarItems].find(i => i.dataset.view === 'add');
-    if(addItem) addItem.style.display = 'none';
-    newFromDbBtn.style.display = 'none';
-  } else if(ban === 'all'){
-    const addItem = [...sidebarItems].find(i => i.dataset.view === 'add');
-    const dbItem = [...sidebarItems].find(i => i.dataset.view === 'db');
-    if(addItem) addItem.style.display = 'none';
-    if(dbItem) dbItem.style.display = 'none';
-  } else {
+  if(canEdit()){
     newFromDbBtn.style.display = '';
+  } else {
+    newFromDbBtn.style.display = 'none';
   }
 }
 
@@ -474,8 +472,7 @@ function normalizePhone(v){
   return r;
 }
 function normalizePlate(v){
-  let s = String(v).toUpperCase().replace(/[^А-ЯA-Z0-9]/g,'');
-  return s;
+  return String(v).toUpperCase().replace(/[^А-ЯA-Z0-9]/g,'');
 }
 function plateDisplay(v){
   const s = normalizePlate(v);
@@ -607,7 +604,15 @@ function subscribeSupport(){
   unsubscribeSupport = onValue(ref(db, SUPPORT_ROOT), snap => {
     const val = snap.val() || {};
     supportMessages = Object.values(val).sort((a,b) => (a.ts||0) - (b.ts||0));
-    if(views.support.classList.contains('active')) renderSupportView();
+    // Обновляем только контент чата, не пересоздавая поле ввода
+    if(views.support.classList.contains('active')){
+      const chatBox = document.getElementById('chatBox');
+      if(chatBox && chatBox.dataset.chatOwner){
+        const owner = chatBox.dataset.chatOwner;
+        chatBox.innerHTML = buildChatHtml(owner);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
   }, err => { console.error(err); });
 }
 
@@ -617,7 +622,6 @@ function subscribeUsers(){
   unsubscribeUsers = onValue(ref(db, USERS_ROOT), snap => {
     usersMap = snap.val() || {};
     applyPermissions();
-    if(views.support.classList.contains('active')) renderSupportView();
     if(views.users.classList.contains('active')) renderUsersView();
   }, err => { console.error(err); });
 }
@@ -629,25 +633,16 @@ async function registerMe(){
     const snap = await get(meRef);
     const now = Date.now();
     if(!snap.exists()){
-      await set(meRef, {
-        uid: MY_UID,
-        createdAt: now,
-        lastSeen: now,
-        online: true,
-        ban: 'all'
-      });
+      await set(meRef, { uid: MY_UID, createdAt: now, lastSeen: now, online: true, ban: 'all', nick: '' });
     } else {
       await update(meRef, { lastSeen: now, online: true });
     }
-    // Надёжный onDisconnect — установит offline при потере соединения
     const onlineRef = ref(db, USERS_ROOT + '/' + MY_UID + '/online');
     onDisconnect(onlineRef).set(false);
-    // Heartbeat каждые 30 сек
     if(heartbeatTimer) clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(() => {
       update(meRef, { lastSeen: Date.now(), online: true }).catch(()=>{});
     }, 30000);
-    // Обновление при действиях пользователя
     ['click','keydown','mousemove','touchstart'].forEach(ev => {
       window.addEventListener(ev, () => {
         update(meRef, { lastSeen: Date.now() }).catch(()=>{});
@@ -669,11 +664,8 @@ async function loadInitial(){
     try {
       const snap = await get(ref(db, ROOT));
       const remote = objToPeople(snap.val());
-      if(remote.length){
-        people = remote; saveLocal(); renderPeople();
-      } else if(people.length && canEdit()){
-        await commitPeople();
-      }
+      if(remote.length){ people = remote; saveLocal(); renderPeople(); }
+      else if(people.length && canEdit()){ await commitPeople(); }
     } catch(e){ console.error(e); }
     subscribe();
     subscribeSupport();
@@ -1202,7 +1194,6 @@ function emptyItemFor(arr){
   if(arr === 'gallery') return {src:'',comment:''};
   return '';
 }
-
 function collectData(container){
   const p = ensureShape(window.__addDraft);
   container.querySelectorAll('[data-f]').forEach(el => { p[el.dataset.f] = el.value; });
@@ -1346,11 +1337,22 @@ function getUserLabel(uid){
   const created = u.createdAt ? formatDateTime(u.createdAt) : '—';
   return `создан ${created}`;
 }
-function renderSupportView(){
-  if(!canView()){
-    views.support.innerHTML = `<div class="empty-state">Доступ к поддержке запрещён.</div>`;
-    return;
+function buildChatHtml(ownerUid){
+  const msgs = supportMessages.filter(m => m.uid === ownerUid);
+  if(!msgs.length){
+    return `<div class="empty-state" style="padding:1rem;border:none;background:transparent">Сообщений пока нет. Напишите первым.</div>`;
   }
+  return msgs.map(m => {
+    const isMine = m.uid === MY_UID && !m.admin || (m.uid === ownerUid && m.admin && IS_ADMIN);
+    const isAdminMsg = !!m.admin;
+    const cls = isAdminMsg ? 'admin' : 'user';
+    return `<div class="chat-msg ${cls}">
+      ${escapeHtml(m.text)}
+      <div class="meta">${escapeHtml(m.name || (isAdminMsg ? 'Поддержка' : 'Пользователь'))} · ${escapeHtml(formatDateTime(m.ts))}</div>
+    </div>`;
+  }).join('');
+}
+function renderSupportView(){
   if(IS_ADMIN){
     if(supportViewState.mode === 'chat' && supportViewState.targetUid){
       renderAdminChat(supportViewState.targetUid);
@@ -1362,21 +1364,13 @@ function renderSupportView(){
   }
 }
 function renderUserSupport(){
-  const mine = supportMessages.filter(m => m.uid === MY_UID);
-  const chatHtml = mine.length ? mine.map(m => {
-    const isMine = m.uid === MY_UID;
-    return `<div class="chat-msg ${isMine?'user':'admin'}">
-      ${escapeHtml(m.text)}
-      <div class="meta">${escapeHtml(m.name || (isMine ? 'Вы' : 'Поддержка'))} · ${escapeHtml(formatDateTime(m.ts))}</div>
-    </div>`;
-  }).join('') : `<div class="empty-state" style="padding:1rem;border:none;background:transparent">Сообщений пока нет. Напишите первым.</div>`;
   views.support.innerHTML = `
     <div class="form-section-title">Поддержка</div>
     <div class="support-contacts">
       <div><b>Телефон:</b> +7 (926) 238-02-00</div>
       <div><b>Почта:</b> andreymomot105@gmail.com</div>
     </div>
-    <div class="chat-box" id="chatBox">${chatHtml}</div>
+    <div class="chat-box" id="chatBox" data-chat-owner="${escapeAttr(MY_UID)}">${buildChatHtml(MY_UID)}</div>
     <div class="chat-input-row">
       <input type="text" id="chatInput" placeholder="Введите сообщение..." autocomplete="off">
       <button class="btn btn-primary btn-sm" id="chatSendBtn">Отправить</button>
@@ -1403,15 +1397,18 @@ function renderAdminList(){
   const uids = Array.from(new Set(supportMessages.map(m => m.uid))).filter(isRealUser);
   const list = uids.map(u => ({ uid: u, unread: unreadCountFor(u) }))
     .sort((a,b) => b.unread - a.unread);
-  const items = list.length ? list.map(item => `
+  const items = list.length ? list.map(item => {
+    const u = usersMap[item.uid] || {};
+    const nick = u.nick ? ` <span class="nick">${escapeHtml(u.nick)}</span>` : '';
+    return `
     <div class="user-item ${item.unread>0?'unread':''}" data-uid="${escapeAttr(item.uid)}">
       <div class="info">
-        <div class="name">${escapeHtml(item.uid)}</div>
+        <div class="name">${escapeHtml(item.uid)}${nick}</div>
         <div class="sub">${escapeHtml(getUserLabel(item.uid))}</div>
       </div>
       ${item.unread>0 ? `<span class="badge">${item.unread}</span>` : ''}
-    </div>
-  `).join('') : `<div class="empty-state">Пока никто не обращался.</div>`;
+    </div>`;
+  }).join('') : `<div class="empty-state">Пока никто не обращался.</div>`;
   views.support.innerHTML = `
     <div class="form-section-title">Обращения в поддержку</div>
     <div class="user-list">${items}</div>
@@ -1425,20 +1422,12 @@ function renderAdminList(){
   });
 }
 function renderAdminChat(targetUid){
-  const msgs = supportMessages.filter(m => m.uid === targetUid);
-  const chatHtml = msgs.length ? msgs.map(m => {
-    const isMine = m.uid === MY_UID;
-    return `<div class="chat-msg ${isMine?'user':'admin'}">
-      ${escapeHtml(m.text)}
-      <div class="meta">${escapeHtml(m.name || (isMine ? 'Вы' : 'Пользователь'))} · ${escapeHtml(formatDateTime(m.ts))}</div>
-    </div>`;
-  }).join('') : `<div class="empty-state" style="padding:1rem;border:none;background:transparent">Сообщений нет.</div>`;
   views.support.innerHTML = `
     <div class="user-chat-head">
       <button class="back-btn" id="backToSupportList" title="Назад">←</button>
       <div class="uid">${escapeHtml(targetUid)} · ${escapeHtml(getUserLabel(targetUid))}</div>
     </div>
-    <div class="chat-box" id="chatBox">${chatHtml}</div>
+    <div class="chat-box" id="chatBox" data-chat-owner="${escapeAttr(targetUid)}">${buildChatHtml(targetUid)}</div>
     <div class="chat-input-row">
       <input type="text" id="chatInput" placeholder="Ответ..." autocomplete="off">
       <button class="btn btn-primary btn-sm" id="chatSendBtn">Отправить</button>
@@ -1472,11 +1461,8 @@ function renderUsersView(){
     views.users.innerHTML = `<div class="empty-state">Доступ только для админа.</div>`;
     return;
   }
-  // Только реальные пользователи u_*
   const realUids = Object.keys(usersMap).filter(isRealUser);
   const onlineCount = realUids.filter(u => isUserOnline(usersMap[u])).length;
-
-  // Разделяем на «новые» (не просмотренные админом) и основной список
   const seen = getAdminSeen();
   const newUids = realUids.filter(u => !seen[u]);
   const oldUids = realUids.filter(u => seen[u]).sort((a,b) => (usersMap[b].createdAt||0) - (usersMap[a].createdAt||0));
@@ -1485,18 +1471,21 @@ function renderUsersView(){
     const usr = usersMap[u];
     const online = isUserOnline(usr);
     const ban = usr.ban || '';
-    const banLabel = ban === 'all' ? 'полный бан' : ban === 'edit' ? 'только чтение' : 'разбанен';
-    return `<div class="user-item">
+    const nick = usr.nick ? ` <span class="nick">${escapeHtml(usr.nick)}</span>` : '';
+    return `<div class="user-item" data-user="${escapeAttr(u)}">
       <span class="status-dot ${online?'online':'offline'}"></span>
       <div class="info">
-        <div class="name">${escapeHtml(u)}</div>
-        <div class="sub">создан ${escapeHtml(formatDateTime(usr.createdAt))} · ${escapeHtml(banLabel)}</div>
+        <div class="name">${escapeHtml(u)}${nick}</div>
+        <div class="sub">создан ${escapeHtml(formatDateTime(usr.createdAt))}</div>
       </div>
-      <select class="ban-select ${ban === 'all' ? 'ban-all' : ban === 'edit' ? 'ban-edit' : 'ban-none'}" data-ban="${escapeAttr(u)}">
-        <option value="" ${ban===''?'selected':''}>Разбанить</option>
-        <option value="edit" ${ban==='edit'?'selected':''}>Только чтение</option>
-        <option value="all" ${ban==='all'?'selected':''}>Полный бан</option>
-      </select>
+      <div class="user-actions">
+        <button class="dots-btn" data-dots="${escapeAttr(u)}" title="Действия">⋯</button>
+        <select class="ban-select ${ban === 'all' ? 'ban-all' : ban === 'edit' ? 'ban-edit' : 'ban-none'}" data-ban="${escapeAttr(u)}">
+          <option value="" ${ban===''?'selected':''}>Разбанить</option>
+          <option value="edit" ${ban==='edit'?'selected':''}>Только чтение</option>
+          <option value="all" ${ban==='all'?'selected':''}>Полный бан</option>
+        </select>
+      </div>
     </div>`;
   }
 
@@ -1504,7 +1493,6 @@ function renderUsersView(){
     <div class="new-users-title">Новые пользователи (${newUids.length})</div>
     <div class="user-list">${newUids.map(userRow).join('')}</div>
   ` : '';
-
   const oldBlock = oldUids.length ? `
     <div class="new-users-title" style="color:var(--text-muted)">Все пользователи (${oldUids.length})</div>
     <div class="user-list">${oldUids.map(userRow).join('')}</div>
@@ -1520,7 +1508,6 @@ function renderUsersView(){
     ${oldBlock || (newUids.length ? '' : `<div class="empty-state">Пользователей пока нет.</div>`)}
   `;
 
-  // После отображения помечаем всех реальных как просмотренных
   const newSeen = { ...seen };
   realUids.forEach(u => { newSeen[u] = true; });
   setAdminSeen(newSeen);
@@ -1534,6 +1521,89 @@ function renderUsersView(){
         showToast(val === '' ? 'Разбанен' : val === 'edit' ? 'Только чтение' : 'Полный бан');
       } catch(e){ console.error(e); showToast('Ошибка', true); }
     });
+  });
+
+  views.users.querySelectorAll('[data-dots]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const u = btn.dataset.dots;
+      if(openDotsMenu){ openDotsMenu.remove(); openDotsMenu = null; }
+      const menu = document.createElement('div');
+      menu.className = 'dots-menu';
+      menu.innerHTML = `
+        <button data-action="nick">Добавить ник</button>
+        <button data-action="delete" class="danger">Удалить</button>
+      `;
+      document.body.appendChild(menu);
+      const rect = btn.getBoundingClientRect();
+      menu.style.position = 'fixed';
+      menu.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+      menu.style.left = (rect.left + window.scrollX - 80) + 'px';
+      openDotsMenu = menu;
+      menu.querySelector('[data-action="nick"]').addEventListener('click', () => {
+        menu.remove(); openDotsMenu = null;
+        openNickModal(u);
+      });
+      menu.querySelector('[data-action="delete"]').addEventListener('click', () => {
+        menu.remove(); openDotsMenu = null;
+        openDeleteUserModal(u);
+      });
+    });
+  });
+}
+
+function openNickModal(uid){
+  modalPanel.className = 'modal-panel small';
+  modalPanel.dataset.mode = 'nick';
+  modalTitle.textContent = 'Добавить ник';
+  const u = usersMap[uid] || {};
+  modalBody.innerHTML = `
+    <div class="add-field">
+      <label>Ник для ${escapeHtml(uid)}</label>
+      <input type="text" id="nickInput" value="${escapeAttr(u.nick || '')}" placeholder="Введите ник...">
+    </div>
+  `;
+  modalFoot.style.display = '';
+  modalFoot.innerHTML = `
+    <button class="btn btn-cancel" id="nickCancelBtn">Отменить</button>
+    <button class="btn btn-primary" id="nickSaveBtn">Сохранить</button>
+  `;
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const input = document.getElementById('nickInput');
+  input.focus();
+  document.getElementById('nickCancelBtn').addEventListener('click', closeModal);
+  document.getElementById('nickSaveBtn').addEventListener('click', async () => {
+    const nick = (input.value || '').trim();
+    try {
+      await update(ref(db, USERS_ROOT + '/' + uid), { nick });
+      showToast('Ник сохранён');
+      closeModal();
+      renderUsersView();
+    } catch(e){ console.error(e); showToast('Ошибка сохранения', true); }
+  });
+  input.addEventListener('keydown', (e) => { if(e.key === 'Enter') document.getElementById('nickSaveBtn').click(); });
+}
+
+function openDeleteUserModal(uid){
+  modalPanel.className = 'modal-panel small';
+  modalPanel.dataset.mode = 'delete';
+  modalTitle.textContent = 'Удалить пользователя';
+  modalBody.innerHTML = `<div style="text-align:center;padding:.5rem 0">Точно хотите удалить <b>${escapeHtml(uid)}</b>?</div>`;
+  modalFoot.style.display = '';
+  modalFoot.innerHTML = `
+    <button class="btn btn-cancel" id="delCancelBtn">Отмена</button>
+    <button class="btn btn-primary" id="delYesBtn" style="background:var(--danger);color:#fff">Да</button>
+  `;
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('delCancelBtn').addEventListener('click', closeModal);
+  document.getElementById('delYesBtn').addEventListener('click', async () => {
+    try {
+      await remove(ref(db, USERS_ROOT + '/' + uid));
+      showToast('Пользователь удалён');
+      closeModal();
+    } catch(e){ console.error(e); showToast('Ошибка удаления', true); }
   });
 }
 
@@ -1602,8 +1672,14 @@ function closeModal(){
   modalPanel.className = 'modal-panel';
   modalPanel.dataset.mode = '';
   window.__addDraft = emptyPerson();
-  renderForm(addFormContainer, false);
+  if(canEdit()) renderForm(addFormContainer, false);
+  if(openDotsMenu){ openDotsMenu.remove(); openDotsMenu = null; }
 }
+document.addEventListener('click', (e) => {
+  if(openDotsMenu && !e.target.closest('.dots-menu') && !e.target.closest('[data-dots]')){
+    openDotsMenu.remove(); openDotsMenu = null;
+  }
+});
 
 /* ===================== VIEW ===================== */
 function buildView(p){
@@ -1706,9 +1782,7 @@ function buildView(p){
 
 /* ===================== NAVIGATION ===================== */
 function showView(view){
-  if(view === 'add' && !canEdit() && myBanStatus()==='all') return;
   if(view === 'users' && !IS_ADMIN) return;
-  if(view === 'support' && !canView()) return;
   sidebarItems.forEach(i => i.classList.remove('active'));
   const item = [...sidebarItems].find(i => i.dataset.view === view);
   if(item) item.classList.add('active');
@@ -1717,11 +1791,26 @@ function showView(view){
   closeSidebar();
   if(view === 'add'){
     appSubhead.textContent = 'Добавление новой записи';
-    if(!canEdit()){ addFormContainer.innerHTML = `<div class="blocked-message">Создание записей вам недоступно</div>`; return; }
-    window.__addDraft = window.__addDraft || emptyPerson();
-    renderForm(addFormContainer, false);
+    if(canEdit()){
+      window.__addDraft = window.__addDraft || emptyPerson();
+      renderForm(addFormContainer, false);
+    } else if(myBanStatus() === 'all'){
+      addFormContainer.innerHTML = `<div class="blocked-message">Пока нет доступа к базе данных</div>`;
+    } else {
+      addFormContainer.innerHTML = `<div class="blocked-message">Создание записей вам недоступно</div>`;
+    }
   }
-  if(view === 'db'){ appSubhead.textContent = 'База данных'; renderAlphabet(); renderPeople(); }
+  if(view === 'db'){
+    appSubhead.textContent = 'База данных';
+    if(!canView()){
+      peopleContainer.innerHTML = `<div class="blocked-message">Пока нет доступа к базе данных</div>`;
+      listStats.innerHTML = '';
+      alphabetNav.innerHTML = '';
+    } else {
+      renderAlphabet();
+      renderPeople();
+    }
+  }
   if(view === 'support'){ appSubhead.textContent = 'Поддержка'; renderSupportView(); }
   if(view === 'settings'){ appSubhead.textContent = 'Настройки'; renderSettingsView(); }
   if(view === 'users'){ appSubhead.textContent = 'Пользователи'; renderUsersView(); }
@@ -1790,9 +1879,8 @@ modalBody.addEventListener('click', (e) => {
 /* ===================== START ===================== */
 window.__addDraft = emptyPerson();
 applyPermissions();
-renderAlphabet();
-renderPeople();
 if(canEdit()) renderForm(addFormContainer, false);
+else if(myBanStatus() === 'all') addFormContainer.innerHTML = `<div class="blocked-message">Пока нет доступа к базе данных</div>`;
 else addFormContainer.innerHTML = `<div class="blocked-message">Создание записей вам недоступно</div>`;
 loadInitial();
 
